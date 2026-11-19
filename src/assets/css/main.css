@@ -1,0 +1,66 @@
+@import 'tailwindcss';
+
+/*
+ * ===== Konfigurasi Tailwind (v4, CSS-first) =====
+ * Palet dominan BIRU + aksen MERAH, plus seluruh warna dari dokumen
+ * "Efek Animasi & Palet Warna Ikan Geprek". `static` = semua variabel selalu
+ * dibuat sehingga bisa dipakai juga di CSS komponen lewat var(--color-...).
+ */
+@theme static {
+  --font-sans: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Biru (dominan) */
+  --color-brand-blue: #015df7; /* biru utama / teks utama */
+  --color-brand-sky: #0898e8; /* biru langit (aksen, garis, bulatan harga) */
+  --color-brand-deep: #083878; /* biru tua: latar Menu & Footer */
+  --color-brand-deco: #dceef8; /* biru muda pucat: lingkaran dekoratif */
+  --color-brand-mist: #eef6fc; /* biru sangat muda: gradasi kartu */
+  --color-brand-skylight: #7ccbf5; /* tulisan kecil logo footer */
+  --color-brand-powder: #b9cce8; /* teks redup di atas biru tua */
+  --color-brand-frost: #c9d8f0; /* teks footer */
+  --color-brand-haze: #9fb6dc; /* hak cipta footer */
+  --color-brand-ghost: #bfe0f5; /* siluet ikan dekoratif */
+
+  /* Merah (aksen) */
+  --color-brand-red: #cc0b14; /* merah utama tombol / aksen */
+  --color-brand-coral: #e8363f; /* ujung gradasi lingkaran hero */
+  --color-brand-salmon: #ff6b73; /* huruf "i" logo footer */
+  --color-brand-maroon: #830000; /* merah marun */
+  --color-brand-hot: #ff0000; /* merah murni (outline fokus) */
+
+  /* Netral & teks */
+  --color-surface: #fdfdfd; /* putih gading: latar halaman & kartu */
+  --color-ink-slate: #5d6672; /* teks keterangan */
+  --color-ink-steel: #7288ae; /* hak cipta / elemen redup */
+  --color-ink-indigo: #4b5694; /* aksen teks sekunder */
+  --color-brand-amber: #ffc83d; /* aksen ikon (bintang) */
+
+  /* Animasi otomatis (@keyframes) — nama sama dengan dokumen efek */
+  --animate-spin-slow: spin 40s linear infinite; /* Spin: cincin putus-putus hero */
+  --animate-float: float 6s ease-in-out infinite; /* Float: foto hero */
+  --animate-bob: bob 5s ease-in-out infinite; /* bob: badge, bulatan harga, tetesan air */
+  --animate-pin: pin 1.8s ease-in-out infinite; /* Pin: ikon pin lokasi */
+  --animate-pl: pl 1.8s ease-in-out infinite; /* Pl: bayangan di bawah pin */
+
+  @keyframes float {
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+  @keyframes bob {
+    50% {
+      translate: 0 -12px;
+    }
+  }
+  @keyframes pin {
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  @keyframes pl {
+    50% {
+      transform: scale(1.7);
+      opacity: 0.2;
+    }
+  }
+}

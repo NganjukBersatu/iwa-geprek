@@ -1,0 +1,169 @@
+/* ===== Gaya global: variabel, reset tambahan, tombol, ikon, logo ===== */
+
+:root {
+  --blue: var(--color-brand-blue);
+  --sky: var(--color-brand-sky);
+  --red: var(--color-brand-red);
+  --deep: var(--color-brand-deep);
+  --deco: var(--color-brand-deco);
+  --bg: var(--color-surface);
+  --text: var(--color-brand-blue);
+  --muted: var(--color-ink-slate);
+  --card: #ffffff;
+  --hot: var(--color-brand-hot);
+  --cream: var(--color-surface);
+}
+
+html {
+  scroll-behavior: smooth; /* Efek halaman: smooth scrolling */
+  scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 84px);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  line-height: normal;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: clip;
+  max-width: 100%;
+  position: relative;
+}
+
+:focus-visible {
+  outline: 3px solid var(--hot);
+  outline-offset: 3px;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ----- Tombol ----- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 30px;
+  border-radius: 99px;
+  font: 600 1rem var(--font-sans);
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid var(--red);
+  background: var(--red);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(204, 11, 20, 0.3);
+  transition: 0.2s;
+}
+.btn:hover {
+  transform: translateY(-2px); /* Lift on hover */
+  box-shadow: 0 14px 28px rgba(204, 11, 20, 0.38); /* Shadow expand */
+}
+.btn.o {
+  background: transparent;
+  color: var(--blue);
+  border-color: var(--blue);
+  box-shadow: none;
+}
+.btn.o:hover {
+  background: var(--blue); /* Color fill / invert */
+  color: #fff;
+}
+
+/* ----- Ikon (lucide-vue-next) ----- */
+.ic {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ----- Logo (dipakai di Navbar & Footer) ----- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--blue);
+}
+.mark {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--deco);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 4.5px var(--sky), 0 8px 18px rgba(8, 152, 232, 0.28);
+}
+.mark img {
+  width: 34px;
+  height: auto;
+  margin-left: -2px;
+}
+.word {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+.word b {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--blue);
+}
+.word b i {
+  font-style: italic;
+  color: var(--red);
+}
+.word small {
+  margin-top: 6px;
+  font-size: 0.58rem;
+  letter-spacing: 0.32em;
+  font-weight: 600;
+  color: var(--sky);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.word small::before {
+  content: '';
+  width: 16px;
+  height: 1.5px;
+  background: var(--sky);
+}
+
+/* ----- Tetesan air dekoratif (dipakai Keunggulan & Kontak) ----- */
+.drop {
+  position: absolute;
+  fill: var(--sky);
+}
+
+@media (max-width: 900px) {
+  .word b {
+    font-size: 1.1rem;
+  }
+  .mark {
+    width: 48px;
+    height: 48px;
+  }
+  .mark img {
+    width: 29px;
+  }
+}
+
+/* Efek halaman: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
