@@ -6,6 +6,7 @@ import rasaLezat from '@/assets/images/keunggulan-rasa-lezat.jpg'
 import digorengCrispy from '@/assets/images/keunggulan-digoreng-crispy.jpg'
 import penyajianMenarik from '@/assets/images/keunggulan-penyajian-menarik.jpg'
 import tempatNyaman from '@/assets/images/keunggulan-tempat-nyaman.jpg'
+import goreng from '@/assets/images/goreng.jpg'
 
 // ===== Data Keunggulan =====
 const advantagesIntro = {
@@ -43,7 +44,7 @@ const advantages = [
     id: 'digoreng-crispy',
     title: 'Digoreng Crispy',
     description: 'Digoreng hingga garing dan renyah di luar, tetap juicy di dalam.',
-    image: digorengCrispy,
+    image: goreng,
     imageAlt: 'Digoreng Crispy',
     icon: Flame,
   },
