@@ -2,7 +2,7 @@
 import { Fish, Flame, MapPin, Star, Zap } from 'lucide-vue-next'
 import AnchorLink from '@/components/AnchorLink.vue'
 import logo from '@/assets/images/logo-iwageprek.png'
-import heroPhoto from '@/assets/images/hero-ikan-geprek.jpg'
+import heroPhoto from '@/assets/images/hero.jpg'
 
 // ===== Data Hero =====
 const hero = {

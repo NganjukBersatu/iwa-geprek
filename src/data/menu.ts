@@ -18,6 +18,11 @@ import imgLeleGorengSambalTerasi from '@/assets/images/menu-lele-goreng-sambal-t
 import imgIkanGorengSambalMangga from '@/assets/images/menu-ikan-goreng-sambal-mangga.jpg'
 import imgNilaBakarSambalTrio from '@/assets/images/menu-nila-bakar-sambal-trio.jpg'
 import imgGurameGorengSambalTomat from '@/assets/images/menu-gurame-goreng-sambal-tomat.jpg'
+import hero from '@/assets/images/hero.jpg'
+import lodeh from '@/assets/images/lodeh.jpg'
+import kepiting from '@/assets/images/kepiting.jpeg'
+import air from '@/assets/images/air.jpeg'
+import teh from '@/assets/images/teh.jpeg'
 
 export type FilterKey = 'all' | 'Goreng' | 'Bakar' | 'Seafood' | 'Sayur' | 'Minuman'
 
@@ -71,7 +76,7 @@ export const menuItems: MenuItem[] = [
     description: "Gurame utuh digoreng garing, disajikan dengan tempe dan sambal terasi.",
     price: 65000,
     category: 'Goreng',
-    image: imgGurameGorengGeprek,
+    image: hero,
     imageAlt: "Gurame goreng geprek di atas selada hijau",
   },
   {
@@ -111,6 +116,15 @@ export const menuItems: MenuItem[] = [
     imageAlt: "Cumi bumbu sambal merah",
   },
   {
+    id: 'kepiting',
+    name: "Kepiting Lada Hitam",
+    description: "Kepiting dengan bumbu lada hitam.",
+    price: 50000,
+    category: 'Seafood',
+    image: kepiting,
+    imageAlt: "kepiting",
+  },
+  {
     id: 'bebek-goreng-sambal',
     name: "Bebek goreng sambal",
     description: "Bebek empuk berbumbu rempah digoreng kering, dengan sambal merah dan nasi hangat.",
@@ -137,6 +151,15 @@ export const menuItems: MenuItem[] = [
     image: imgTumisKangkung,
     imageAlt: "Tumis kangkung",
   },
+   {
+    id: 'lodeh',
+    name: "Sayur Lodeh",
+    description: "Hidangan berkuah santan khas Indonesia",
+    price: 15000,
+    category: 'Sayur',
+    image: lodeh,
+    imageAlt: "Sayur Lodeh",
+  },
   {
     id: 'es-jeruk-segar',
     name: "Es jeruk segar",
@@ -145,6 +168,24 @@ export const menuItems: MenuItem[] = [
     category: 'Minuman',
     image: imgEsJerukSegar,
     imageAlt: "Es jeruk segar",
+  },
+  {
+    id: 'air',
+    name: "Air mineral",
+    description: "Air mineral aqua.",
+    price: 3000,
+    category: 'Minuman',
+    image: air,
+    imageAlt: "air",
+  },
+  {
+    id: 'teh',
+    name: "Es teh manis",
+    description: "Es teh manis gula asli.",
+    price: 5000,
+    category: 'Minuman',
+    image: teh,
+    imageAlt: "teh",
   },
   {
     id: 'udang-saus-padang-jagung',
