@@ -45,6 +45,8 @@ from app.models.user import User  # noqa: E402
 from app.models.visitor import VisitorCategory, VisitorGender  # noqa: E402
 from app.core.catalog.menu import PHOTO_FOLDER  # noqa: E402
 from app.core.storage import files  # noqa: E402
+from app.core.uploads.file import KIND_PHOTO  # noqa: E402
+from app.core.uploads.formats import identify  # noqa: E402
 from scripts import demo_catalog  # noqa: E402
 
 PREFIX = "demo-"
@@ -126,8 +128,12 @@ def create_base(db: Session, plan: Plan) -> None:
             menu_id = new_id()
             image_path = None
             if menu.image is not None:
-                image_path = f"{PHOTO_FOLDER}/{menu_id}/{uuid.uuid4()}{menu.image.suffix.lower()}"
-                files.save(db, image_path, menu.image.read_bytes(), menu.image.suffix.lower())
+                # Lewat pengenal unggahan yang sama dengan web admin, supaya foto contoh diperlakukan persis seperti foto yang diunggah pemilik.
+                photo = identify(menu.image.suffix.lower(), menu.image.read_bytes())
+                if photo is None or photo.kind != KIND_PHOTO:
+                    raise demo_catalog.CatalogError(f"{menu.name}: {menu.image.name} bukan foto yang bisa dibaca")
+                image_path = f"{PHOTO_FOLDER}/{menu_id}/{uuid.uuid4()}{photo.extension}"
+                files.save(db, image_path, photo.content, photo.extension)
             menu_item = MenuItem(id=menu_id, name=menu.name, description=None, price=menu.price, category_id=category.id, image_path=image_path, is_available=True, has_temperature_variant=False, outlet_ids=[plan.outlet.id])
             db.add(menu_item)
             plan.menu.append((menu_item, menu.weight))

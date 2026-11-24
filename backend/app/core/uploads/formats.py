@@ -15,6 +15,10 @@ PDF_EXTENSION = ".pdf"
 KEPT_PHOTO_EXTENSIONS = frozenset({".jpg", ".jpeg", ".png", ".webp"})
 CONVERTED_EXTENSION = ".jpg"
 CONVERTED_QUALITY = 90
+PNG_EXTENSION = ".png"
+# PNG buram di atas ukuran ini hampir pasti foto; disimpan sebagai JPEG supaya tidak membebani tablet. PNG kecil (kode QR, grafik) tetap tanpa kompresi rugi.
+OPAQUE_PNG_PHOTO_BYTES = 512 * 1024
+OPAQUE_ALPHA = 255
 
 
 def identify(extension: str, content: bytes) -> UploadedFile | None:
@@ -32,10 +36,30 @@ def identify(extension: str, content: bytes) -> UploadedFile | None:
 
 
 def _photo(extension: str, content: bytes) -> UploadedFile | None:
+    if extension == PNG_EXTENSION and len(content) > OPAQUE_PNG_PHOTO_BYTES:
+        photo = _opaque_png_as_jpeg(content)
+        if photo is not None:
+            return UploadedFile(KIND_PHOTO, CONVERTED_EXTENSION, photo)
     if extension in KEPT_PHOTO_EXTENSIONS and _decodes(content):
         return UploadedFile(KIND_PHOTO, extension, content)
     converted = _to_jpeg(content)
     return UploadedFile(KIND_PHOTO, CONVERTED_EXTENSION, converted) if converted is not None else None
+
+
+def _opaque_png_as_jpeg(content: bytes) -> bytes | None:
+    """JPEG dari PNG yang tidak memakai transparansi; None bila PNG-nya transparan atau tidak terbaca, sehingga tetap disimpan apa adanya."""
+    import cv2
+    import numpy as np
+
+    image = cv2.imdecode(np.frombuffer(content, np.uint8), cv2.IMREAD_UNCHANGED)
+    if image is None or image.ndim != 3:
+        return None
+    if image.shape[2] == 4:
+        if (image[:, :, 3] < OPAQUE_ALPHA).any():
+            return None
+        image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
+    ok, buffer = cv2.imencode(CONVERTED_EXTENSION, image, [cv2.IMWRITE_JPEG_QUALITY, CONVERTED_QUALITY])
+    return buffer.tobytes() if ok else None
 
 
 def _decodes(content: bytes) -> bool:
