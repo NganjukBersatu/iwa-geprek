@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ChefHat, ConciergeBell, Fish, Flame, Users } from 'lucide-vue-next'
 import ikanSegar from '@/assets/images/keunggulan-segar.jpeg'
-import sambalKhas from '@/assets/images/keunggulan-sambel.jpeg'
-import rasaLezat from '@/assets/images/keunggulan-lezat.jpeg'
+import sambalKhas from '@/assets/images/menu-sambal-geprek.jpg'
+import rasaLezat from '@/assets/images/patin.png'
 import digorengCrispy from '@/assets/images/keunggulan-digoreng.jpeg'
 import penyajianMenarik from '@/assets/images/keunggulan-rapi.jpeg'
 import tempatNyaman from '@/assets/images/keunggulan-tempat.jpeg'
@@ -43,11 +43,11 @@ const advantages = [
     id: 'digoreng-crispy',
     title: 'Digoreng Crispy',
     description: 'Digoreng hingga garing dan renyah di luar, tetap juicy di dalam.',
-    image: goreng,
+    image: digorengCrispy, // sebelumnya: goreng
     imageAlt: 'Digoreng Crispy',
     icon: Flame,
   },
-  {
+    {
     id: 'penyajian-menarik',
     title: 'Penyajian Menarik',
     description: 'Disajikan dengan tampilan menarik dan pelengkap yang menggugah selera.',
