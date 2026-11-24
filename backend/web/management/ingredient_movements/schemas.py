@@ -6,7 +6,8 @@ from pydantic import BaseModel, Field
 
 from web.management.ingredient_movements import constants as c
 
-Kind = Literal["masuk", "keluar", "rusak", "rnd", "penyesuaian"]
+# "use" adalah pemakaian manual bahan tidak langsung: kartu keluar tanpa pesanan.
+Kind = Literal["masuk", "keluar", "rusak", "rnd", "penyesuaian", "use"]
 
 
 class ReceiptIn(BaseModel):
@@ -24,6 +25,16 @@ class WasteIn(BaseModel):
     qty: Decimal = Field(gt=0)
     cause: str = Field(min_length=1, max_length=30, description="A code from the causes list; without it, natural shrinkage cannot be told from carelessness")
     note: str | None = Field(None, max_length=c.MAX_NOTE_LENGTH)
+
+
+class UseIn(BaseModel):
+    """Daily use of an indirect ingredient; the quantity is positive and the server stores it as a decrease."""
+
+    ingredient_id: str
+    qty: Decimal = Field(gt=0)
+    cause: str = Field(min_length=1, max_length=30, description="A code from the usage causes list")
+    note: str | None = Field(None, max_length=c.MAX_NOTE_LENGTH)
+    client_id: str | None = Field(None, min_length=8, max_length=64, description="Random key; a resend with the same key returns the first card")
 
 
 class TrialIn(BaseModel):

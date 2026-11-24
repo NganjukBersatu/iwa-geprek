@@ -22,6 +22,7 @@ NOT_FOUND = 404
 
 DUPLICATE_INGREDIENT = "Ada bahan yang disebut dua kali."
 INGREDIENT_NOT_IN_BRANCH = "Ada bahan yang tidak ditemukan di cabang ini."
+INDIRECT_IN_RECIPE = "Bahan tidak langsung dicatat keluarnya secara manual, jadi tidak masuk resep: {names}. Hapus bahan itu dari resep, lalu simpan lagi."
 BRANCH_LOCKED = "Hanya akun lintas cabang yang bisa menerapkan resep ke semua cabang."
 
 
@@ -63,6 +64,9 @@ def checked_lines(db: Session, outlet_id: str, lines: list[RecipeInput]) -> dict
     found = {row.id: row for row in db.scalars(select(Ingredient).where(Ingredient.id.in_(ids), Ingredient.outlet_id == outlet_id)).all()}
     if any(item not in found for item in ids):
         raise DomainError(INGREDIENT_NOT_IN_BRANCH, status=NOT_FOUND)
+    indirect = sorted(row.name for row in found.values() if row.is_indirect)
+    if indirect:
+        raise DomainError(INDIRECT_IN_RECIPE.format(names=", ".join(indirect)), code="INDIRECT_INGREDIENT_IN_RECIPE")
     return found
 
 
@@ -126,6 +130,7 @@ def _align(target: Ingredient, source: Ingredient) -> None:
     target.unit_price = source.unit_price
     target.shrink_tolerance = source.shrink_tolerance
     target.minimum = source.minimum
+    target.is_indirect = source.is_indirect
     if source.catalog_id:
         target.catalog_id = source.catalog_id
 
@@ -145,6 +150,7 @@ def _copy(db: Session, source: Ingredient, outlet_id: str) -> Ingredient:
         unit_price=source.unit_price,
         shrink_tolerance=source.shrink_tolerance,
         minimum=source.minimum,
+        is_indirect=source.is_indirect,
         is_active=True,
         is_available=True,
         created_at=datetime.now(timezone.utc),

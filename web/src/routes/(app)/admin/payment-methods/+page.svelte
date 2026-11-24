@@ -16,7 +16,7 @@
 	filters={methods.filters}
 	title={termText.payment}
 	description={pageText.paymentMethodsDescription}
-	loadingText="Memuat metode pembayaran..."
+	loadingText={pageText.loadingPaymentMethods}
 >
 	{#snippet actions()}
 		<Button label={pageText.addMethod} icon="plus" variant="primary" compact onclick={() => void goto(paymentMethodNewPath())} />

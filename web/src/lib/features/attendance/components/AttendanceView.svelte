@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { controlText } from '$lib/text/controls';
 	import type { AttendanceRecap } from '$lib/api/types';
 	import Banner from '$lib/components/card/Banner.svelte';
 	import Card from '$lib/components/card/Card.svelte';
@@ -6,7 +7,7 @@
 	import Notice from '$lib/components/card/Notice.svelte';
 	import SummaryCard from '$lib/components/card/SummaryCard.svelte';
 	import DataTable from '$lib/components/table/DataTable.svelte';
-	import { formatNumber, formatRupiah } from '$lib/format/currency';
+	import { EMPTY_VALUE, formatNumber, formatRupiah } from '$lib/format/currency';
 	import { formatDuration } from '$lib/format/datetime';
 	import type { AttendanceState } from '../attendance.svelte';
 	import { userName } from '../names';
@@ -23,7 +24,7 @@
 	const columns = attendanceColumns;
 </script>
 
-<div class="grid grid-cols-1 gap-4 tablet:grid-cols-2 laptop:grid-cols-4">
+<div class="grid grid-cols-1 gap-4 tablet:grid-cols-2 laptop:grid-cols-5">
 	<SummaryCard
 		label={attendanceReportText.totalDeduction}
 		caption={format(attendanceReportText.deductionRule, { amount: formatRupiah(data.rule.late_penalty_per_minute), minutes: data.rule.late_tolerance_minutes })}
@@ -31,9 +32,19 @@
 		icon="receipt-2"
 		accent="red"
 	/>
-	<SummaryCard label={attendanceReportText.totalLate} caption={format(attendanceReportText.overtimeTotal, { duration: formatDuration(data.total_overtime_minutes) })} value="{count(data.total_late_minutes)} menit" icon="clock-exclamation" accent="accent" />
+	<SummaryCard label={attendanceReportText.totalLate} caption={format(attendanceReportText.overtimeTotal, { duration: formatDuration(data.total_overtime_minutes) })} value={format(controlText.minutesCount, { count: count(data.total_late_minutes) })} icon="clock-exclamation" accent="accent" />
 	<SummaryCard label={attendanceReportText.sessionsAttended} caption={attendanceReportText.presentPlusLate} value={count(data.total_attended)} icon="user-check" accent="green" />
 	<SummaryCard label={termText.absent} caption={attendanceReportText.includesMissing} value={count(data.total_absent)} icon="user-x" accent="red" />
+	<SummaryCard
+		label={attendanceReportText.revenuePerWorkHour}
+		class="tablet:col-span-2 laptop:col-span-1"
+		caption={data.revenue_per_work_hour === null
+			? attendanceReportText.noWorkHours
+			: format(attendanceReportText.revenueOverWork, { revenue: formatRupiah(data.total_revenue), duration: formatDuration(data.total_work_minutes) })}
+		value={data.revenue_per_work_hour === null ? EMPTY_VALUE : formatRupiah(data.revenue_per_work_hour)}
+		icon="briefcase"
+		accent="primary"
+	/>
 </div>
 
 <Card flush>

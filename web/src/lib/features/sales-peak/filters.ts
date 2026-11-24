@@ -12,8 +12,7 @@ export const unitOptions = [
 
 export const metricOptions = [
 	{ value: 'sales', label: salesPeakText.sales },
-	{ value: 'transactions', label: termText.transaction },
-	{ value: 'customers', label: salesPeakText.customers }
+	{ value: 'transactions', label: termText.transaction }
 ];
 
 export const hourLabel = (hour: number) => `${String(hour).padStart(2, '0')}:00`;

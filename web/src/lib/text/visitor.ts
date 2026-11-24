@@ -2,6 +2,7 @@
 export const visitorText = {
 	notRecorded: 'Tidak dicatat',
 	group: 'Kelompok',
+	averagePerReceipt: 'Rata-rata per struk',
 	today: 'Hari ini',
 	yesterday: 'Kemarin',
 	validTransactions: 'Transaksi sah',
@@ -9,10 +10,13 @@ export const visitorText = {
 	categoryRecorded: 'Kategori tercatat',
 	genderRecorded: 'Jenis kelamin tercatat',
 	perGender: 'Per jenis kelamin',
-	genderNote: 'Jenis kelamin pemesan, bukan jumlah orang dalam rombongan',
+	genderNote: 'Jenis kelamin pemesan, bukan jumlah orang dalam rombongan. Dicatat {count} dari {total} transaksi.',
+	unrecordedTitle: 'Kenapa sebagian jatuh ke Tidak dicatat',
+	unrecordedNote:
+		'Kategori dan jenis kelamin pengunjung diisi kasir di tablet saat membuat pesanan, dan isian itu opsional. Pesanan yang tidak diisi masuk ke Tidak dicatat; itu berarti isiannya kosong, bukan datanya rusak. Kategori tercatat {category} dari {total} transaksi, jenis kelamin tercatat {gender} dari {total}.',
 	noData: 'Belum ada data.',
 	perCategory: 'Per kategori pengunjung',
-	categoryNote: 'Kategori dicatat sekali per pesanan',
+	categoryNote: 'Kategori dicatat sekali per pesanan. Dicatat {count} dari {total} transaksi.',
 	trendTitle: 'Tren per tanggal',
 	dailyRevenue: 'Omzet harian',
 	chartSummary: 'Grafik batang per tanggal. Menampilkan jumlah transaksi ditumpuk menurut jenis kelamin atau kategori pengunjung, atau omzet harian. Angka lengkapnya ada pada tabel di bawah.',

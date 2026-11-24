@@ -1,10 +1,11 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
-import pkg from './package.json';
+// Versi PWA milik klien; copier update tidak menimpa version.json.
+import release from './version.json' with { type: 'json' };
 
 export default defineConfig({
-	define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+	define: { __APP_VERSION__: JSON.stringify(release.version) },
 	server: {
 		port: 5175,
 		strictPort: true

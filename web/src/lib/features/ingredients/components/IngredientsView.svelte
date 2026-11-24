@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { ingredientNewPath, ingredientPath } from '$lib/nav/pages';
+	import { ingredientPath } from '$lib/nav/pages';
 	import { emptyText } from '$lib/text/empty';
 	import Button from '$lib/components/button/Button.svelte';
 	import Badge from '$lib/components/card/Badge.svelte';
@@ -51,6 +51,8 @@
 		{@const noMatch = noMatchText('bahan', ingredients.search !== '', ingredients.filters.count > 0)}
 		{#if noMatch}
 			<Notice text={noMatch} />
+		{:else if ingredients.indirect}
+			<Notice title={emptyText.indirectIngredients.title} text={emptyText.indirectIngredients.text} />
 		{:else}
 			<Notice title={emptyText.ingredients.title} text={emptyText.ingredients.text}/>
 		{/if}

@@ -6,12 +6,14 @@ from sqlalchemy.orm import Session
 
 from app.core.search import contains
 from app.models.category import Unit
-from app.models.ingredient import Ingredient, IngredientCard
+from app.core.ingredients.ledger import manual_use_clause
+from app.models.ingredient import INGREDIENT_WASTE, Ingredient, IngredientCard
 from app.models.user import User
 from app.core.ingredients.causes import HUMAN_ERROR_CODES
 from app.core.business_days import ingredient_cards_in
 from app.core.sorting import SqlSorting
 
+USE_KIND = "use"
 
 SORTING = SqlSorting(
     columns={
@@ -33,14 +35,16 @@ def page_of(
     filters = [
         *ingredient_cards_in(start, end, outlet_id),
     ]
-    if kind:
+    if kind == USE_KIND:
+        filters.append(manual_use_clause())
+    elif kind:
         filters.append(IngredientCard.kind == kind)
     if search:
         filters.append(or_(contains(IngredientCard.ingredient_name, search), contains(IngredientCard.note, search)))
     total = db.scalar(select(func.count()).select_from(IngredientCard).where(*filters)) or 0
     count = lambda *extra: db.scalar(select(func.count()).select_from(IngredientCard).where(*filters, *extra)) or 0  # noqa: E731
-    human = count(IngredientCard.cause.in_(HUMAN_ERROR_CODES))
-    natural = count(IngredientCard.cause.is_not(None), IngredientCard.cause.not_in(HUMAN_ERROR_CODES))
+    human = count(IngredientCard.kind == INGREDIENT_WASTE, IngredientCard.cause.in_(HUMAN_ERROR_CODES))
+    natural = count(IngredientCard.kind == INGREDIENT_WASTE, IngredientCard.cause.is_not(None), IngredientCard.cause.not_in(HUMAN_ERROR_CODES))
     rows = db.execute(
         select(IngredientCard, func.coalesce(User.name, User.username), Unit.name)
         .outerjoin(User, User.id == IngredientCard.user_id)

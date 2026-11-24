@@ -54,6 +54,7 @@ def _one(db: Session, row) -> IngredientOut:
 def list_ingredients(
     search: str | None = Query(None, max_length=MAX_SEARCH_LENGTH, description="Part of the name or the category"),
     id: str | None = Query(None, description="Exactly this ingredient, for a direct link to change or remove it"),
+    indirect: bool | None = Query(None, description="true: only indirect ingredients; false: only those a recipe takes from stock; left out: both"),
     sort: Sort = None,
     page: int = Query(1, ge=1),
     size: int = Query(DEFAULT_PAGE_SIZE, ge=1, le=MAX_PAGE_SIZE),
@@ -65,7 +66,7 @@ def list_ingredients(
     base_url = public_base_url()
 
     def build() -> IngredientPageOut:
-        rows, total = repository.page_of(db, outlet_id, term, id, sort, page, size)
+        rows, total = repository.page_of(db, outlet_id, term, id, sort, page, size, indirect)
         return IngredientPageOut(
             items=service.describe(db, rows, base_url),
             total=total,
@@ -78,7 +79,7 @@ def list_ingredients(
         # Free text has no end of values, so it is never a key.
         if term:
             return build()
-        return cache.read("web.ingredients", (outlet_id, id, sort, page, size, base_url), build, PAGE, cache.LIST_SECONDS)
+        return cache.read("web.ingredients", (outlet_id, id, indirect, sort, page, size, base_url), build, PAGE, cache.LIST_SECONDS)
 
 
 @router.get("/options", response_model=IngredientOptionsOut)

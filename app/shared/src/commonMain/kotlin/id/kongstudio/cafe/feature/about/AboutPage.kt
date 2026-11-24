@@ -42,9 +42,6 @@ import id.kongstudio.cafe.ui.theme.icon.AppIcons
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-private const val NarrowColumnWeight = 5f
-private const val WideColumnWeight = 6f
-
 /** Halaman Info Aplikasi: identitas dan versi, isi "Yang baru" versi terpasang, tujuan aplikasi, dan ucapan terima kasih; [title] diisi bila halaman tidak dibingkai judul dari luar. */
 @Composable
 internal fun AboutPage(modifier: Modifier = Modifier, title: String? = null) {
@@ -54,26 +51,13 @@ internal fun AboutPage(modifier: Modifier = Modifier, title: String? = null) {
             item { PageTitle(title = title) }
         }
         item {
-            if (AppTheme.windowSize.isWide) {
-                Row(horizontalArrangement = Arrangement.spacedBy(spacing.lg), verticalAlignment = Alignment.Top) {
-                    Column(modifier = Modifier.weight(NarrowColumnWeight), verticalArrangement = Arrangement.spacedBy(spacing.md)) {
-                        IdentityCard()
-                        TextCard(icon = AppIcons.Info, title = stringResource(Res.string.about_purpose_title), text = stringResource(Res.string.about_purpose))
-                        DeveloperLine()
-                    }
-                    Column(modifier = Modifier.weight(WideColumnWeight), verticalArrangement = Arrangement.spacedBy(spacing.md)) {
-                        ReleaseCard()
-                        TextCard(icon = AppIcons.HeartHandshake, title = stringResource(Res.string.about_thanks_title), text = stringResource(Res.string.about_thanks))
-                    }
-                }
-            } else {
-                Column(verticalArrangement = Arrangement.spacedBy(spacing.md)) {
-                    IdentityCard()
-                    ReleaseCard()
-                    TextCard(icon = AppIcons.Info, title = stringResource(Res.string.about_purpose_title), text = stringResource(Res.string.about_purpose))
-                    TextCard(icon = AppIcons.HeartHandshake, title = stringResource(Res.string.about_thanks_title), text = stringResource(Res.string.about_thanks))
-                    DeveloperLine()
-                }
+            // Satu kolom di semua ukuran layar, supaya urutan bacanya sama di HP dan tablet.
+            Column(verticalArrangement = Arrangement.spacedBy(spacing.md)) {
+                IdentityCard()
+                ReleaseCard()
+                TextCard(icon = AppIcons.Info, title = stringResource(Res.string.about_purpose_title), text = stringResource(Res.string.about_purpose))
+                TextCard(icon = AppIcons.HeartHandshake, title = stringResource(Res.string.about_thanks_title), text = stringResource(Res.string.about_thanks))
+                DeveloperLine()
             }
         }
     }

@@ -28,7 +28,7 @@
 <div class="grid grid-cols-1 gap-4 tablet:grid-cols-3">
 	<SummaryCard label={stockReportText.totalReimbursement} caption={stockReportText.overToleranceBilled} value={formatRupiahOrDash(data.total_replacement)} icon="receipt-2" accent="primary" />
 	<SummaryCard label={stockReportText.totalToleranceValue} caption={stockReportText.withinToleranceAbsorbed} value={formatRupiahOrDash(data.total_tolerated_value)} icon="scale" accent="accent" />
-	<SummaryCard label={stockReportText.needsReview} caption={stockReportText.negativeClosingNote} value="{data.check_count} bahan" icon="alert-triangle" accent="ink" />
+	<SummaryCard label={stockReportText.needsReview} caption={stockReportText.negativeClosingNote} value={format(controlText.ingredientsCount, { count: data.check_count })} icon="alert-triangle" accent="ink" />
 </div>
 
 {#if data.count_id === null}

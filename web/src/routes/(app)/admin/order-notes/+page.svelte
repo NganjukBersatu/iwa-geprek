@@ -7,7 +7,7 @@
 	const notes = new OrderNotesState();
 </script>
 
-<ManageShell manage={notes} title={pageText.orderNotesTitle} description={pageText.orderNotesDescription} loadingText="Memuat catatan pesanan...">
+<ManageShell manage={notes} title={pageText.orderNotesTitle} description={pageText.orderNotesDescription} loadingText={pageText.loadingOrderNotes}>
 	{#snippet children()}
 		<OrderNotesView {notes} />
 	{/snippet}

@@ -24,8 +24,11 @@
 <div class="grid grid-cols-1 gap-4 tablet:grid-cols-3">
 	<SummaryCard
 		label={promoReportText.promoTransactions}
-		caption={format(promoReportText.ofAllValid, { percent: formatPercentPlain(data.promo_transaction_percent) })}
-		value="{formatNumber(data.promo_transactions, 0)} dari {formatNumber(data.total_transactions, 0)}"
+		caption={format(data.free_transactions > 0 ? promoReportText.ofAllValidWithFree : promoReportText.ofAllValid, {
+			percent: formatPercentPlain(data.promo_transaction_percent),
+			free: formatNumber(data.free_transactions, 0)
+		})}
+		value={format(promoReportText.countOfTotal, { count: formatNumber(data.promo_transactions, 0), total: formatNumber(data.total_transactions, 0) })}
 		icon="discount-2"
 		accent="primary"
 	/>

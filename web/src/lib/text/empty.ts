@@ -12,5 +12,7 @@ export const emptyText = {
 	batches: { title: 'Belum ada tugas outlet', text: 'Tambahkan tugas outlet pertama agar karyawan bisa mengisinya di aplikasi.' },
 	expenses: { title: 'Belum ada pengeluaran', text: 'Catat pengeluaran pertama, atau ubah rentang tanggal lewat Filter untuk melihat periode lain.' },
 	receipts: { title: 'Belum ada barang masuk', text: 'Catat barang masuk pertama, atau ubah rentang tanggal lewat Filter untuk melihat periode lain.' },
-	losses: { title: 'Belum ada catatan', text: 'Catat bahan rusak pertama, atau ubah rentang tanggal lewat Filter untuk melihat periode lain.' }
+	losses: { title: 'Belum ada catatan', text: 'Catat bahan rusak pertama, atau ubah rentang tanggal lewat Filter untuk melihat periode lain.' },
+	indirectIngredients: { title: 'Belum ada bahan tidak langsung', text: 'Tambahkan bahan yang tidak dipotong resep, seperti gas atau tisu, agar pemakaiannya bisa dicatat.' },
+	usage: { title: 'Belum ada pemakaian', text: 'Catat pemakaian bahan tidak langsung pertama, atau ubah rentang tanggal lewat Filter untuk melihat periode lain.' }
 } as const;

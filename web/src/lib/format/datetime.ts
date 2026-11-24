@@ -1,12 +1,21 @@
+import { EMPTY_VALUE } from '$lib/format/currency';
+import { durationText } from '$lib/text/durations';
+import { format } from '$lib/text/format';
+
 const ZONE = 'Asia/Jakarta';
 
 export function formatTime(iso: string): string {
 	return new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: ZONE }).format(new Date(iso));
 }
 
+/** Hari kalender suatu waktu menurut Jakarta, supaya penjualan lewat tengah malam WIB tidak tampil di hari sebelumnya. */
+export function formatDay(iso: string): string {
+	return new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: ZONE }).format(new Date(iso));
+}
+
 export function formatDuration(minutes: number | null): string {
-	if (minutes === null) return '—';
-	return `${Math.floor(minutes / 60)}j ${String(minutes % 60).padStart(2, '0')}m`;
+	if (minutes === null) return EMPTY_VALUE;
+	return format(durationText.hoursMinutes, { hours: Math.floor(minutes / 60), minutes: String(minutes % 60).padStart(2, '0') });
 }
 
 export function formatDateTime(iso: string): string {
@@ -36,5 +45,5 @@ export function formatClockRange(start: string | null | undefined, end: string |
 export function formatClockSpan(start: string, end: string): string {
 	const minutes = (clockMinutes(end) - clockMinutes(start) + MINUTES_PER_DAY) % MINUTES_PER_DAY || MINUTES_PER_DAY;
 	const hours = minutes / MINUTES_PER_HOUR;
-	return `${hours.toLocaleString('id-ID', { maximumFractionDigits: 1 })} jam`;
+	return format(durationText.hours, { hours: hours.toLocaleString('id-ID', { maximumFractionDigits: 1 }) });
 }

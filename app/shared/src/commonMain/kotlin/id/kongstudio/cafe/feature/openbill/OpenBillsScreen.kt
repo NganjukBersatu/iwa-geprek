@@ -20,10 +20,13 @@ import id.kongstudio.cafe.feature.cashier.CashierViewModel
 import id.kongstudio.cafe.feature.cashier.PaymentSheet
 import id.kongstudio.cafe.feature.cashier.PaymentSummary
 import id.kongstudio.cafe.feature.cashier.PlacedOrder
+import id.kongstudio.cafe.feature.cashier.PrintReport
 import id.kongstudio.cafe.feature.cashier.ReceiptPrintView
 import id.kongstudio.cafe.feature.cashier.TicketPrint
 import id.kongstudio.cafe.feature.devicesetup.DeviceResult
+import id.kongstudio.cafe.feature.printer.PrintPlan
 import id.kongstudio.cafe.feature.printer.PrinterSlot
+import id.kongstudio.cafe.feature.printer.printerSlotName
 import id.kongstudio.cafe.feature.stationboard.CashierOrder
 import id.kongstudio.cafe.offline.newClientId
 import id.kongstudio.cafe.resources.Res
@@ -136,7 +139,8 @@ private fun OpenBillPage(
     var placed by remember { mutableStateOf<PlacedOrder?>(null) }
     var settled by remember { mutableStateOf<CashierOrder?>(null) }
     var paidWith by remember { mutableStateOf<String?>(null) }
-    var printView by remember { mutableStateOf(receiptView(printing = false)) }
+    var printing by remember { mutableStateOf(false) }
+    var printReport by remember { mutableStateOf<PrintReport?>(null) }
     val settleKey = remember(paying) { newClientId() }
     val failure = state.actionFailure?.let { failureText(it) }
     val promos = cashierState.promos
@@ -231,15 +235,17 @@ private fun OpenBillPage(
             failure = state.actionFailure,
             placed = placed,
             placedMethod = cashierState.methods.firstOrNull { it.code == paidWith },
-            print = printView,
-            tickets = TicketPrint(printing = false, printed = true, failures = emptyList(), available = false),
+            print = receiptView(printing, printReport, cashierState.printPlan),
+            // Tiket stasiun sudah dikirim saat bill disimpan; lembar bayar bill tidak mencetaknya dan tidak melaporkannya.
+            tickets = TicketPrint(printing = false, printed = false, failures = emptyList(), available = false),
             onPrintTickets = {},
             onReprint = {
                 scope.launch {
-                    printView = receiptView(printing = true)
+                    printing = true
                     val paid = settled ?: return@launch
                     val report = cashier.reprint(paid.toPrintable(cashier::categoryOfMenu), PrinterSlot.Receipt)
-                    printView = receiptView(printing = false, reported = true, printedAny = report.printedAny, failed = report.failures.keys.map { it.key })
+                    printReport = report
+                    printing = false
                 }
             },
             onConfirm = { code, cash ->
@@ -250,9 +256,10 @@ private fun OpenBillPage(
                         settled = result.value
                         placed = PlacedOrder(bill.receipt, result.value.total, ((cash ?: result.value.total) - result.value.total).coerceAtLeast(0))
                         scope.launch {
-                            printView = receiptView(printing = true)
+                            printing = true
                             val report = cashier.reprint(result.value.toPrintable(cashier::categoryOfMenu), PrinterSlot.Receipt)
-                            printView = receiptView(printing = false, reported = true, printedAny = report.printedAny, failed = report.failures.keys.map { it.key })
+                            printReport = report
+                            printing = false
                         }
                     }
                     result
@@ -297,8 +304,15 @@ private fun OpenBillPage(
 private fun isoEpoch(iso: String): Long = id.kongstudio.cafe.feature.stationboard.isoToEpoch(iso) ?: 0L
 
 // Tablet Mode Kasir mencetak ulang dari sini, jadi layar sukses menunjuk tombol cetak ulang miliknya.
-private fun receiptView(printing: Boolean, reported: Boolean = false, printedAny: Boolean = false, failed: List<String> = emptyList()) =
-    ReceiptPrintView(printing = printing, reported = reported, printedAny = printedAny, unpaired = emptyList(), failed = failed, fromHistory = true)
+@Composable
+private fun receiptView(printing: Boolean, report: PrintReport?, plan: PrintPlan?) = ReceiptPrintView(
+    printing = printing,
+    reported = report != null,
+    printedAny = report?.printedAny == true,
+    unpaired = report?.unpaired?.map { printerSlotName(it, plan) }.orEmpty(),
+    failed = report?.failed?.map { printerSlotName(it, plan) }.orEmpty(),
+    fromHistory = true,
+)
 
 /** Nomor nota dan tempat duduk, hanya yang terisi: bill yang belum bernomor tidak diawali tanda pemisah. */
 @Composable

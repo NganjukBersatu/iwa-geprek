@@ -13,7 +13,7 @@
 	filters={counts.filters}
 	title={pageText.stockCountTitle}
 	description={pageText.stockCountDescription}
-	loadingText="Memuat opname..."
+	loadingText={pageText.loadingCounts}
 >
 	{#snippet actions()}
 		<Button label={pageText.openingStock} icon="table-plus" compact onclick={() => counts.openOpening()} />

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { controlText } from '$lib/text/controls';
 	import type { VoidReport } from '$lib/api/types';
 	import Card from '$lib/components/card/Card.svelte';
 	import CardHeader from '$lib/components/card/CardHeader.svelte';
@@ -23,7 +24,7 @@
 	<SummaryCard
 		label={voidText.cancelled}
 		caption={format(voidText.ofTransactions, { count: formatPercentPlain(data.void_percent ?? 0), total: formatNumber(data.valid_transactions + data.count, 0) })}
-		value="{formatNumber(data.count, 0)} transaksi"
+		value={format(controlText.transactionsCount, { count: formatNumber(data.count, 0) })}
 		icon="receipt-off"
 		accent="primary"
 	/>

@@ -30,9 +30,5 @@ export const salesPeakText = {
 	averageDrawnNote: 'Nilai yang digambar adalah rata-rata tiap kemunculan, bukan jumlah mentah, karena sebagian {unit} muncul lebih sering dalam satu periode.',
 	quietProducesNothing: 'Sementara {unit} {label} tidak menghasilkan apa pun.',
 	hourPerMinuteShort: '{hour} per menit',
-	customers: 'Pelanggan',
-	customersUnit: ' orang',
 	dailyAverage: 'Rata-rata Harian',
-	registeredCustomers: 'Pelanggan terdaftar',
-	receiptsWithoutName: '{count} struk tanpa nama'
 } as const;

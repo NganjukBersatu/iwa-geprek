@@ -4,7 +4,8 @@ import type { CatalogEntry, CatalogLink, Ingredient, IngredientCreate, Ingredien
 
 const BASE = '/web/management/ingredients';
 
-export type IngredientParams = SortParam & { search?: string; page?: number; size?: number; outlet_id?: string };
+/** indirect: true hanya bahan tidak langsung, false hanya yang dipotong resep, kosong keduanya. */
+export type IngredientParams = SortParam & { search?: string; page?: number; size?: number; outlet_id?: string; indirect?: boolean };
 export type IngredientPage = { items: Ingredient[]; total: number; page: number; size: number; unlinked: number };
 
 export const ingredientsApi = {

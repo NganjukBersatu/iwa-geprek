@@ -5,6 +5,7 @@
 	import Card from '$lib/components/card/Card.svelte';
 	import CardHeader from '$lib/components/card/CardHeader.svelte';
 	import Notice from '$lib/components/card/Notice.svelte';
+	import Banner from '$lib/components/card/Banner.svelte';
 	import SummaryCard from '$lib/components/card/SummaryCard.svelte';
 	import SeriesChart from '$lib/components/chart/SeriesChart.svelte';
 	import DataTable from '$lib/components/table/DataTable.svelte';
@@ -39,6 +40,16 @@
 	);
 </script>
 
+{#if data.total_transactions > 0 && (data.with_category < data.total_transactions || data.with_gender < data.total_transactions)}
+	<Banner tone="info" icon="info-circle" title={visitorText.unrecordedTitle}>
+		{format(visitorText.unrecordedNote, {
+			category: formatNumber(data.with_category, 0),
+			gender: formatNumber(data.with_gender, 0),
+			total: formatNumber(data.total_transactions, 0)
+		})}
+	</Banner>
+{/if}
+
 <div class="grid grid-cols-1 gap-4 tablet:grid-cols-2 laptop:grid-cols-4">
 	<SummaryCard label={termText.transaction} caption={visitorText.validTransactions} value={formatNumber(data.total_transactions, 0)} icon="receipt" accent="primary" />
 	<SummaryCard label={termText.revenue} caption={visitorText.periodTotal} value={formatRupiah(data.total_revenue)} icon="wallet" accent="accent" />
@@ -60,7 +71,7 @@
 
 <div class="grid grid-cols-1 gap-4 laptop:grid-cols-2 tablet:gap-6">
 	<Card flush>
-		<CardHeader divided title={visitorText.perGender} description={visitorText.genderNote} />
+		<CardHeader divided title={visitorText.perGender} description={format(visitorText.genderNote, { count: formatNumber(data.with_gender, 0), total: formatNumber(data.total_transactions, 0) })} />
 		{#if data.by_gender.length === 0}
 			<Notice text={visitorText.noData} />
 		{:else}
@@ -68,7 +79,7 @@
 		{/if}
 	</Card>
 	<Card flush>
-		<CardHeader divided title={visitorText.perCategory} description={visitorText.categoryNote} />
+		<CardHeader divided title={visitorText.perCategory} description={format(visitorText.categoryNote, { count: formatNumber(data.with_category, 0), total: formatNumber(data.total_transactions, 0) })} />
 		{#if data.by_category.length === 0}
 			<Notice text={visitorText.noData} />
 		{:else}

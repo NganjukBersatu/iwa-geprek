@@ -13,7 +13,7 @@
 	const expenses = new ExpensesState();
 </script>
 
-<ManageShell manage={expenses} filters={expenses.filters} title={termText.expense} description={pageText.expensesDescription} loadingText="Memuat pengeluaran...">
+<ManageShell manage={expenses} filters={expenses.filters} title={termText.expense} description={pageText.expensesDescription} loadingText={pageText.loadingExpenses}>
 	{#snippet actions()}
 		<AddButton label={pageText.recordExpense} onone={() => void goto(expenseNewPath())} onmany={() => void goto(expenseBulkPath())} />
 		<MoreButton selection={expenses.selection} exporter={{ title: termText.expense, columns: expenseColumns, rows: () => expenses.exportRows() }} />

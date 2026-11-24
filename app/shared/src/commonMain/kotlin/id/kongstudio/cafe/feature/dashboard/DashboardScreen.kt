@@ -158,11 +158,11 @@ internal fun DashboardScreen(
         openLabel = stringResource(Res.string.dashboard_open_tasks),
         closeLabel = stringResource(Res.string.sheet_close),
         head = {
+            // Tanpa keterangan: kartu ini setinggi ubin angka sehingga baris di bawah nilai tidak pernah muat, dan "0 tugas" sudah menyatakan kosong.
             CenteredStat(
                 label = stringResource(Res.string.dashboard_task_label),
                 value = taskValue,
                 icon = AppIcons.Checklist,
-                caption = if (!state.loading && state.pendingTasks.isEmpty()) stringResource(Res.string.dashboard_empty_tasks) else null,
             )
         },
         body = {

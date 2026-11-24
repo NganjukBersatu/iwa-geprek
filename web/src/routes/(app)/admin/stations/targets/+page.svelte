@@ -7,7 +7,7 @@
 	const targets = new TargetsState();
 </script>
 
-<ManageShell manage={targets} filters={targets.filters} title={pageText.stationTargetsTitle} description={pageText.stationTargetsDescription} loadingText="Memuat target waktu...">
+<ManageShell manage={targets} filters={targets.filters} title={pageText.stationTargetsTitle} description={pageText.stationTargetsDescription} loadingText={pageText.loadingTargets}>
 	{#snippet children()}
 		<TargetsView {targets} />
 	{/snippet}

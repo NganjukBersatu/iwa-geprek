@@ -31,7 +31,7 @@
 	filters={tab === 'izin' ? leave.filters : attendance.filters}
 	title={pageText.attendanceListTitle}
 	description={pageText.attendanceListDescription}
-	loadingText="Memuat absensi..."
+	loadingText={pageText.loadingAttendance}
 >
 	{#snippet children()}
 		<Tabs {tabs} label={pageText.pageContents} bind:value={tab} class="-mt-2" />

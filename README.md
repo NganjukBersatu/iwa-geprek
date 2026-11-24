@@ -41,6 +41,17 @@ Railway menjalankan `python scripts/pra_deploy.py` sebelum setiap deploy. Skrip 
 
 Sebelum deploy yang menjalankan migrasi penghapusan data, buat backup database.
 
+## Versi dan catatan rilis
+Versi dan ringkasan "Yang baru" milik klien ini; `copier update` tidak menimpanya.
+
+| Bagian | Versi | Ringkasan |
+|---|---|---|
+| APK | `app/version.properties` (naikkan `versionName` dan `versionCode`) | `strings_release.xml` dan `ReleaseNotes.kt` |
+| PWA karyawan | `pwa/version.json` | `strings_release.xml` dan `pwa/src/lib/features/release/release-notes.ts` |
+| Web admin | `web/version.json` | `web/src/lib/text/admin-release.ts` dan `web/src/lib/features/release/release-notes.ts` |
+
+Setelah mengubah versi APK atau PWA, jalankan `npm run generate` di `web/` supaya halaman Unduhan ikut berubah.
+
 ## Keamanan
 - Jangan pernah menyimpan `.env` atau kredensial di repositori; hanya `backend/.env.example` yang boleh.
 - Kata sandi hanya disimpan sebagai hash bcrypt.

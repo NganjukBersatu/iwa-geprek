@@ -14,14 +14,17 @@
 	import { recordText } from '$lib/text/record-detail';
 	import RecordDetailView from '../../record-detail/components/RecordDetailView.svelte';
 	import { RecordDetailState } from '../../record-detail/record-detail.svelte';
-	import { WASTE } from '../kinds';
+	import { USE_CARD, WASTE } from '../kinds';
 	import LossForm from './LossForm.svelte';
 	import { ingredientLossText } from '$lib/text/ingredient-losses';
 	import { format } from '$lib/text/format';
 
 	type LossSave = { body: IngredientMovementUpdate; proof: File | null };
 
-	let { id }: { id: string } = $props();
+	/** Rute pemakaian membuka catatan pemakaian manual, dengan daftar induk Bahan Tidak Langsung. */
+	let { id, usage = false }: { id: string; usage?: boolean } = $props();
+
+	const listPage = untrack(() => usage) ? PAGES.indirectUsage : PAGES.ingredientWaste;
 
 	const detail = new RecordDetailState<IngredientMovement, LossSave>(untrack(() => id), {
 		load: (movementId) => api.ingredientMovements.detail(movementId),
@@ -31,19 +34,22 @@
 		},
 		remove: (movement) => api.ingredientMovements.remove(movement.id),
 		name: (movement) => movement.ingredient_name,
-		text: recordText('catatan bahan', PAGES.ingredientWaste.label)
+		text: recordText('catatan bahan', listPage.label)
 	});
 
 	const quantity = (movement: IngredientMovement) => `${formatNumber(Math.abs(Number(movement.qty)))} ${movement.unit}`;
+	const kindLabel = (movement: IngredientMovement) =>
+		movement.kind === WASTE ? ingredientLossText.damagedIngredients : movement.kind === USE_CARD ? ingredientLossText.usedIngredients : ingredientLossText.rndIngredients;
+	const hasCause = (movement: IngredientMovement) => movement.kind === WASTE || movement.kind === USE_CARD;
 </script>
 
 <RecordDetailView
 	{detail}
-	back={PAGES.ingredientWaste}
-	trail={(movement) => [{ label: PAGES.ingredientWaste.label, href: PAGES.ingredientWaste.path }, { label: movement.ingredient_name }]}
+	back={listPage}
+	trail={(movement) => [{ label: listPage.label, href: listPage.path }, { label: movement.ingredient_name }]}
 	tables={STOCK_TABLES}
 	title={(movement) => movement.ingredient_name}
-	description={(movement) => `${movement.kind === WASTE ? ingredientLossText.damagedIngredients : ingredientLossText.rndIngredients} · ${quantity(movement)} · ${formatDate(movement.business_day)}`}
+	description={(movement) => `${kindLabel(movement)} · ${quantity(movement)} · ${formatDate(movement.business_day)}`}
 >
 	{#snippet badge(movement)}
 		{#if movement.cause_label}<Badge tone={movement.human_error ? 'danger' : 'neutral'}>{movement.cause_label}</Badge>{/if}
@@ -70,11 +76,11 @@
 			<Card class="flex flex-col gap-5">
 				<div class="grid gap-5 tablet:grid-cols-2">
 					<FigureList
-						title={movement.kind === WASTE ? ingredientLossText.damagedIngredients : ingredientLossText.rndIngredients}
+						title={kindLabel(movement)}
 						figures={[
 							{ label: termText.ingredient, value: movement.ingredient_name },
 							{ label: termText.quantity, value: quantity(movement) },
-							...(movement.kind === WASTE ? [{ label: ingredientLossText.cause, value: movement.cause_label ?? EMPTY_VALUE }] : [])
+							...(hasCause(movement) ? [{ label: ingredientLossText.cause, value: movement.cause_label ?? EMPTY_VALUE }] : [])
 						]}
 					/>
 					<FigureList
@@ -87,8 +93,8 @@
 					/>
 				</div>
 				<section class="flex flex-col gap-1 border-t border-slate-100 pt-4 text-xs">
-					<h3 class="font-semibold text-slate-600">{movement.kind === WASTE ? termText.note : ingredientLossText.triedMenu}</h3>
-					<p class="whitespace-pre-line {movement.note ? 'text-slate-700' : 'text-slate-500'}">{movement.note ?? (movement.kind === WASTE ? termText.noNote : termText.noRemark)}</p>
+					<h3 class="font-semibold text-slate-600">{hasCause(movement) ? termText.note : ingredientLossText.triedMenu}</h3>
+					<p class="whitespace-pre-line {movement.note ? 'text-slate-700' : 'text-slate-500'}">{movement.note ?? (hasCause(movement) ? termText.noNote : termText.noRemark)}</p>
 				</section>
 			</Card>
 		</div>

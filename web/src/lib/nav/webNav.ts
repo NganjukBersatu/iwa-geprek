@@ -67,6 +67,7 @@ export const webNav: NavEntry[] = [
 		icon: 'ti-box',
 		items: [
 			leaf(PAGES.ingredients),
+			leaf(PAGES.indirectIngredients),
 			leaf(PAGES.ingredientReceipts),
 			leaf(PAGES.ingredientWaste),
 			leaf(PAGES.ingredientCounts),

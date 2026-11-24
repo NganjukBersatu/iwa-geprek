@@ -13,9 +13,9 @@
 
 	let { peak }: { peak: SalesPeakState } = $props();
 
-	const colors: Record<PeakMetric, string> = { sales: chartPalette.income, transactions: chartPalette.profit, customers: chartPalette.expense };
+	const colors: Record<PeakMetric, string> = { sales: chartPalette.income, transactions: chartPalette.profit };
 	const names = Object.fromEntries(metricOptions.map((option) => [option.value, option.label])) as Record<PeakMetric, string>;
-	const suffix: Record<PeakMetric, string> = { sales: '', transactions: ' transaksi', customers: salesPeakText.customersUnit };
+	const suffix: Record<PeakMetric, string> = { sales: '', transactions: ' transaksi' };
 
 	const unitLower = $derived(peak.unitName.toLowerCase());
 	const canDive = $derived(peak.query.unit === 'hour' && !peak.diving);

@@ -14,7 +14,7 @@
 	filters={stock.filters}
 	title={pageText.stockItemsTitle}
 	description={pageText.stockItemsDescription}
-	loadingText="Memuat stok..."
+	loadingText={pageText.loadingStockItems}
 >
 	{#snippet actions()}
 		<Button label={pageText.manageItems} icon="list-check" compact onclick={() => void stock.openPicker()} />

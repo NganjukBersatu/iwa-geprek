@@ -8,7 +8,7 @@
 	const categories = new MenuCategoriesState();
 </script>
 
-<ManageShell manage={categories} title={pageText.menuCategoriesTitle} description={pageText.menuCategoriesDescription} loadingText="Memuat kategori menu...">
+<ManageShell manage={categories} title={pageText.menuCategoriesTitle} description={pageText.menuCategoriesDescription} loadingText={pageText.loadingMenuCategories}>
 	{#snippet actions()}
 		<Button label={pageText.addCategory} icon="plus" variant="primary" compact onclick={() => categories.openNew()} />
 	{/snippet}

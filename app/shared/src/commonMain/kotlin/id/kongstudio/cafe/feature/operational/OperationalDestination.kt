@@ -24,6 +24,7 @@ import id.kongstudio.cafe.resources.nav_info
 import id.kongstudio.cafe.resources.nav_ingredient_counts
 import id.kongstudio.cafe.resources.nav_ingredient_list
 import id.kongstudio.cafe.resources.nav_ingredient_receipts
+import id.kongstudio.cafe.resources.nav_ingredient_use
 import id.kongstudio.cafe.resources.nav_ingredient_waste
 import id.kongstudio.cafe.resources.nav_offline
 import id.kongstudio.cafe.resources.nav_order_notes
@@ -91,6 +92,7 @@ internal enum class OperationalDestination(
     ),
     IngredientReceipts(Res.string.nav_ingredient_receipts, AppIcons.Cart, OperationalGroup.Inventory, listOf(Permission.StockReceive)),
     IngredientWaste(Res.string.nav_ingredient_waste, AppIcons.Adjustments, OperationalGroup.Inventory, listOf(Permission.StockAdjust)),
+    IngredientUse(Res.string.nav_ingredient_use, AppIcons.KitchenTools, OperationalGroup.Inventory, listOf(Permission.StockAdjust)),
     IngredientCounts(Res.string.nav_ingredient_counts, AppIcons.Wallet, OperationalGroup.Inventory, listOf(Permission.StockCount, Permission.StockClosePeriod)),
     ResaleStock(
         Res.string.nav_resale_stock,

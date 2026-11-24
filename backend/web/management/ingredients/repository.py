@@ -30,9 +30,11 @@ SORTING = SqlSorting(
 
 
 def page_of(
-    db: Session, outlet_id: str | None, search: str | None, ingredient_id: str | None, sort: str | None, page: int, size: int
+    db: Session, outlet_id: str | None, search: str | None, ingredient_id: str | None, sort: str | None, page: int, size: int, indirect: bool | None = None
 ) -> tuple[list[Ingredient], int]:
     filters = []
+    if indirect is not None:
+        filters.append(Ingredient.is_indirect.is_(indirect))
     if outlet_id:
         filters.append(Ingredient.outlet_id == outlet_id)
     if ingredient_id:

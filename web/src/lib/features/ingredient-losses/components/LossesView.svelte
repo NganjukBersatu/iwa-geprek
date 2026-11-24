@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { lossNewPath, lossPath } from '$lib/nav/pages';
+	import { lossPath, usagePath } from '$lib/nav/pages';
 	import { emptyText } from '$lib/text/empty';
 	import Button from '$lib/components/button/Button.svelte';
 	import Badge from '$lib/components/card/Badge.svelte';
@@ -23,6 +23,7 @@
 	let { losses }: { losses: IngredientLossesState } = $props();
 
 	const isWaste = $derived(losses.kind === WASTE);
+	const isUse = $derived(losses.usage);
 
 	const columns = $derived(lossColumns(losses.kind));
 </script>
@@ -40,17 +41,23 @@
 {/if}
 
 <Card flush>
-	<CardHeader divided title={isWaste ? ingredientLossText.damagedListTitle : ingredientLossText.rndListTitle} description={isWaste ? ingredientLossText.damagedListDescription : ingredientLossText.rndListDescription} />
+	<CardHeader
+		divided
+		title={isWaste ? ingredientLossText.damagedListTitle : isUse ? ingredientLossText.usageListTitle : ingredientLossText.rndListTitle}
+		description={isWaste ? ingredientLossText.damagedListDescription : isUse ? ingredientLossText.usageListDescription : ingredientLossText.rndListDescription}
+	/>
 	<ListSearch value={losses.search} placeholder={ingredientLossText.searchPlaceholder} label={ingredientLossText.search} onsearch={(query) => losses.setSearch(query)} />
 	{#if !losses.loading && losses.items.length === 0}
-		{@const noMatch = noMatchText('catatan', losses.search !== '', losses.filters.count > 1)}
+		{@const noMatch = noMatchText('catatan', losses.search !== '', losses.filters.count > (isUse ? 0 : 1))}
 		{#if noMatch}
 			<Notice text={noMatch} />
+		{:else if isUse}
+			<Notice title={emptyText.usage.title} text={emptyText.usage.text} />
 		{:else}
 			<Notice title={emptyText.losses.title} text={emptyText.losses.text}/>
 		{/if}
 	{:else}
-		<DataTable {columns} rows={losses.items} rowKey={(row) => row.id} loading={losses.loading} sort={losses.sort} onopen={(row) => void goto(lossPath(row.id))}>
+		<DataTable {columns} rows={losses.items} rowKey={(row) => row.id} loading={losses.loading} sort={losses.sort} onopen={(row) => void goto(isUse ? usagePath(row.id) : lossPath(row.id))}>
 			{#snippet first(row)}
 				<span class="inline-flex items-center gap-2">
 					<span>{row.ingredient_name}</span>

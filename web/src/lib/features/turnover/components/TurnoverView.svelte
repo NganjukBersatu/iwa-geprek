@@ -31,7 +31,7 @@
 	<SummaryCard
 		label={turnoverText.needsPurchase}
 		caption={format(turnoverText.outAndUrgent, { out: data.out_count, urgent: data.urgent_count, days: data.urgent_days })}
-		value="{turnover.toBuy} bahan"
+		value={format(controlText.ingredientsCount, { count: turnover.toBuy })}
 		icon="shopping-cart"
 		accent="primary"
 	/>

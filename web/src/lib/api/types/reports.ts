@@ -30,6 +30,10 @@ export type Highlight = Schemas['HighlightOut'];
 export type CategoryReport = Schemas['CategoriesOut'];
 export type CategorySales = Schemas['CategorySalesOut'];
 export type UnsoldMenu = Schemas['UnsoldMenuOut'];
+export type MenuSales = Schemas['MenuSalesOut'];
+
+export type SalesBreakdown = Schemas['SalesBreakdownOut'];
+export type BreakdownRow = Schemas['BreakdownRowOut'];
 export type VariantReport = Schemas['VariantsOut'];
 export type VariantRow = Schemas['VariantRowOut'];
 export type ExtraReport = Schemas['ExtrasOut'];
@@ -63,4 +67,3 @@ export type UserRecap = Schemas['UserRecapOut'];
 export type RecapDay = Schemas['RecapDayOut'];
 export type RecapOvertime = Schemas['RecapOvertimeOut'];
 export type AttendanceStatus = RecapDay['status'];
-export type CustomerReport = Schemas['CustomerReportOut'];

@@ -1,4 +1,4 @@
-"""Data demo inventori bahan untuk melihat halaman Daftar Bahan, Barang Masuk, dan Rusak & RnD; semua barisnya berawalan "demo-" supaya bisa dihapus lagi.
+"""Data demo inventori bahan dan resep menu demo untuk melihat halaman Daftar Bahan, Barang Masuk, dan Rusak & RnD serta menjual menu demo di kasir; semua barisnya berawalan "demo-" supaya bisa dihapus lagi.
 
     python scripts/seed_demo_inventory.py           # menampilkan rencana dan menulis tidak apa pun
     python scripts/seed_demo_inventory.py --tulis   # menulis data demo setelah Anda mengetik "ya"
@@ -35,7 +35,9 @@ from app.models.ingredient import (  # noqa: E402
     CatalogIngredient,
     Ingredient,
     IngredientCard,
+    RecipeIngredient,
 )
+from app.models.menu_item import MenuItem  # noqa: E402
 from app.models.outlet import Outlet  # noqa: E402
 from app.models.user import User  # noqa: E402
 
@@ -111,6 +113,24 @@ SPECS: tuple[tuple[str, str, str, int, int, int, int, bool, tuple[Move, ...]], .
 )
 
 
+# Resep menu contoh dari seed_demo_sales; tanpa resep, kasir menolak menjual menunya karena modalnya tidak diketahui.
+RECIPES: dict[str, tuple[tuple[str, str], ...]] = {
+    "Kopi Susu": (("Biji Kopi Arabika", "18"), ("Susu Segar", "150"), ("Krimer Kental Manis", "25"), ("Gelas Plastik 16 oz", "1"), ("Sedotan Kertas", "1")),
+    "Americano": (("Biji Kopi Arabika", "18"), ("Gelas Plastik 16 oz", "1"), ("Sedotan Kertas", "1")),
+    "Latte": (("Biji Kopi Arabika", "18"), ("Susu Segar", "200"), ("Gelas Plastik 16 oz", "1"), ("Sedotan Kertas", "1")),
+    "Cappuccino": (("Biji Kopi Arabika", "18"), ("Susu Segar", "150"), ("Gelas Plastik 16 oz", "1")),
+    "Matcha Latte": (("Bubuk Matcha", "8"), ("Susu Segar", "200"), ("Gula Pasir", "15"), ("Gelas Plastik 16 oz", "1"), ("Sedotan Kertas", "1")),
+    "Cokelat Panas": (("Cokelat Bubuk", "25"), ("Susu Segar", "200"), ("Gula Pasir", "10")),
+    "Teh Lemon": (("Teh Hitam", "5"), ("Gula Pasir", "20"), ("Gelas Plastik 16 oz", "1"), ("Sedotan Kertas", "1")),
+    "Croissant": (("Tepung Terigu", "60"), ("Mentega", "30"), ("Ragi Instan", "2"), ("Kotak Roti", "1")),
+    "Cinnamon Roll": (("Tepung Terigu", "70"), ("Mentega", "20"), ("Kayu Manis Bubuk", "3"), ("Gula Pasir", "15"), ("Ragi Instan", "2"), ("Kotak Roti", "1")),
+    "Roti Bakar Cokelat": (("Tepung Terigu", "80"), ("Mentega", "15"), ("Cokelat Bubuk", "15"), ("Kotak Roti", "1")),
+    "Cheesecake": (("Keju Krim", "80"), ("Gula Pasir", "20"), ("Mentega", "15"), ("Kotak Roti", "1")),
+    "Brownies": (("Cokelat Bubuk", "30"), ("Tepung Terigu", "40"), ("Mentega", "25"), ("Gula Pasir", "30"), ("Kotak Roti", "1")),
+    "Pudding Karamel": (("Susu Segar", "120"), ("Sirup Karamel", "20"), ("Gula Pasir", "15")),
+}
+
+
 def new_id() -> str:
     return f"{PREFIX}{uuid.uuid4()}"
 
@@ -120,6 +140,7 @@ def demo_count(db: Session) -> int:
 
 
 def delete_demo(db: Session) -> None:
+    db.execute(delete(RecipeIngredient).where(RecipeIngredient.id.like(f"{PREFIX}%")))
     db.execute(delete(IngredientCard).where(IngredientCard.id.like(f"{PREFIX}%")))
     db.execute(delete(Ingredient).where(Ingredient.id.like(f"{PREFIX}%")))
     db.execute(delete(CatalogIngredient).where(CatalogIngredient.id.like(f"{PREFIX}%")))
@@ -165,11 +186,27 @@ def ensure_categories(db: Session) -> dict[str, str]:
     return ids
 
 
-def write_all(db: Session, outlet: Outlet, owner: User) -> tuple[int, int]:
+def write_recipes(db: Session, outlet: Outlet, ingredients: dict[str, Ingredient]) -> int:
+    """Hanya menu contoh di cabang ini yang belum punya resep; menu asli dan resep yang sudah ada tidak disentuh."""
+    menus = db.scalars(select(MenuItem).where(MenuItem.id.like(f"{PREFIX}%"), MenuItem.name.in_(RECIPES))).all()
+    with_recipe = set(db.scalars(select(RecipeIngredient.menu_item_id).where(RecipeIngredient.outlet_id == outlet.id, RecipeIngredient.menu_item_id.in_([menu.id for menu in menus]))))
+    lines = 0
+    for menu in menus:
+        if menu.id in with_recipe or outlet.id not in (menu.outlet_ids or [outlet.id]):
+            continue
+        for name, qty in RECIPES[menu.name]:
+            ingredient = ingredients[name]
+            db.add(RecipeIngredient(id=new_id(), outlet_id=outlet.id, menu_item_id=menu.id, ingredient_id=ingredient.id, catalog_id=ingredient.catalog_id, qty=Decimal(qty)))
+            lines += 1
+    return lines
+
+
+def write_all(db: Session, outlet: Outlet, owner: User) -> tuple[int, int, int]:
     stamp = now()
     units = ensure_units(db)
     categories = ensure_categories(db)
     ingredients = movements = 0
+    written: dict[str, Ingredient] = {}
     for name, category, unit, price, size, minimum, tolerance, active, moves in SPECS:
         entry = CatalogIngredient(id=new_id(), name=name, unit_id=units[unit], created_at=stamp - timedelta(days=CREATED_DAYS_AGO))
         db.add(entry)
@@ -194,6 +231,7 @@ def write_all(db: Session, outlet: Outlet, owner: User) -> tuple[int, int]:
         )
         db.add(row)
         db.flush()
+        written[name] = row
         ingredients += 1
         for days_ago, kind, qty, cause in moves:
             db.add(
@@ -212,8 +250,10 @@ def write_all(db: Session, outlet: Outlet, owner: User) -> tuple[int, int]:
                 )
             )
             movements += 1
+    db.flush()
+    recipe_lines = write_recipes(db, outlet, written)
     db.commit()
-    return ingredients, movements
+    return ingredients, movements, recipe_lines
 
 
 def main() -> int:
@@ -267,12 +307,12 @@ def main() -> int:
 
         try:
             money_trail.act_as(db, owner.id)
-            ingredients, movements = write_all(db, outlet, owner)
+            ingredients, movements, recipe_lines = write_all(db, outlet, owner)
         except IntegrityError as error:
             db.rollback()
             print(f"Gagal: data bertabrakan atau melanggar aturan database ({error.orig.__class__.__name__}: {error.orig}). Tidak ada yang tersimpan.")
             return 1
-        print(f"Selesai. {ingredients} bahan dan {movements} mutasi stok demo ditulis.")
+        print(f"Selesai. {ingredients} bahan, {movements} mutasi stok, dan {recipe_lines} baris resep menu demo ditulis.")
         print("Buka Daftar Bahan, Barang Masuk, dan Rusak & RnD di web.")
     return 0
 

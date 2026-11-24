@@ -9,7 +9,8 @@ import { peakColumns } from './columns';
 import { termText } from '$lib/text/terms';
 import { salesPeakText } from '$lib/text/sales-peak';
 
-export type PeakMetric = 'sales' | 'transactions' | 'customers';
+// shortcut: pelanggan disembunyikan karena nama ketikan kasir belum menjadi data pelanggan, buka lagi setelah alur pelanggan kasir dibenahi.
+export type PeakMetric = 'sales' | 'transactions';
 export type PeakQuery = ReportQuery & { unit: TimeUnit; hour: number | null };
 
 const unitNames: Record<TimeUnit | 'minute', string> = { hour: termText.hour, weekday: termText.day, date: termText.date, month: salesPeakText.month, minute: salesPeakText.minutes };
@@ -43,8 +44,10 @@ export class SalesPeakState extends ReportState<PeakQuery, BusySales> {
 	}
 
 	get metrics(): PeakMetric[] {
-		const chosen = this.filters.get('metrik') as PeakMetric | null;
-		return chosen ? [chosen] : metricOptions.map((option) => option.value as PeakMetric);
+		const all = metricOptions.map((option) => option.value as PeakMetric);
+		const chosen = this.filters.get('metrik');
+		// Pilihan lama yang tersimpan (misalnya pelanggan) dianggap tidak dipilih.
+		return all.find((metric) => metric === chosen) ? [chosen as PeakMetric] : all;
 	}
 
 	get salesHighlight(): Highlight | undefined {

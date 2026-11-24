@@ -7,7 +7,7 @@
 	const recipes = new RecipesState();
 </script>
 
-<ManageShell manage={recipes} filters={recipes.filters} title={pageText.recipesTitle} description={pageText.recipesDescription} loadingText="Memuat resep...">
+<ManageShell manage={recipes} filters={recipes.filters} title={pageText.recipesTitle} description={pageText.recipesDescription} loadingText={pageText.loadingRecipes}>
 	{#snippet children()}
 		<RecipesView {recipes} />
 	{/snippet}

@@ -28,10 +28,10 @@ const kebab = (name) =>
 		.replace(/([a-zA-Z])([0-9])/g, '$1-$2')
 		.toLowerCase();
 
-const apkVersion = read(join(app, 'androidApp/build.gradle.kts')).match(/versionName\s*=\s*"([^"]+)"/)?.[1];
-if (!apkVersion) throw new Error('versionName tidak ditemukan di androidApp/build.gradle.kts');
-const iosVersion = JSON.parse(read(join(employee, 'package.json'))).version;
-if (!iosVersion) throw new Error('version tidak ditemukan di package.json web karyawan');
+const apkVersion = read(join(app, 'version.properties')).match(/^versionName=(\S+)\s*$/m)?.[1];
+if (!apkVersion) throw new Error('versionName tidak ditemukan di app/version.properties');
+const iosVersion = JSON.parse(read(join(employee, 'version.json'))).version;
+if (typeof iosVersion !== 'string' || iosVersion === '') throw new Error('version tidak ditemukan di pwa/version.json');
 
 const texts = {};
 const xml = read(join(app, 'core/src/commonMain/composeResources/values/strings_release.xml')).replace(/<!--[\s\S]*?-->/g, '');
@@ -69,10 +69,10 @@ function entriesOf(name) {
 }
 
 const operational = notesOf(operationalSource, entriesOf('ApkReleaseNotes'));
-const employeeSource = 'release.ts web karyawan';
+const employeeSource = 'release-notes.ts web karyawan';
 const employeeNotes = notesOf(
 	employeeSource,
-	[...read(join(employee, 'src/lib/features/release/release.ts')).matchAll(/icon: '(\w+)', key: '(\w+)'/g)].map((match) => [match[2], match[1]])
+	[...read(join(employee, 'src/lib/features/release/release-notes.ts')).matchAll(/icon: '(\w+)', key: '(\w+)'/g)].map((match) => [match[2], match[1]])
 );
 
 const list = (notes) => notes.map((item) => `\t{ icon: ${JSON.stringify(item.icon)}, text: ${JSON.stringify(item.text)} },`);

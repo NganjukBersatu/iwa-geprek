@@ -19,7 +19,7 @@
 	filters={ingredients.filters}
 	title={pageText.ingredientsTitle}
 	description={pageText.ingredientsDescription}
-	loadingText="Memuat bahan..."
+	loadingText={pageText.loadingIngredients}
 >
 	{#snippet actions()}
 		<Button label={pageText.catalog} icon="books" compact onclick={() => void ingredients.openCatalog()} />

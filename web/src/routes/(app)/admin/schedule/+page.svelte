@@ -16,7 +16,7 @@
 	filters={schedule.filters}
 	title={pageText.scheduleTitle}
 	description={pageText.scheduleDescription}
-	loadingText="Memuat jadwal..."
+	loadingText={pageText.loadingSchedule}
 >
 	{#snippet actions()}
 		{#if schedule.canArrange}

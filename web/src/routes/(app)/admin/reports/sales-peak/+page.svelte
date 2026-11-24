@@ -2,6 +2,7 @@
 	import MoreButton from '$lib/components/button/MoreButton.svelte';
 	import Notice from '$lib/components/card/Notice.svelte';
 	import ReportShell from '$lib/features/report/ReportShell.svelte';
+	import SalesBreakdown from '$lib/features/sales-breakdown/components/SalesBreakdown.svelte';
 	import PeakCharts from '$lib/features/sales-peak/components/PeakCharts.svelte';
 	import PeakInsights from '$lib/features/sales-peak/components/PeakInsights.svelte';
 	import PeakTable from '$lib/features/sales-peak/components/PeakTable.svelte';
@@ -23,6 +24,7 @@
 			<PeakInsights {peak} />
 			<PeakCharts {peak} />
 			<PeakTable {peak} />
+			<SalesBreakdown query={{ branch: peak.query.branch, range: peak.query.range }} periodLabel={peak.periodLabel} />
 		{/if}
 	{/snippet}
 </ReportShell>

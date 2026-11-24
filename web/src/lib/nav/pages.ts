@@ -6,6 +6,7 @@ import { termText } from '$lib/text/terms';
 export type Page = { path: string; label: string; screen: Screen };
 
 export const CANCELLATIONS_TAB = 'cancellations';
+export const USAGE_TAB = 'usage';
 
 const page = (path: string, label: string, screen: Screen): Page => ({ path, label, screen });
 
@@ -36,6 +37,8 @@ export const PAGES = {
 	stationSetup: page(resolve('/admin/stations/setup'), 'Pengaturan', 'station_setup'),
 	ingredients: page(resolve('/admin/ingredients'), 'Daftar Bahan', 'ingredients'),
 	ingredientReceipts: page(resolve('/admin/ingredients/receipts'), 'Barang Masuk', 'ingredient_receipts'),
+	indirectIngredients: page(resolve('/admin/ingredients/indirect'), 'Bahan Tidak Langsung', 'indirect_ingredients'),
+	indirectUsage: page(resolve(`/admin/ingredients/indirect?tab=${USAGE_TAB}`),'Pemakaian Bahan Tidak Langsung', 'indirect_ingredients'),
 	ingredientWaste: page(resolve('/admin/ingredients/waste'), 'Rusak dan RnD', 'ingredient_waste'),
 	ingredientCounts: page(resolve('/admin/ingredients/counts'), 'Stok Opname', 'ingredient_counts'),
 	stockItems: page(resolve('/admin/stock-items'), 'Stok Barang Jual-Ulang', 'stock_items'),
@@ -130,7 +133,9 @@ export const employeeNewPath = (): string => resolve('/(app)/admin/users/new');
 export const employeeBulkPath = (): string => resolve('/(app)/admin/users/bulk');
 export const menuNewPath =(): string => resolve('/(app)/admin/menu/new');
 export const menuBulkPath = (): string => resolve('/(app)/admin/menu/bulk');
-export const ingredientNewPath = (): string => resolve('/(app)/admin/ingredients/new');
+/** Halaman bahan baru menyalakan centang tidak langsung bila dibuka dari daftar bahan tidak langsung. */
+export const INDIRECT_PARAM = 'indirect';
+export const ingredientNewPath = (indirect = false): string => resolve('/(app)/admin/ingredients/new') + (indirect ? `?${INDIRECT_PARAM}=1` : '');
 export const ingredientBulkPath = (): string => resolve('/(app)/admin/ingredients/bulk');
 export const ingredientPath = (id: string): string => resolve('/(app)/admin/ingredients/[id]', { id });
 export const promoPath = (id: string): string => resolve('/(app)/admin/promotions/discounts/[id]', { id });
@@ -160,6 +165,8 @@ export const receiptPath = (id: string): string => resolve('/(app)/admin/ingredi
 export const lossNewPath = (kind: string): string => `${resolve('/(app)/admin/ingredients/waste/new')}?${new URLSearchParams({ jenis: kind })}`;
 export const lossBulkPath = (): string => resolve('/(app)/admin/ingredients/waste/bulk');
 export const lossPath = (id: string): string => resolve('/(app)/admin/ingredients/waste/[id]', { id });
+export const usageNewPath = (): string => resolve('/(app)/admin/ingredients/indirect/usage/new');
+export const usagePath = (id: string): string => resolve('/(app)/admin/ingredients/indirect/usage/[id]', { id });
 export const shiftCodePath = (id: string): string => resolve('/(app)/admin/shift-codes/[id]', { id });
 export const recipePath = (key: string): string => resolve('/(app)/admin/recipes/[id]', { id: key });
 export const recipeEditPath = (key: string): string => resolve('/(app)/admin/recipes/[id]/edit', { id: key });

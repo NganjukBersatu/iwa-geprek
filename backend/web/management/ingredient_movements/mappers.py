@@ -1,10 +1,13 @@
 from app.core.http import static_url
-from app.models.ingredient import IngredientCard
-from app.core.ingredients.causes import BY_CODE
+from app.models.ingredient import INGREDIENT_OUT, INGREDIENT_WASTE, IngredientCard
+from app.core.ingredients.causes import BY_CODE, USAGE_BY_CODE
 from web.management.ingredient_movements.schemas import MovementOut
 
 
 def movement_out(card: IngredientCard, user_name: str | None, unit: str | None, base_url: str) -> MovementOut:
+    # Bahan rusak dan pemakaian manual punya daftar sebab sendiri, dan kode "lainnya" ada di keduanya.
+    causes = USAGE_BY_CODE if card.kind == INGREDIENT_OUT else BY_CODE
+    cause = causes.get(card.cause) if card.cause else None
     return MovementOut(
         id=card.id,
         outlet_id=card.outlet_id,
@@ -15,8 +18,8 @@ def movement_out(card: IngredientCard, user_name: str | None, unit: str | None, 
         unit=unit or "",
         qty=card.qty,
         cause=card.cause,
-        cause_label=BY_CODE[card.cause].label if card.cause in BY_CODE else None,
-        human_error=BY_CODE[card.cause].human_error if card.cause in BY_CODE else None,
+        cause_label=cause.label if cause else None,
+        human_error=cause.human_error if cause and card.kind == INGREDIENT_WASTE else None,
         proof_url=static_url(base_url, card.proof_path),
         order_id=card.order_id,
         count_id=card.count_id,

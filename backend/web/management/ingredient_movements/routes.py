@@ -12,7 +12,7 @@ from app.core.database import get_db
 from app.core.date_range import Day
 from app.core.errors import DomainError
 from app.core.ingredients import ledger
-from app.core.ingredients.causes import CAUSES
+from app.core.ingredients.causes import CAUSES, USAGE_CAUSES
 from app.core.sorting import Sort
 from app.core.http import public_base_url
 from app.models.user import User
@@ -37,6 +37,7 @@ from web.management.ingredient_movements.schemas import (
     MovementUpdateIn,
     ReceiptIn,
     TrialIn,
+    UseIn,
     WasteIn,
 )
 from web.management.reports.common import month_to_date
@@ -103,6 +104,23 @@ def list_movements(
 @router.get("/causes", response_model=list[CauseOut])
 def waste_causes(_: User = Depends(require_permission(PERMISSION_VIEW))):
     return [CauseOut(code=cause.code, label=cause.label, human_error=cause.human_error) for cause in CAUSES]
+
+
+@router.get("/usage-causes", response_model=list[CauseOut])
+def usage_causes(_: User = Depends(require_permission(PERMISSION_VIEW))):
+    return [CauseOut(code=cause.code, label=cause.label, human_error=cause.human_error) for cause in USAGE_CAUSES]
+
+
+@router.post("/uses", response_model=MovementOut, status_code=status.HTTP_201_CREATED)
+def record_use(
+    body: UseIn,
+    outlet_id: str = Depends(writable_outlet_id),
+    db: Session = Depends(get_db),
+    user: User = Depends(require_permission(PERMISSION_ADJUST)),
+):
+    with _domain_errors():
+        card = ledger.use(db, user, outlet_id, body.ingredient_id, body.qty, body.cause, body.note, body.client_id)
+    return _one(db, card.id)
 
 
 @router.post("/waste", response_model=MovementOut, status_code=status.HTTP_201_CREATED)

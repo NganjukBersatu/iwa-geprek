@@ -44,5 +44,11 @@ export const ingredientLossText = {
 	openProofPhoto: 'Buka foto bukti {name}',
 	proofOf: 'Bukti {name}',
 	viewProof: 'Lihat bukti {name}',
-	negligenceLabel: '{name} (kelalaian)'
+	negligenceLabel: '{name} (kelalaian)',
+	usedIngredients: 'Pemakaian bahan',
+	recordUse: 'Catat pemakaian bahan',
+	useFormDescription: 'Pemakaian harian bahan tidak langsung. Hanya jumlah yang keluar dicatat agar stok dan opname cocok.',
+	usageListTitle: 'Daftar pemakaian bahan',
+	usageListDescription: 'Pemakaian harian bahan tidak langsung yang dicatat manual. Buka satu catatan untuk mengubah atau menghapusnya.',
+	useCauseRequired: 'Pilih sebab pemakaian bahan ini.'
 } as const;

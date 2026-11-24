@@ -347,9 +347,13 @@ internal fun OperationalHost(
             )
         }
 
-        OperationalDestination.IngredientReceipts, OperationalDestination.IngredientWaste -> {
+        OperationalDestination.IngredientReceipts, OperationalDestination.IngredientWaste, OperationalDestination.IngredientUse -> {
             val repository = remember(deps.v2Api) { IngredientStockRepository(deps.v2Api) }
-            val mode = if (destination == OperationalDestination.IngredientReceipts) EntryMode.Receipts else EntryMode.WasteAndTrial
+            val mode = when (destination) {
+                OperationalDestination.IngredientReceipts -> EntryMode.Receipts
+                OperationalDestination.IngredientUse -> EntryMode.Uses
+                else -> EntryMode.WasteAndTrial
+            }
             val list = viewModel(key = "ingredient-entries-${mode.name}-$key") {
                 val today = BusinessDay.today()
                 PagedListViewModel<StockMovement>(

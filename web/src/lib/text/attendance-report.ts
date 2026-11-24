@@ -28,6 +28,9 @@ export const attendanceReportText = {
 	absentWithAutomatic: '{count} ({automatic} otomatis)',
 	deductionRule: '{amount}/menit setelah {minutes} menit toleransi',
 	overtimeTotal: 'Lembur {duration}',
+	revenuePerWorkHour: 'Omzet per jam kerja',
+	noWorkHours: 'Belum ada jam kerja tercatat',
+	revenueOverWork: '{revenue} dibagi {duration} kerja',
 	peopleSubtitle: '{count} orang · {period} · ketuk baris untuk rincian',
 	overtimeTotalCaption: 'Lembur · total {duration}',
 	lateRuleNote: 'Hadir atau telat ditentukan jam masuk terhadap jam mulai sesi di Pengaturan (aturan per cabang). Telat berarti lebih dari {minutes} menit setelah jam mulai; potongan = (menit telat − {rate}) × {example}. Potongan hanya informasi, belum ada penggajian di sistem. Alfa otomatis berarti jadwal yang sudah lewat tanpa catatan apa pun.'

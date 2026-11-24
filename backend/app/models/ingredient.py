@@ -49,7 +49,9 @@ class Ingredient(Base):
     minimum: Mapped[Decimal] = mapped_column(Numeric(12, 3))
     is_active: Mapped[bool] = mapped_column(Boolean)
     is_available: Mapped[bool] = mapped_column(Boolean)
-    # Written only by the database trigger on kartu_bahan, in the same transaction as each card; the app reads it, never sets it.
+    # Tidak dipotong resep; pemakaiannya dicatat manual oleh karyawan.
+    is_indirect: Mapped[bool] = mapped_column(Boolean, default=False, server_default=text("false"))
+    # Written only by the database trigger on ingredient_cards, in the same transaction as each card; the app reads it, never sets it.
     balance: Mapped[Decimal] = mapped_column(Numeric(16, 3), server_default=text("0"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
@@ -74,6 +76,8 @@ class IngredientCard(Base):
     proof_path: Mapped[str | None] = mapped_column(String(255), nullable=True)
     note: Mapped[str | None] = mapped_column(String(255), nullable=True)
     user_id: Mapped[str | None] = mapped_column(String, nullable=True)
+    # Kunci idempotensi dari klien, supaya kiriman ganda mengembalikan kartu pertama.
+    client_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     business_day: Mapped[date] = business_day_column()
 

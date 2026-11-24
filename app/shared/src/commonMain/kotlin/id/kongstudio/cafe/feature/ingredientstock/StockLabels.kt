@@ -9,6 +9,7 @@ import id.kongstudio.cafe.resources.movement_kind_adjustment
 import id.kongstudio.cafe.resources.movement_kind_in
 import id.kongstudio.cafe.resources.movement_kind_sale
 import id.kongstudio.cafe.resources.movement_kind_trial
+import id.kongstudio.cafe.resources.movement_kind_use
 import id.kongstudio.cafe.resources.movement_kind_waste
 import id.kongstudio.cafe.resources.stock_opening
 import org.jetbrains.compose.resources.StringResource
@@ -17,7 +18,8 @@ internal fun movementKindLabel(movement: StockMovement): StringResource? = when 
     movement.fromOpening -> Res.string.stock_opening
     else -> when (movement.kind) {
         CardKind.In -> Res.string.movement_kind_in
-        CardKind.Out -> Res.string.movement_kind_sale
+        // Kartu keluar tanpa penjualan adalah pemakaian manual bahan tidak langsung.
+        CardKind.Out -> if (movement.fromSale) Res.string.movement_kind_sale else Res.string.movement_kind_use
         CardKind.Waste -> Res.string.movement_kind_waste
         CardKind.Trial -> Res.string.movement_kind_trial
         CardKind.Adjustment -> Res.string.movement_kind_adjustment

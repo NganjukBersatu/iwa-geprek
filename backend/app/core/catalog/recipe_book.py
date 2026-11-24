@@ -174,7 +174,8 @@ def ingredient_options(
 ) -> list[IngredientOptionOut]:
     """Active ingredients of the branch to pick from, searched and one page at a time; prices only for those who may see costs."""
     sees_cost = user.allows(PERMISSION_COST)
-    filters = [Ingredient.outlet_id == outlet_id, Ingredient.is_active.is_(True)]
+    # Bahan tidak langsung keluar lewat catatan manual, bukan resep, jadi tidak ditawarkan di sini.
+    filters = [Ingredient.outlet_id == outlet_id, Ingredient.is_active.is_(True), Ingredient.is_indirect.is_(False)]
     if search:
         filters.append(contains(Ingredient.name, search))
     statement = select(Ingredient, Unit.name).outerjoin(Unit, Unit.id == Ingredient.unit_id).where(*filters).order_by(Ingredient.name, Ingredient.id)

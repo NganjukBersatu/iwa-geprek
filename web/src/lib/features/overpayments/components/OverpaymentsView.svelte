@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { format } from '$lib/text/format';
+	import { controlText } from '$lib/text/controls';
 	import type { OverpaymentReport } from '$lib/api/types';
 	import { goto } from '$app/navigation';
 	import Badge from '$lib/components/card/Badge.svelte';
@@ -21,7 +23,7 @@
 </script>
 
 <div class="grid grid-cols-1 gap-4 tablet:grid-cols-2">
-	<SummaryCard label={termText.transaction} caption={overpaymentText.summaryCaption} value="{formatNumber(data.count, 0)} transaksi" icon="receipt" accent={data.count > 0 ? 'accent' : 'green'} />
+	<SummaryCard label={termText.transaction} caption={overpaymentText.summaryCaption} value={format(controlText.transactionsCount, { count: formatNumber(data.count, 0) })} icon="receipt" accent={data.count > 0 ? 'accent' : 'green'} />
 	<SummaryCard label={overpaymentText.totalExcess} caption={overpaymentText.totalCaption} value={formatRupiah(data.total_amount)} icon="cash-banknote" accent="accent" />
 </div>
 

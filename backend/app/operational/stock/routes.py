@@ -7,7 +7,7 @@ from contextlib import contextmanager
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, Response, UploadFile, status
-from sqlalchemy import func, or_, select
+from sqlalchemy import ColumnElement, func, or_, select
 from sqlalchemy.orm import Session
 
 from app.core.ingredients import count_requests as close_requests
@@ -20,13 +20,13 @@ from app.core.database import get_db
 from app.core.errors import DomainError
 from app.core.http import public_base_url, static_url
 from app.core.date_range import Day
-from app.core.ingredients.causes import BY_CODE, CAUSES
+from app.core.ingredients.causes import BY_CODE, CAUSES, USAGE_BY_CODE, USAGE_CAUSES
 from app.core.recorded_filters import recorded_filters
 from app.core.search import contains
 from app.core.user_names import user_names
 from app.models.category import Category, Unit
 from app.models.device import Device
-from app.models.ingredient import INGREDIENT_ADJUSTMENT, INGREDIENT_IN, INGREDIENT_RND, INGREDIENT_WASTE, Ingredient, IngredientCard, IngredientCountRequest, RecipeIngredient
+from app.models.ingredient import INGREDIENT_ADJUSTMENT, INGREDIENT_IN, INGREDIENT_OUT, INGREDIENT_RND, INGREDIENT_WASTE, Ingredient, IngredientCard, IngredientCountRequest, RecipeIngredient
 from app.models.menu_item import MenuItem
 from app.models.user import User
 from app.operational.device import tablet, tablet_outlet_id
@@ -48,12 +48,13 @@ from app.operational.stock.schemas import (
     TabletStockRecipeUsePageOut,
     TabletStockRequestOut,
     TabletStockTrialIn,
+    TabletStockUseIn,
     TabletStockWasteIn,
 )
 
 router = APIRouter(prefix="/stock", tags=["v2-operational-stock"])
 
-KINDS = {c.KIND_RECEIPT: INGREDIENT_IN, c.KIND_WASTE: INGREDIENT_WASTE, c.KIND_TRIAL: INGREDIENT_RND}
+KINDS = {c.KIND_RECEIPT: INGREDIENT_IN, c.KIND_WASTE: INGREDIENT_WASTE, c.KIND_TRIAL: INGREDIENT_RND, c.KIND_USE: INGREDIENT_OUT}
 SORT_PATTERN = "^-?(time|name)$"
 NAME_SORT_PATTERN = "^-?name$"
 OPENING_FILTER_PATTERN = "^(with|without)$"
@@ -75,7 +76,9 @@ def _domain_errors() -> Iterator[None]:
 
 
 def _movement(card: IngredientCard, unit: str | None, user_name: str | None, base_url: str) -> TabletStockMovementOut:
-    cause = BY_CODE.get(card.cause) if card.cause else None
+    # Bahan rusak dan pemakaian manual punya daftar sebab sendiri, dan kode "lainnya" ada di keduanya.
+    causes = USAGE_BY_CODE if card.kind == INGREDIENT_OUT else BY_CODE
+    cause = causes.get(card.cause) if card.cause else None
     return TabletStockMovementOut(
         id=card.id,
         ingredient_id=card.ingredient_id,
@@ -112,6 +115,7 @@ def list_ingredients(
     search: str | None = Query(None, max_length=c.MAX_SEARCH_LENGTH, description="Part of the ingredient name"),
     sort: str | None = Query(None, pattern=NAME_SORT_PATTERN, description="name, or -name for descending; no choice means A to Z"),
     opening: str | None = Query(None, pattern=OPENING_FILTER_PATTERN, description="with: stok awal sudah diisi; without: belum"),
+    indirect: bool | None = Query(None, description="true: hanya bahan tidak langsung; false: hanya yang berkurang lewat resep; kosong: keduanya"),
     page: int = Query(1, ge=1),
     size: int = Query(c.DEFAULT_PAGE_SIZE, ge=1, le=c.MAX_PAGE_SIZE),
     device: Device = Depends(tablet),
@@ -121,6 +125,8 @@ def list_ingredients(
     """The active ingredients of the tablet's branch with their stock now and the opening of the running period, in name order."""
     start = openings.running_start(db, device.outlet_id)
     filters = [Ingredient.outlet_id == device.outlet_id, Ingredient.is_active.is_(True)]
+    if indirect is not None:
+        filters.append(Ingredient.is_indirect.is_(indirect))
     term = (search or "").strip()
     if term:
         filters.append(contains(Ingredient.name, term))
@@ -130,7 +136,7 @@ def list_ingredients(
         filters.append(~openings.has_opening(start, Ingredient.id))
     total = db.scalar(select(func.count()).select_from(Ingredient).where(*filters)) or 0
     rows = db.execute(
-        select(Ingredient.id, Ingredient.name, Unit.name, Category.name, Ingredient.balance, Ingredient.minimum, Ingredient.package_size)
+        select(Ingredient.id, Ingredient.name, Unit.name, Category.name, Ingredient.balance, Ingredient.minimum, Ingredient.package_size, Ingredient.is_indirect)
         .outerjoin(Unit, Unit.id == Ingredient.unit_id)
         .outerjoin(Category, Category.id == Ingredient.category_id)
         .where(*filters)
@@ -149,19 +155,34 @@ def list_ingredients(
             minimum=Decimal(str(row[5] or 0)),
             opening=filled[row[0]].qty if row[0] in filled else None,
             package_size=Decimal(str(row[6] or 0)),
+            is_indirect=bool(row[7]),
         )
         for row in rows
     ]
     return TabletStockIngredientPageOut(items=items, total=total, page=page, size=size)
+
+@router.get("/use-causes", response_model=list[TabletStockCauseOut])
+def use_causes(_: User = Depends(require_permission(c.PERMISSION_ADJUST))):
+    return [TabletStockCauseOut(code=cause.code, label=cause.label) for cause in USAGE_CAUSES]
+
 
 @router.get("/causes", response_model=list[TabletStockCauseOut])
 def waste_causes(_: User = Depends(require_permission(c.PERMISSION_ADJUST))):
     return [TabletStockCauseOut(code=cause.code, label=cause.label) for cause in CAUSES]
 
 
+def _kinds_clause(kinds: list[str]) -> ColumnElement[bool]:
+    """Pemakaian manual berbagi jenis kartu dengan potongan resep penjualan, jadi dibedakan lewat definisi tunggal di ledger."""
+    plain = {KINDS[value] for value in kinds if value != c.KIND_USE}
+    wanted = [IngredientCard.kind.in_(plain)] if plain else []
+    if c.KIND_USE in kinds:
+        wanted.append(ledger.manual_use_clause())
+    return or_(*wanted)
+
+
 @router.get("/movements", response_model=TabletStockMovementPageOut)
 def list_movements(
-    kind: list[str] = Query(..., min_length=1, max_length=len(KINDS), description="One or more of receipt, waste, trial; Rusak dan RnD share one list"),
+    kind: list[str] = Query(..., min_length=1, max_length=len(KINDS), description="One or more of receipt, waste, trial, use; Rusak dan RnD share one list"),
     search: str | None = Query(None, max_length=c.MAX_SEARCH_LENGTH, description="Part of the ingredient name or the note"),
     sort: str | None = Query(None, pattern=SORT_PATTERN, description="time or name; a leading minus means descending, and no choice means newest first"),
     start: Day | None = Query(None, description="Hari bisnis pertama; berpasangan dengan end"),
@@ -178,7 +199,7 @@ def list_movements(
     if unknown:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=c.MESSAGE_UNKNOWN_KIND)
     with _domain_errors():
-        filters = [IngredientCard.outlet_id == device.outlet_id, IngredientCard.kind.in_({KINDS[value] for value in kind}), *recorded_filters(IngredientCard, start, end, user_id)]
+        filters = [IngredientCard.outlet_id == device.outlet_id, _kinds_clause(kind), *recorded_filters(IngredientCard, start, end, user_id)]
     term = (search or "").strip()
     if term:
         filters.append(or_(contains(IngredientCard.ingredient_name, term), contains(IngredientCard.note, term)))
@@ -251,6 +272,13 @@ def receive(body: TabletStockReceiptIn, device: Device = Depends(tablet), db: Se
 def record_waste(body: TabletStockWasteIn, device: Device = Depends(tablet), db: Session = Depends(get_db), user: User = Depends(require_permission(c.PERMISSION_ADJUST))):
     with _domain_errors():
         card = ledger.waste(db, user, device.outlet_id, body.ingredient_id, body.qty, body.cause, body.note)
+    return _one(db, card.id, public_base_url())
+
+
+@router.post("/uses", response_model=TabletStockMovementOut, status_code=status.HTTP_201_CREATED)
+def record_use(body: TabletStockUseIn, device: Device = Depends(tablet), db: Session = Depends(get_db), user: User = Depends(require_permission(c.PERMISSION_ADJUST))):
+    with _domain_errors():
+        card = ledger.use(db, user, device.outlet_id, body.ingredient_id, body.qty, body.cause, body.note, body.client_id)
     return _one(db, card.id, public_base_url())
 
 

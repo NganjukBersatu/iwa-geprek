@@ -26,6 +26,7 @@
 	import type { TaskInput } from '$lib/api/types';
 	import { termText } from '$lib/text/terms';
 	import { taskText } from '$lib/text/tasks';
+	import { actionText } from '$lib/text/actions';
 	import { format } from '$lib/text/format';
 
 	let { id }: { id: string } = $props();
@@ -47,9 +48,27 @@
 		fixedNote = detail.record?.completion_note ?? '';
 	});
 
-	async function fixNote(): Promise<void> {
+	/** Catatan selesai yang diubah dan lampiran baru disimpan dengan satu tombol, supaya satu form hanya punya satu Simpan. */
+	async function saveChanges(task: Task): Promise<void> {
 		const text = fixedNote.trim();
-		if (await change((current) => api.tasks.fixCompletion(current.id, text), taskText.fixNoteFailed, taskText.fixNoteSaved)) fixedNote = text;
+		const noteChanged = task.can_fix && text !== (task.completion_note ?? '');
+		const files = extra;
+		if (noteChanged) {
+			if (!(await change((current) => api.tasks.fixCompletion(current.id, text), taskText.noteSaveFailed))) return;
+			fixedNote = text;
+		}
+		if (files.length > 0) {
+			if (!(await change((current) => api.tasks.addAttachments(current.id, files), taskText.attachmentAddFailed))) {
+				// Catatan sudah tersimpan, jadi pesan gagal menyebut bahwa hanya lampirannya yang tertinggal.
+				if (noteChanged) {
+					const reason = detail.actionError === taskText.attachmentAddFailed ? '' : detail.actionError;
+					detail.actionError = format(taskText.noteSavedAttachmentFailed, { reason }).trim();
+				}
+				return;
+			}
+			extra = [];
+		}
+		toast.show(taskText.changesSaved);
 	}
 
 	/** Runs one action on the task, then shows the task the server answers with. */
@@ -64,10 +83,6 @@
 			note = '';
 			proof = [];
 		}
-	}
-
-	async function addExtra(): Promise<void> {
-		if (await change((current) => api.tasks.addAttachments(current.id, extra), taskText.attachmentAddFailed)) extra = [];
 	}
 
 	const removeFile = (attachment: TaskAttachment) => change((current) => api.tasks.removeAttachment(current.id, attachment.id), taskText.attachmentRemoveFailed);
@@ -146,13 +161,10 @@
 						{#if task.can_fix}
 							<p class="text-xs text-slate-500">{taskText.fixNoteIntro}</p>
 							<TextArea label={taskText.fixNoteLabel} bind:value={fixedNote} rows={2} maxlength={2000} />
-							{#if fixedNote.trim() !== (task.completion_note ?? '')}
-								<Button label={taskText.fixNoteSave} icon="device-floppy" variant="tertiary" class="self-start" disabled={detail.busy} onclick={() => void fixNote()} />
-							{/if}
 						{/if}
 						<MediaField label={taskText.addAttachment} bind:files={extra} disabled={detail.busy} />
-						{#if extra.length > 0}
-							<Button label={taskText.saveAttachment} icon="upload" variant="tertiary" class="self-start" disabled={detail.busy} onclick={() => void addExtra()} />
+						{#if extra.length > 0 || (task.can_fix && fixedNote.trim() !== (task.completion_note ?? ''))}
+							<Button label={actionText.save} icon="device-floppy" variant="primary" class="self-start" disabled={detail.busy} onclick={() => void saveChanges(task)} />
 						{/if}
 					</section>
 				{/if}

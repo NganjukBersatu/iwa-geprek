@@ -36,6 +36,7 @@ def ingredient_out(
         unit_price=row.unit_price,
         shrink_tolerance=row.shrink_tolerance,
         minimum=row.minimum,
+        is_indirect=row.is_indirect,
         is_active=row.is_active,
         is_available=row.is_available,
         balance=balance,

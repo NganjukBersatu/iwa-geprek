@@ -28,3 +28,5 @@ MAX_PAGE_SIZE = 100
 KIND_RECEIPT = "receipt"
 KIND_WASTE = "waste"
 KIND_TRIAL = "trial"
+# Pemakaian manual bahan tidak langsung: kartu keluar tanpa pesanan.
+KIND_USE = "use"

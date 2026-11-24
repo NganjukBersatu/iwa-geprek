@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { paymentMethodNewPath, paymentMethodPath } from '$lib/nav/pages';
+	import { paymentMethodPath } from '$lib/nav/pages';
 	import { emptyText } from '$lib/text/empty';
 	import Button from '$lib/components/button/Button.svelte';
 	import Badge from '$lib/components/card/Badge.svelte';
@@ -10,19 +10,24 @@
 	import Notice from '$lib/components/card/Notice.svelte';
 	import { BRANCH_SORT, withBranchColumn } from '$lib/components/table/branch-column';
 	import DataTable from '$lib/components/table/DataTable.svelte';
-	import { paymentMethodColumns } from '../columns';
+	import { methodStatus, missingText, paymentMethodColumns } from '../columns';
+	import { format } from '$lib/text/format';
 	import type { PaymentMethodsState } from '../payment-methods.svelte';
 	import PaymentMethodForm from './PaymentMethodForm.svelte';
-	import { termText } from '$lib/text/terms';
 	import { paymentMethodText } from '$lib/text/payment-methods';
 
 	let { methods }: { methods: PaymentMethodsState } = $props();
 
 	const columns = $derived(withBranchColumn(paymentMethodColumns, methods.filters.allBranches, BRANCH_SORT));
+	const incomplete = $derived(methods.items.filter((row) => row.is_active && row.missing.length > 0).length);
 </script>
 
 {#if methods.actionError}
 	<Banner tone="danger" icon="alert-triangle">{methods.actionError}</Banner>
+{/if}
+
+{#if incomplete > 0}
+	<Banner tone="warning" icon="alert-triangle">{format(paymentMethodText.incompleteActive, { count: incomplete })}</Banner>
 {/if}
 
 <Card flush>
@@ -36,8 +41,15 @@
 					<i class="ti {row.icon} text-xl text-slate-500" aria-hidden="true"></i>
 					<span>{row.label}</span>
 					<span class="font-mono text-xs text-slate-500">{row.code}</span>
-					{#if !row.is_active}<Badge tone="neutral">{termText.inactive}</Badge>{/if}
 				</span>
+			{/snippet}
+			{#snippet cell(row, column)}
+				{#if column.key === 'status'}
+					{@const status = methodStatus(row)}
+					<Badge tone={status.tone} title={missingText(row)}><i class="ti ti-{status.icon}" aria-hidden="true"></i>{status.label}</Badge>
+				{:else}
+					{column.value(row)}
+				{/if}
 			{/snippet}
 		</DataTable>
 	{/if}

@@ -29,7 +29,7 @@ internal const val OpeningFilled = "with"
 internal const val OpeningMissing = "without"
 
 /** Jenis catatan stok yang punya riwayat sendiri; kodenya dipakai server. */
-internal enum class MovementKind(val code: String) { Receipt("receipt"), Waste("waste"), Trial("trial") }
+internal enum class MovementKind(val code: String) { Receipt("receipt"), Waste("waste"), Trial("trial"), Use("use") }
 
 /** [opening] adalah stok awal periode berjalan; null berarti belum diisi. [packageSize] isi satu kemasan beli dalam [unit]. */
 internal class StockIngredient(
@@ -41,6 +41,8 @@ internal class StockIngredient(
     val minimum: String,
     val opening: String?,
     val packageSize: String = "1",
+    /** Berkurang lewat catatan keluar manual, bukan lewat resep. */
+    val indirect: Boolean = false,
 ) {
     /** Bahan yang dibeli dalam kemasan berisi lebih dari satu satuan bisa dicatat per kemasan. */
     val packaged: Boolean get() = (packageSize.toDoubleOrNull() ?: 0.0) > 1.0
@@ -152,7 +154,10 @@ private class BulkResultDto(val results: List<BulkRowDto> = emptyList())
 
 internal class IngredientStockRepository(private val api: AdminApi) {
     /** [PageRequest.filter] berisi [OpeningFilled], [OpeningMissing], atau kosong untuk semua bahan. */
-    suspend fun ingredients(request: PageRequest): DeviceResult<ListPage<StockIngredient>> =
+    suspend fun ingredients(request: PageRequest): DeviceResult<ListPage<StockIngredient>> = fetchIngredients(request, indirect = null)
+
+    /** [indirect] true hanya bahan tidak langsung, false hanya yang dipotong resep, null keduanya. */
+    private suspend fun fetchIngredients(request: PageRequest, indirect: Boolean?): DeviceResult<ListPage<StockIngredient>> =
         when (
             val result = api.get(
                 path = "$StockPath/ingredients",
@@ -163,6 +168,7 @@ internal class IngredientStockRepository(private val api: AdminApi) {
                     "search" to request.query,
                     "sort" to request.sort,
                     "opening" to request.filter.ifBlank { null },
+                    "indirect" to indirect,
                 ),
             )
         ) {
@@ -171,8 +177,8 @@ internal class IngredientStockRepository(private val api: AdminApi) {
         }
 
     /** Pilihan bahan untuk dicatat, dicari di server dan dimuat per halaman saat digulir; [page] berbasis nol. */
-    suspend fun ingredientChoices(query: String, page: Int): DeviceResult<ChoicePage<StockIngredient>> =
-        when (val result = ingredients(PageRequest(page = page, query = query, filter = "", params = emptyMap()))) {
+    suspend fun ingredientChoices(query: String, page: Int, indirectOnly: Boolean = false): DeviceResult<ChoicePage<StockIngredient>> =
+        when (val result = fetchIngredients(PageRequest(page = page, query = query, filter = "", params = emptyMap()), indirect = true.takeIf { indirectOnly })) {
             is DeviceResult.Failed -> result
             is DeviceResult.Ok -> DeviceResult.Ok(ChoicePage(result.value.items, hasMore = page * StockPageSize + result.value.items.size < result.value.total))
         }
@@ -236,6 +242,22 @@ internal class IngredientStockRepository(private val api: AdminApi) {
             is DeviceResult.Failed -> result
             is DeviceResult.Ok -> DeviceResult.Ok(result.value.map { WasteCause(it.code, it.label) })
         }
+
+    suspend fun useCauses(): DeviceResult<List<WasteCause>> =
+        when (val result = api.get(path = "$StockPath/use-causes", serializer = ListSerializer(CauseDto.serializer()))) {
+            is DeviceResult.Failed -> result
+            is DeviceResult.Ok -> DeviceResult.Ok(result.value.map { WasteCause(it.code, it.label) })
+        }
+
+    /** [clientId] dibuat sekali per catatan, jadi kirim ulang dengan kunci sama tidak mencatat dua kali. */
+    suspend fun use(ingredientId: String, qty: String, cause: String, note: String, clientId: String): DeviceResult<EntrySaved> =
+        write("uses", buildJsonObject {
+            put("ingredient_id", ingredientId)
+            put("qty", qty)
+            put("cause", cause)
+            put("client_id", clientId)
+            putText("note", note)
+        }, null)
 
     suspend fun receive(ingredientId: String, qty: String, note: String, proof: ByteArray?): DeviceResult<EntrySaved> =
         write("receipts", buildJsonObject {
@@ -378,8 +400,9 @@ private class IngredientDto(
     val minimum: String = "0",
     val opening: String? = null,
     @SerialName("package_size") val packageSize: String = "1",
+    @SerialName("is_indirect") val isIndirect: Boolean = false,
 ) {
-    fun toModel() = StockIngredient(id, name, unit, category, stock, minimum, opening, packageSize)
+    fun toModel() = StockIngredient(id, name, unit, category, stock, minimum, opening, packageSize, isIndirect)
 }
 
 @Serializable

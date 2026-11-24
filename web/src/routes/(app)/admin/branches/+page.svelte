@@ -15,7 +15,7 @@
 	manage={branches}
 	title={termText.branch}
 	description={pageText.branchesDescription}
-	loadingText="Memuat cabang..."
+	loadingText={pageText.loadingBranches}
 >
 	{#snippet actions()}
 		<Button label={pageText.addBranch} icon="plus" variant="primary" compact onclick={() => void goto(branchNewPath())} />

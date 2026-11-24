@@ -4,27 +4,38 @@ import { isSignedIn } from '$lib/auth/session';
 import { selectedBranch } from '$lib/stores/branch';
 
 const STREAM_PATH = '/api/web/management/live';
+// Satu nama untuk kunci pemimpin dan saluran antartab, supaya semua tab berbagi satu koneksi.
+const SHARED_NAME = 'management-web-live';
 const DEBOUNCE_MILLISECONDS = 250;
-// The server beats every 3 seconds; this long without one means the connection died silently.
+// Server berdetak tiap 3 detik; selama ini tanpa detak berarti koneksi mati diam-diam.
 const SILENCE_MILLISECONDS = 10_000;
 
-// Waits between attempts double from the base up to the ceiling, each with a random half so many tabs do not return together; after the last attempt it waits for a person.
+// Jeda antarpercobaan berlipat dari dasar sampai plafon dengan separuh acak supaya banyak tab tidak kembali bersamaan; setelah percobaan terakhir menunggu orang.
 const RETRY_BASE_MILLISECONDS = 1000;
 const RETRY_CEILING_MILLISECONDS = 30_000;
 const MAX_ATTEMPTS = 8;
 
 type Change = { tables: string[]; outlets: string[] };
+/** Sinyal antartab tanpa data: diteruskan pemegang koneksi, kecuali `retry` yang diminta tab lain kepadanya. */
+type Signal =
+	| { kind: 'beat' }
+	| { kind: 'all' }
+	| { kind: 'change'; change: Change }
+	| { kind: 'state'; connected: boolean; gaveUp: boolean }
+	| { kind: 'retry' };
 
-/** False while the stream is lost and being reached for again; the app layout shows a strip for it. */
+/** Salah selama aliran putus dan sedang disambung ulang; kerangka aplikasi menampilkan bilah untuknya. */
 export const liveConnected = writable(true);
-/** True once the automatic attempts are used up; the strip then offers a button instead of promising a retry. */
+/** Benar setelah percobaan otomatis habis; bilah lalu menawarkan tombol, bukan menjanjikan coba ulang. */
 export const liveGaveUp = writable(false);
 type Listener = { tables: Set<string>; run: () => void; timer?: ReturnType<typeof setTimeout> };
 
+const sharable = (): boolean => browser && 'locks' in navigator && typeof BroadcastChannel !== 'undefined';
+
 /**
- * The one door for live data: a page says which tables it shows and what to do when they change.
- * One shared connection; no polling anywhere. The server pushes a signal, never data, so `run` reloads
- * through the normal routes and should do it quietly (no dimming, no clearing).
+ * Satu pintu data live untuk seluruh peramban: halaman menyebut tabel yang ditampilkannya dan apa yang dilakukan saat tabel itu berubah.
+ * Tab pemegang kunci membuka satu koneksi dan meneruskan sinyalnya, karena peramban hanya mengizinkan enam koneksi per host.
+ * Server hanya mengirim sinyal, tidak pernah data, jadi `run` memuat ulang lewat rute biasa dengan tenang (tanpa meredupkan atau mengosongkan).
  *
  *   onMount(() => live.on(['expenses', 'cash_sessions'], () => state.refresh()));
  */
@@ -35,57 +46,106 @@ class Live {
 	private retryTimer: ReturnType<typeof setTimeout> | undefined;
 	private attempts = 0;
 	private dropped = false;
+	private channel: BroadcastChannel | null = null;
+	private leading = false;
+	private followed = false;
+	private release: (() => void) | null = null;
+	private waiting: AbortController | null = null;
 
 	on(tables: string[], run: () => void): () => void {
 		const listener: Listener = { tables: new Set(tables), run };
 		this.listeners.add(listener);
-		this.connect();
+		this.start();
 		return () => {
 			clearTimeout(listener.timer);
 			this.listeners.delete(listener);
-			if (this.listeners.size === 0) this.disconnect();
+			if (this.listeners.size === 0) this.stop();
 		};
 	}
 
-	/** Opens the connection again at once if someone still listens, and gives the automatic attempts a fresh start. */
+	/** Membuka koneksi lagi seketika bila masih ada yang mendengarkan, dengan jatah percobaan otomatis yang baru. */
 	reconnect(): void {
 		if (this.listeners.size === 0) return;
+		if (sharable() && !this.leading) {
+			// Tab pengikut tidak memegang koneksi, jadi meminta pemimpin; bila belum ada pemimpin, tab ini ikut mengantre kunci.
+			this.channel?.postMessage({ kind: 'retry' } satisfies Signal);
+			this.start();
+			return;
+		}
+		this.retryNow();
+	}
+
+	private retryNow(): void {
 		clearTimeout(this.retryTimer);
 		this.attempts = 0;
-		liveGaveUp.set(false);
+		this.publishState(get(liveConnected), false);
 		this.connect();
+	}
+
+	private start(): void {
+		if (!browser || !isSignedIn()) return;
+		if (!sharable()) {
+			this.connect();
+			return;
+		}
+		if (!this.channel) {
+			this.channel = new BroadcastChannel(SHARED_NAME);
+			this.channel.onmessage = (event: MessageEvent<Signal>) => this.receive(event.data);
+		}
+		if (this.leading || this.waiting) return;
+		const waiting = new AbortController();
+		this.waiting = waiting;
+		navigator.locks
+			.request(SHARED_NAME, { signal: waiting.signal }, () => {
+				this.waiting = null;
+				this.leading = true;
+				// Tab yang tadinya hanya menerima bisa melewatkan sinyal saat pemimpin lama ditutup, jadi koneksi pertamanya dianggap menyusul.
+				this.dropped = this.followed;
+				this.connect();
+				return new Promise<void>((resolve) => (this.release = resolve));
+			})
+			.catch((error: unknown) => {
+				// Dibatalkan sendiri lewat stop(); kegagalan lain dibiarkan naik.
+				if (!(error instanceof DOMException && error.name === 'AbortError')) throw error;
+			});
+	}
+
+	private stop(): void {
+		this.waiting?.abort();
+		this.waiting = null;
+		this.disconnect();
+		this.leading = false;
+		this.release?.();
+		this.release = null;
+		this.channel?.close();
+		this.channel = null;
 	}
 
 	private connect(): void {
 		if (!browser || this.source || !isSignedIn()) return;
-		// The sign-in travels in the cookie the browser sends by itself, so no token is put in the address.
+		// Sesi masuk ikut lewat cookie yang dikirim peramban sendiri, jadi tidak ada token di alamat.
 		const source = new EventSource(STREAM_PATH);
 		this.source = source;
 		this.beat();
 		let greeted = false;
 		source.addEventListener('resync', () => {
-			// The first resync of a connection is only hello unless it follows a drop; a later one means the server could not keep every signal for this screen.
-			if (this.dropped || greeted) this.fire(() => true);
+			// Resync pertama hanya salam kecuali setelah putus; resync berikutnya berarti server tidak sempat menyimpan semua sinyal untuk layar ini.
+			if (this.dropped || greeted) this.emit({ kind: 'all' });
 			greeted = true;
 			this.dropped = false;
 			this.attempts = 0;
-			liveGaveUp.set(false);
-			liveConnected.set(true);
+			this.publishState(true, false);
 		});
-		source.addEventListener('detak', () => this.beat());
+		source.addEventListener('detak', () => this.emit({ kind: 'beat' }));
 		source.addEventListener('ubah', (event) => {
-			this.beat();
 			const change = JSON.parse((event as MessageEvent<string>).data) as Change;
-			const branch = get(selectedBranch);
-			if (branch && change.outlets.length > 0 && !change.outlets.includes(branch)) return;
-			const touched = new Set(change.tables);
-			this.fire((listener) => [...listener.tables].some((table) => touched.has(table)));
+			this.emit({ kind: 'change', change });
 		});
 		source.onerror = () => {
 			this.dropped = true;
-			// A refusal (expired sign-in) closes the connection for good; a lost one is retried by us, with waits, not by the browser.
+			// Penolakan (sesi habis) menutup koneksi untuk seterusnya; koneksi yang hilang disambung ulang oleh kita dengan jeda, bukan oleh peramban.
 			if (source.readyState === EventSource.CLOSED) {
-				liveConnected.set(true);
+				this.publishState(true, false);
 				this.disconnect();
 				return;
 			}
@@ -93,16 +153,19 @@ class Live {
 		};
 	}
 
-	/** The connection died: close it, show the strip, and try again later. */
+	/** Koneksi mati: tutup, tampilkan bilah, lalu coba lagi nanti. */
 	private lose(): void {
 		this.dropped = true;
-		liveConnected.set(false);
 		this.closeSource();
-		if (this.listeners.size === 0) return;
-		if (this.attempts >= MAX_ATTEMPTS) {
-			liveGaveUp.set(true);
+		if (this.listeners.size === 0) {
+			this.publishState(false, false);
 			return;
 		}
+		if (this.attempts >= MAX_ATTEMPTS) {
+			this.publishState(false, true);
+			return;
+		}
+		this.publishState(false, false);
 		const ceiling = Math.min(RETRY_CEILING_MILLISECONDS, RETRY_BASE_MILLISECONDS * 2 ** this.attempts);
 		this.attempts += 1;
 		clearTimeout(this.retryTimer);
@@ -123,12 +186,70 @@ class Live {
 		this.closeSource();
 	}
 
-	private beat(): void {
-		clearTimeout(this.watchdog);
-		this.watchdog = setTimeout(() => this.lose(), SILENCE_MILLISECONDS);
+	/** Menyetel keadaan koneksi di tab ini lalu meneruskannya ke tab lain. */
+	private publishState(connected: boolean, gaveUp: boolean): void {
+		this.emit({ kind: 'state', connected, gaveUp });
 	}
 
-	/** Several signals in a burst (one save touches many tables) become one reload per listener. */
+	/** Menerapkan sinyal di tab ini lalu meneruskannya ke tab lain. */
+	private emit(signal: Signal): void {
+		this.apply(signal);
+		this.channel?.postMessage(signal);
+	}
+
+	/** Sinyal dari tab lain: permintaan coba ulang hanya dijawab pemimpin, sisanya diterapkan sebagai pengikut. */
+	private receive(signal: Signal): void {
+		if (signal.kind === 'retry') {
+			if (this.leading) this.retryNow();
+			return;
+		}
+		this.followed = true;
+		this.apply(signal);
+	}
+
+	private apply(signal: Signal): void {
+		switch (signal.kind) {
+			case 'beat':
+				this.beat();
+				// Detak berarti aliran hidup; tab pengikut yang sempat menandai putus kembali tersambung.
+				liveConnected.set(true);
+				return;
+			case 'all':
+				this.fire(() => true);
+				return;
+			case 'state':
+				liveConnected.set(signal.connected);
+				liveGaveUp.set(signal.gaveUp);
+				return;
+			case 'change': {
+				this.beat();
+				const branch = get(selectedBranch);
+				if (branch && signal.change.outlets.length > 0 && !signal.change.outlets.includes(branch)) return;
+				const touched = new Set(signal.change.tables);
+				this.fire((listener) => [...listener.tables].some((table) => touched.has(table)));
+				return;
+			}
+			case 'retry':
+				return;
+			default:
+				return;
+		}
+	}
+
+	private beat(): void {
+		clearTimeout(this.watchdog);
+		this.watchdog = setTimeout(() => {
+			this.dropped = true;
+			// Hanya pemegang koneksi yang menyambung ulang; tab pengikut menandai putus dan menunggu sinyal pemimpin.
+			if (sharable() && !this.leading) {
+				liveConnected.set(false);
+				return;
+			}
+			this.lose();
+		}, SILENCE_MILLISECONDS);
+	}
+
+	/** Beberapa sinyal beruntun (satu simpan menyentuh banyak tabel) menjadi satu muat ulang per pendengar. */
 	private fire(wanted: (listener: Listener) => boolean): void {
 		for (const listener of this.listeners) {
 			if (!wanted(listener)) continue;
@@ -141,7 +262,7 @@ class Live {
 export const live = new Live();
 
 if (browser) {
-	// Back online or back on the tab after a closed connection: reconnect once, and the resync catches up.
+	// Kembali daring atau kembali ke tab setelah koneksi tertutup: sambung ulang sekali, lalu resync menyusul.
 	const reopen = () => {
 		if (document.visibilityState === 'visible') live.reconnect();
 	};

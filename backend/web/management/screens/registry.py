@@ -75,6 +75,7 @@ class Screen(StrEnum):
     STATION_TARGETS = "station_targets"
     STATION_SETUP = "station_setup"
     INGREDIENTS = "ingredients"
+    INDIRECT_INGREDIENTS = "indirect_ingredients"
     INGREDIENT_RECEIPTS = "ingredient_receipts"
     INGREDIENT_WASTE = "ingredient_waste"
     INGREDIENT_COUNTS = "ingredient_counts"
@@ -140,6 +141,7 @@ GATE_OF: dict[Screen, Gate] = {
     Screen.STATION_TARGETS: STATIONS_MANAGE,
     Screen.STATION_SETUP: STATIONS_MANAGE,
     Screen.INGREDIENTS: INGREDIENTS_VIEW,
+    Screen.INDIRECT_INGREDIENTS: INGREDIENTS_VIEW,
     Screen.INGREDIENT_RECEIPTS: MOVEMENTS_VIEW,
     Screen.INGREDIENT_WASTE: MOVEMENTS_VIEW,
     Screen.INGREDIENT_COUNTS: COUNTS_VIEW,

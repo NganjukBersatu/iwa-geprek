@@ -8,7 +8,7 @@
 	const options = new OptionsState();
 </script>
 
-<ManageShell manage={options} filters={options.filters} title={pageText.optionsTitle} description={pageText.optionsDescription} loadingText="Memuat varian dan ekstra...">
+<ManageShell manage={options} filters={options.filters} title={pageText.optionsTitle} description={pageText.optionsDescription} loadingText={pageText.loadingOptions}>
 	{#snippet actions()}
 		<MoreButton selection={[options.selection, options.extraSelection]} />
 	{/snippet}

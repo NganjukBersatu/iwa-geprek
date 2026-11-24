@@ -17,7 +17,7 @@
 	manage={roles}
 	title={pageText.rolesTitle}
 	description={pageText.rolesDescription}
-	loadingText="Memuat peran..."
+	loadingText={pageText.loadingRoles}
 >
 	{#snippet actions()}
 		<AddButton label={pageText.addRole} onone={() => void goto(roleNewPath())} onmany={() => void goto(roleBulkPath())} />

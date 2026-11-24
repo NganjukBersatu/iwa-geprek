@@ -31,6 +31,7 @@
 		fieldErrors = {},
 		onsave,
 		onremovephoto,
+		indirectDefault = false,
 		onclose
 	}: {
 		ingredient: Ingredient | null;
@@ -42,13 +43,17 @@
 		fieldErrors?: Record<string, string>;
 		onsave: (body: IngredientCreate | IngredientUpdate, photo: File | null, everywhere: boolean, outletId: string) => void;
 		onremovephoto: () => void;
+		/** Daftar Bahan Tidak Langsung membuka form baru dengan centang tidak langsung sudah menyala. */
+		indirectDefault?: boolean;
 		onclose: () => void;
 	} = $props();
 
 	const MAX_SHRINK = 100;
 	const current = untrack(() => ingredient);
+	// Bahan tidak langsung punya daftar sendiri, jadi jejaknya kembali ke Bahan Tidak Langsung.
+	const listPage = (current?.is_indirect ?? untrack(() => indirectDefault)) ? PAGES.indirectIngredients : PAGES.ingredients;
 	const trail = [
-		{ label: PAGES.ingredients.label, href: PAGES.ingredients.path },
+		{ label: listPage.label, href: listPage.path },
 		...(current?.category ? [{ label: current.category }] : []),
 		...(current ? [{ label: current.name, href: ingredientPath(current.id) }, { label: actionText.edit }] : [{ label: controlText.addIngredient }])
 	];
@@ -63,6 +68,7 @@
 	let minimum = $state(current ? String(Number(current.minimum)) : '0');
 	let active = $state(current?.is_active ?? true);
 	let available = $state(current?.is_available ?? true);
+	let indirect = $state(current?.is_indirect ?? untrack(() => indirectDefault));
 	let photo = $state<File | null>(null);
 	let everywhere = $state(false);
 	let outletId = $state('');
@@ -114,7 +120,8 @@
 			package_price: String(price),
 			package_size: String(size),
 			shrink_tolerance: String(tolerance),
-			minimum: String(least)
+			minimum: String(least),
+			is_indirect: indirect
 		};
 		if (!current) return onsave({ ...body, unit_price: perUnit === null ? null : String(perUnit) }, photo, everywhere, outletId);
 		onsave({ ...body, unit_price: perUnit === null ? undefined : String(perUnit), is_active: active, is_available: available }, photo, false, current.outlet_id);
@@ -157,6 +164,7 @@
 			<TextField label={ingredientText.shrinkTolerancePercent} inputmode="decimal" bind:value={shrink} hint={ingredientText.shrinkToleranceHint} error={errors.get('shrink_tolerance')} />
 			<TextField label={ingredientText.minimumLimit} inputmode="decimal" bind:value={minimum} hint={ingredientText.minimumLimitHint} error={errors.get('minimum')} />
 		</div>
+		<CheckRow label={ingredientText.indirect} hint={ingredientText.indirectHint} checked={indirect} onchange={() => (indirect = !indirect)} />
 	</FormSection>
 	<FormSection icon="photo" title={termText.photo} description={ingredientText.photoHint}>
 		<PhotoField label={ingredientText.photo} variant="chooser" current={current?.photo_url ?? null} alt={current?.name ?? ''} bind:file={photo} disabled={busy}>

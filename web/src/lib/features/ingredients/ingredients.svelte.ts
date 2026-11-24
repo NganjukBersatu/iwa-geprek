@@ -32,6 +32,11 @@ export class IngredientsState extends ManageState<Ingredient> {
 	changeOpen = $state(false);
 	bulkRemoveOpen = $state(false);
 
+	/** Daftar Bahan memuat yang dipotong resep dan Bahan Tidak Langsung sisanya, jadi satu bahan tidak muncul di dua daftar. */
+	constructor(readonly indirect: boolean = false) {
+		super();
+	}
+
 	get query(): IngredientQuery {
 		return { search: this.search || null, branch: this.filters.get('cabang') };
 	}
@@ -39,7 +44,7 @@ export class IngredientsState extends ManageState<Ingredient> {
 	branchName = (id: string) => this.outlets.find((outlet) => outlet.id === id)?.name ?? '—';
 
 	private params(page: number, size: number) {
-		return { search: this.query.search ?? undefined, sort: this.sort.param, page, size };
+		return { search: this.query.search ?? undefined, sort: this.sort.param, page, size, indirect: this.indirect };
 	}
 
 	protected override allRows(): Promise<Ingredient[]> {

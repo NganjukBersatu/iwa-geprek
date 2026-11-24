@@ -43,6 +43,9 @@
 		text: recordText('bahan', PAGES.ingredients.label)
 	});
 
+	// Bahan tidak langsung punya daftar sendiri, jadi tombol kembali dan jejaknya menuju ke sana.
+	const listPage = $derived(detail.record?.is_indirect ? PAGES.indirectIngredients : PAGES.ingredients);
+
 	let catalog = $state<CatalogEntry[]>([]);
 	let linking = $state(false);
 	let impact = $state<IngredientImpact | null>(null);
@@ -82,8 +85,8 @@
 
 <RecordDetailView
 	{detail}
-	back={PAGES.ingredients}
-	trail={(ingredient) => [{ label: PAGES.ingredients.label, href: PAGES.ingredients.path }, ...(ingredient.category ? [{ label: ingredient.category }] : []), { label: ingredient.name }]}
+	back={listPage}
+	trail={(ingredient) => [{ label: listPage.label, href: listPage.path }, ...(ingredient.category ? [{ label: ingredient.category }] : []), { label: ingredient.name }]}
 	tables={STOCK_TABLES}
 	title={(ingredient) => ingredient.name}
 	description={(ingredient, context) => `${ingredient.category ? `${ingredient.category} · ` : ''}${branchName(ingredient, context)}`}
@@ -94,6 +97,7 @@
 			{@const stock = stockBadge(ingredient.stock_level)}
 			<Badge tone={stock.tone} title={ingredient.stock_level === 'negative' ? ingredientText.negativeStockHint : undefined}>{stock.label}</Badge>
 		{/if}
+		{#if ingredient.is_indirect}<Badge title={ingredientText.indirectHint}>{ingredientText.indirectBadge}</Badge>{/if}
 	{/snippet}
 	{#snippet extraActions(ingredient)}
 		{#if !ingredient.catalog_id}

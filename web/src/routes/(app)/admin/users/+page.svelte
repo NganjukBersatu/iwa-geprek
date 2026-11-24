@@ -18,7 +18,7 @@
 	filters={employees.filters}
 	title={pageText.employeesTitle}
 	description={pageText.employeesDescription}
-	loadingText="Memuat karyawan..."
+	loadingText={pageText.loadingUsers}
 >
 	{#snippet actions()}
 		<AddButton label={pageText.addEmployee} onone={() => void goto(employeeNewPath())} onmany={() => void goto(employeeBulkPath())} />

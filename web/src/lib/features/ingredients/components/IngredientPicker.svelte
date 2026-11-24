@@ -14,8 +14,16 @@
 		value = $bindable(''),
 		label = termText.ingredient,
 		picked = $bindable<Ingredient | null>(null),
-		outletId
-	}: { value?: string; label?: string; picked?: Ingredient | null; outletId: string } = $props();
+		outletId,
+		indirect
+	}: {
+		value?: string;
+		label?: string;
+		picked?: Ingredient | null;
+		outletId: string;
+		/** Hanya bahan tidak langsung (true) atau hanya yang dipotong resep (false); kosong berarti keduanya. */
+		indirect?: boolean;
+	} = $props();
 
 	const LIMIT = 30;
 
@@ -23,7 +31,7 @@
 	let search = $state('');
 	// Dicari dan dimuat per halaman di server, supaya bahan mana pun terjangkau berapa pun jumlahnya.
 	const choices = new RemoteChoices<Ingredient>(
-		byPage(LIMIT, (query, page) => api.ingredients.list({ search: query || undefined, page, size: LIMIT, outlet_id: outletId }).then((found) => found.items)),
+		byPage(LIMIT, (query, page) => api.ingredients.list({ search: query || undefined, page, size: LIMIT, outlet_id: outletId, indirect }).then((found) => found.items)),
 		(item) => item.id
 	);
 

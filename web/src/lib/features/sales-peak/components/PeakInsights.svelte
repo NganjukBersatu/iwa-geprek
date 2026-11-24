@@ -40,11 +40,10 @@
 		{/if}
 	</div>
 
-	<div class="grid grid-cols-1 gap-4 tablet:grid-cols-3 laptop:grid-cols-5">
+	<div class="grid grid-cols-1 gap-4 tablet:grid-cols-2 laptop:grid-cols-4">
 		<SummaryCard label={salesPeakText.totalSales} caption={format(controlText.daysCount, { count: data.days })} value={formatRupiah(data.total_sales)} icon="wallet" accent="primary" />
 		<SummaryCard label={termText.transaction} caption={salesPeakText.receiptsInPeriod} value={formatNumber(data.total_transactions, 0)} icon="receipt" accent="accent" />
 		<SummaryCard label={salesPeakText.itemsSold} caption={salesPeakText.productCount} value={formatNumber(data.total_products, 0)} icon="shopping-cart" accent="ink" />
 		<SummaryCard label={salesPeakText.averageReceiptValue} caption={salesPeakText.perTransaction} value={formatRupiah(data.average_per_transaction)} icon="calculator" accent="plain" />
-		<SummaryCard label={salesPeakText.registeredCustomers} caption={format(salesPeakText.receiptsWithoutName, { count: formatNumber(data.transactions_without_customer, 0) })} value={formatNumber(data.total_customers, 0)} icon="user-check" accent="plain" />
 	</div>
 {/if}

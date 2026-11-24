@@ -13,7 +13,7 @@
 	const menu = new MenuState();
 </script>
 
-<ManageShell manage={menu} filters={menu.filters} title={pageText.menuTitle} description={pageText.menuDescription} loadingText="Memuat menu...">
+<ManageShell manage={menu} filters={menu.filters} title={pageText.menuTitle} description={pageText.menuDescription} loadingText={pageText.loadingMenu}>
 	{#snippet actions()}
 		<AddButton label={pageText.addMenu} onone={() => void goto(menuNewPath())} onmany={() => void goto(menuBulkPath())} />
 		<MoreButton selection={menu.selection} exporter={{ title: termText.menu, columns: menuColumns(menu.outlets), rows: () => menu.exportRows() }} />

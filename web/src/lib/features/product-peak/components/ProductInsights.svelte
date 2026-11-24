@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { controlText } from '$lib/text/controls';
 	import Banner from '$lib/components/card/Banner.svelte';
 	import SummaryBadge from '$lib/components/card/SummaryBadge.svelte';
 	import SummaryCard from '$lib/components/card/SummaryCard.svelte';
@@ -29,7 +30,7 @@
 		<SummaryCard
 			label={productPeakText.periodScope}
 			caption={format(productPeakText.itemsAndReceipts, { items: formatNumber(data.total_qty, 0), receipts: formatNumber(data.total_transactions, 0) })}
-			value="{data.product_count} produk"
+			value={format(controlText.productsCount, { count: data.product_count })}
 			icon="package"
 			accent="primary"
 		>

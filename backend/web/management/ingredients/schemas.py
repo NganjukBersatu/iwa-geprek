@@ -16,6 +16,7 @@ class IngredientCreateIn(BaseModel):
     unit_price: Decimal | None = Field(None, ge=0, description="Left out, it starts as package price over package size; after that it is manual")
     shrink_tolerance: Decimal = Field(Decimal(0), ge=0, le=c.MAX_SHRINK_PERCENT)
     minimum: Decimal = Field(Decimal(0), ge=0)
+    is_indirect: bool = Field(False, description="Not taken from stock by a recipe; users write its use by hand")
 
 
 class IngredientUpdateIn(BaseModel):
@@ -31,6 +32,7 @@ class IngredientUpdateIn(BaseModel):
     minimum: Decimal | None = Field(None, ge=0)
     is_active: bool | None = None
     is_available: bool | None = None
+    is_indirect: bool | None = Field(None, description="Refused while a recipe still uses the ingredient")
 
 
 class IngredientOut(BaseModel):
@@ -51,6 +53,7 @@ class IngredientOut(BaseModel):
     minimum: Decimal
     is_active: bool
     is_available: bool
+    is_indirect: bool
     balance: Decimal
     stock_level: StockLevel | None = Field(description="negative below zero, out at zero, low at the minimum; None while stock is enough")
     is_low: bool = Field(description="The balance has reached the minimum")

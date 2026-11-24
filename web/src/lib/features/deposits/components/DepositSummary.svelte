@@ -11,11 +11,14 @@
 
 	const summary = $derived(deposits.data?.summary ?? null);
 	const open = $derived(deposits.openDays);
-	const heldCaption = $derived(
-		open.length > 0 && summary?.oldest_open_day
-			? format(depositText.openDaysSummary, { count: open.length, dates: rangesOf(open), days: daysAgo(summary.oldest_open_day) })
-			: depositText.allDepositedTitle
-	);
+	// Dipegang dan disetor sama-sama nol berarti belum ada pendapatan, bukan sudah disetor semua.
+	const noRevenue = $derived(summary !== null && Number(summary.held) === 0 && Number(summary.paid_total) === 0);
+	const heldCaption = $derived.by(() => {
+		if (open.length > 0 && summary?.oldest_open_day) {
+			return format(depositText.openDaysSummary, { count: open.length, dates: rangesOf(open), days: daysAgo(summary.oldest_open_day) });
+		}
+		return noRevenue ? depositText.noRevenueYet : depositText.allDepositedTitle;
+	});
 </script>
 
 {#if summary}
@@ -23,18 +26,22 @@
 		<SummaryCard label={depositText.stillHeld} caption={heldCaption} value={formatRupiah(summary.held)} icon="hand-stop" accent="plain" />
 		<SummaryCard
 			label={depositText.deposited}
-			caption={format(depositText.depositsCount, { count: summary.deposit_count, last: summary.last_deposit_date ? ` · terakhir ${formatDate(summary.last_deposit_date)}` : '' })}
+			caption={summary.last_deposit_date ? format(depositText.depositsCountWithLast, { count: summary.deposit_count, date: formatDate(summary.last_deposit_date) }) : format(depositText.depositsCount, { count: summary.deposit_count })}
 			value={formatRupiah(summary.paid_total)}
 			icon="cash"
 			accent="plain"
 		/>
-		<SummaryCard
-			label={depositText.receiptPhoto}
-			caption={summary.without_photo > 0 ? depositText.openHistoryToComplete : depositText.allHaveReceipts}
-			value={summary.without_photo > 0 ? format(depositText.withoutPhoto, { count: summary.without_photo }) : depositText.complete}
-			icon="receipt"
-			accent="plain"
-			onclick={summary.without_photo > 0 ? () => (deposits.tab = 'riwayat') : undefined}
-		/>
+		{#if summary.deposit_count === 0}
+			<SummaryCard label={depositText.receiptPhoto} caption={depositText.receiptAfterDeposit} value={depositText.noDepositYet} icon="receipt" accent="plain" />
+		{:else}
+			<SummaryCard
+				label={depositText.receiptPhoto}
+				caption={summary.without_photo > 0 ? depositText.openHistoryToComplete : depositText.allHaveReceipts}
+				value={summary.without_photo > 0 ? format(depositText.withoutPhoto, { count: summary.without_photo }) : depositText.complete}
+				icon="receipt"
+				accent="plain"
+				onclick={summary.without_photo > 0 ? () => (deposits.tab = 'riwayat') : undefined}
+			/>
+		{/if}
 	</div>
 {/if}

@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { api } from '$lib/api';
 	import type { Ingredient, IngredientCreate, IngredientOptions } from '$lib/api/types';
-	import { PAGES, ingredientPath } from '$lib/nav/pages';
+	import { INDIRECT_PARAM, PAGES, ingredientPath } from '$lib/nav/pages';
 	import { branchList } from '$lib/stores/branch';
 	import { createText } from '$lib/text/record-detail';
 	import RecordCreateView from '../../record-detail/components/RecordCreateView.svelte';
@@ -14,6 +15,9 @@
 	type IngredientSave = { body: IngredientCreate; photo: File | null; everywhere: boolean; outletId: string };
 	/** One save can make the bahan in several branches; `first` is the one the page opens, `skipped` the branches that already had it. */
 	type Created = { first: Ingredient | null; count: number; skipped: string[] };
+
+	const indirect = page.url.searchParams.has(INDIRECT_PARAM);
+	const listPage = indirect ? PAGES.indirectIngredients : PAGES.ingredients;
 
 	const create = new RecordCreateState<Created, IngredientSave, IngredientContext>({
 		context: async () => {
@@ -32,12 +36,12 @@
 		},
 		name: (created) => created.first?.name ?? '',
 		message: (created) => (created.first ? format(ingredientText.ingredientAdded, { name: created.first.name }) : format(ingredientText.ingredientAddedInBranches, { count: created.count, skipped: created.skipped.length ? format(ingredientText.skippedNote, { names: created.skipped.join(', ') }) : '' })),
-		after: (created) => (created.first ? ingredientPath(created.first.id) : PAGES.ingredients.path),
+		after: (created) => (created.first ? ingredientPath(created.first.id) : listPage.path),
 		text: createText('bahan')
 	});
 </script>
 
-<RecordCreateView {create} back={PAGES.ingredients}>
+<RecordCreateView {create} back={listPage}>
 	{#snippet form(props)}
 		<IngredientForm
 			ingredient={null}
@@ -48,6 +52,7 @@
 			fieldErrors={props.fieldErrors}
 			onsave={(body, photo, everywhere, outletId) => props.onsave({ body: body as IngredientCreate, photo, everywhere, outletId })}
 			onremovephoto={() => undefined}
+			indirectDefault={indirect}
 			onclose={props.onclose}
 		/>
 	{/snippet}

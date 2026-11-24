@@ -12,7 +12,7 @@
 	onMount(() => void whatsNew.load());
 </script>
 
-<Modal open={whatsNew.open} size="sm" title={releaseText.title} description={format(releaseText.versionAndDate, { version: WEB_RELEASE.version, date: WEB_RELEASE.date })} onclose={() => whatsNew.close()}>
+<Modal open={whatsNew.open} size="sm" title={releaseText.title} description={format(releaseText.version, { version: WEB_RELEASE.version })} onclose={() => whatsNew.close()}>
 	<ul class="flex flex-col divide-y divide-slate-100">
 		{#each WEB_RELEASE.notes as note (note.text)}
 			<li class="flex items-center gap-3 py-3 first:pt-0 last:pb-0">

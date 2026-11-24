@@ -8,7 +8,7 @@
 	const promotions = new PromotionsState();
 </script>
 
-<ManageShell manage={promotions} title={pageText.promotionsTitle} description={pageText.promotionsDescription} loadingText="Memuat promosi...">
+<ManageShell manage={promotions} title={pageText.promotionsTitle} description={pageText.promotionsDescription} loadingText={pageText.loadingPromotions}>
 	{#snippet actions()}
 		<MoreButton selection={[promotions.selection, promotions.announcementSelection]} />
 	{/snippet}

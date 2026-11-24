@@ -6,7 +6,6 @@ import type {
 	CashierReport,
 	CategoryReport,
 	Comparison,
-	CustomerReport,
 	ComparisonMode,
 	DailyOverview,
 	ExtraReport,
@@ -18,6 +17,7 @@ import type {
 	Period,
 	ProfitLoss,
 	PromoReport,
+	SalesBreakdown,
 	StockReport,
 	Summary,
 	TransactionReport,
@@ -36,7 +36,6 @@ export type TimeUnit = 'hour' | 'weekday' | 'date' | 'month';
 export type ProductSort = 'qty' | 'revenue' | 'time';
 
 export type TrendParams = DateParams & { period?: Period; count?: number };
-export type CustomerParams = DateParams & { search?: string; page?: number; size?: number };
 export type ComparisonParams = DateParams & { mode?: ComparisonMode; previous_start?: string; previous_end?: string };
 export type TransactionParams = DateParams & { group?: PaymentGroup; method?: string; include_voided?: boolean; page?: number; per_page?: number };
 export type BusySalesParams = DateParams & { unit: TimeUnit; hour?: number };
@@ -50,7 +49,6 @@ const get = <T>(path: string, params: object = {}): Promise<T> => request<T>(`${
 
 export const reportsApi = {
 	summary: (range: DateParams): Promise<Summary> => get('/summary', range),
-	customers: (params: CustomerParams): Promise<CustomerReport> => get('/customers', params),
 	trend: (params: TrendParams = {}): Promise<Trend> => get('/trend', params),
 	window: (params: TrendParams = {}): Promise<TrendWindow> => get('/trend/window', params),
 	comparison: (params: ComparisonParams): Promise<Comparison> => get('/comparison', params),
@@ -61,7 +59,8 @@ export const reportsApi = {
 	transactions: (params: TransactionParams): Promise<TransactionReport> => get('/transactions', params),
 	busySales: (params: BusySalesParams): Promise<BusySales> => get('/busy-sales', params),
 	busyProducts: (params: BusyProductsParams): Promise<BusyProducts> => get('/busy-products', params),
-	categories: (params: DateParams & { unsold_sort?: string }): Promise<CategoryReport> => get('/categories', params),
+	categories: (params: DateParams & { unsold_sort?: string; menu_sort?: string }): Promise<CategoryReport> => get('/categories', params),
+	salesBreakdown: (params: DateParams & { type_sort?: string; outlet_sort?: string }): Promise<SalesBreakdown> => get('/sales-breakdown', params),
 	variants: (params: DateParams & { by_menu: boolean }): Promise<VariantReport> => get('/variants', params),
 	extras: (params: DateParams): Promise<ExtraReport> => get('/extras', params),
 	promos: (range: DateParams): Promise<PromoReport> => get('/promos', range),

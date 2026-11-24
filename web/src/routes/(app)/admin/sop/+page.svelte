@@ -13,7 +13,7 @@
 	manage={sop}
 	title={pageText.sopTitle}
 	description={pageText.sopDescription}
-	loadingText="Memuat SOP..."
+	loadingText={pageText.loadingSop}
 >
 	{#snippet actions()}
 		<Button label={pageText.addSop} icon="plus" variant="primary" compact href={NEW_SOP_PATH} />

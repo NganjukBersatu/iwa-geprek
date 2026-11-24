@@ -5,16 +5,19 @@ Stock moves by quantity only; what was paid is an expense, recorded once on the 
 import uuid
 from decimal import Decimal
 
+from sqlalchemy import ColumnElement, and_, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core import uploads
 from app.core.errors import DomainError
 from app.core.ingredients import messages
-from app.core.ingredients.causes import BY_CODE, OTHER
-from app.models.ingredient import INGREDIENT_ADJUSTMENT, INGREDIENT_IN, INGREDIENT_RND, INGREDIENT_WASTE, Ingredient, IngredientCard
+from app.core.ingredients.causes import BY_CODE, OTHER, USAGE_BY_CODE
+from app.models.ingredient import INGREDIENT_ADJUSTMENT, INGREDIENT_IN, INGREDIENT_OUT, INGREDIENT_RND, INGREDIENT_WASTE, Ingredient, IngredientCard
 from app.models.user import User
 
 NOT_FOUND = 404
+CONFLICT = 409
 
 
 def tidy(text: str | None) -> str | None:
@@ -30,7 +33,9 @@ def own_ingredient(db: Session, outlet_id: str, ingredient_id: str) -> Ingredien
     return row
 
 
-def _write(db: Session, user: User, outlet_id: str, ingredient_id: str, kind: str, qty: Decimal, note: str | None, cause: str | None = None) -> IngredientCard:
+def _write(
+    db: Session, user: User, outlet_id: str, ingredient_id: str, kind: str, qty: Decimal, note: str | None, cause: str | None = None, client_id: str | None = None
+) -> IngredientCard:
     ingredient = own_ingredient(db, outlet_id, ingredient_id)
     card = IngredientCard(
         id=str(uuid.uuid4()),
@@ -42,10 +47,25 @@ def _write(db: Session, user: User, outlet_id: str, ingredient_id: str, kind: st
         cause=cause,
         user_id=user.id,
         note=tidy(note),
+        client_id=client_id,
     )
     db.add(card)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        # Dua kiriman berkunci sama bersamaan: yang kalah mengembalikan kartu milik yang menang.
+        db.rollback()
+        found = _by_key(db, outlet_id, client_id)
+        if found is None:
+            raise
+        return found
     return card
+
+
+def _by_key(db: Session, outlet_id: str, client_id: str | None) -> IngredientCard | None:
+    if not client_id:
+        return None
+    return db.scalar(select(IngredientCard).where(IngredientCard.outlet_id == outlet_id, IngredientCard.client_id == client_id))
 
 
 def receive(db: Session, user: User, outlet_id: str, ingredient_id: str, qty: Decimal, note: str | None) -> IngredientCard:
@@ -126,3 +146,25 @@ def set_proof(db: Session, outlet_id: str | None, card_id: str, image: uploads.U
     db.commit()
     uploads.discard(db, previous)
     return card
+
+
+def manual_use_clause() -> ColumnElement[bool]:
+    """Satu-satunya definisi pemakaian manual: kartu keluar tanpa pesanan dengan sebab pemakaian."""
+    return and_(IngredientCard.kind == INGREDIENT_OUT, IngredientCard.order_id.is_(None), IngredientCard.cause.in_(tuple(USAGE_BY_CODE)))
+
+
+def use(db: Session, user: User, outlet_id: str, ingredient_id: str, qty: Decimal, cause: str, note: str | None, client_id: str | None) -> IngredientCard:
+    """Pemakaian harian bahan tidak langsung; kiriman ulang berkunci sama mengembalikan kartu pertama."""
+    if cause not in USAGE_BY_CODE:
+        raise DomainError(messages.CAUSE_UNKNOWN)
+    if cause == OTHER and not tidy(note):
+        raise DomainError(messages.OTHER_NEEDS_NOTE)
+    ingredient = own_ingredient(db, outlet_id, ingredient_id)
+    if not ingredient.is_indirect:
+        raise DomainError(messages.NOT_INDIRECT, code="INGREDIENT_NOT_INDIRECT")
+    found = _by_key(db, outlet_id, client_id)
+    if found is not None:
+        if found.ingredient_id != ingredient.id:
+            raise DomainError(messages.KEY_OF_OTHER_INGREDIENT, status=CONFLICT, code="IDEMPOTENCY_KEY_REUSED")
+        return found
+    return _write(db, user, outlet_id, ingredient.id, INGREDIENT_OUT, -qty, note, cause, client_id)

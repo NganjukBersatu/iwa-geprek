@@ -12,3 +12,4 @@ class IngredientDraft:
     unit_price: Decimal | None
     shrink_tolerance: Decimal
     minimum: Decimal
+    is_indirect: bool = False

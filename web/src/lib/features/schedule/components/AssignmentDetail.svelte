@@ -73,7 +73,17 @@
 					if (Object.keys(changes).length > 0) await api.schedule.assignments.update(assignment.id, changes);
 					if (times) {
 						if (record) await api.attendance.edit(record.id, { clock_in_at: times.clockIn, clock_out_at: times.clockOut });
-						else await api.attendance.mark({ user_id: assignment.user_id, date: assignment.date, shift_code_id: assignment.shift_code_id, status: 'hadir', schedule_id: assignment.id, clock_in_at: times.clockIn, clock_out_at: times.clockOut });
+						// Kehadiran baru mengikuti tanggal dan kode shift yang baru saja diubah, bukan nilai lamanya.
+						else
+							await api.attendance.mark({
+								user_id: assignment.user_id,
+								date: changes.date ?? assignment.date,
+								shift_code_id: changes.shift_code_id !== undefined ? changes.shift_code_id : assignment.shift_code_id,
+								status: 'hadir',
+								schedule_id: assignment.id,
+								clock_in_at: times.clockIn,
+								clock_out_at: times.clockOut
+							});
 					}
 					return api.schedule.assignments.get(assignment.id);
 				}

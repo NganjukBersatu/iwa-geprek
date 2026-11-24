@@ -158,8 +158,10 @@
     <string name="stock_movements_empty">Belum ada catatan.</string>
     <string name="stock_receipt_add">Catat barang masuk</string>
     <string name="stock_waste_add">Catat rusak atau RnD</string>
+    <string name="stock_use_add">Catat pemakaian</string>
     <string name="stock_form_receipt">Barang masuk</string>
     <string name="stock_form_waste">Bahan rusak</string>
+    <string name="stock_form_use">Pemakaian bahan</string>
     <string name="stock_form_trial">Bahan RnD</string>
     <string name="stock_field_ingredient">Bahan</string>
     <string name="stock_pick_ingredient">Pilih bahan</string>
@@ -176,6 +178,8 @@
     <string name="stock_problem_ingredient">Pilih bahannya dulu.</string>
     <string name="stock_problem_qty">Isi jumlah lebih dari 0, paling banyak tiga angka di belakang koma.</string>
     <string name="stock_problem_note">Tulis catatannya.</string>
+    <string name="stock_problem_use_note">Sebab Lainnya wajib disertai catatan. Jelaskan pemakaiannya.</string>
+    <string name="stock_use_negative">Saldo bahan akan menjadi minus setelah pemakaian ini.</string>
     <string name="stock_problem_cause">Pilih penyebabnya.</string>
     <string name="stock_movement_by">%1$s · %2$s</string>
     <string name="stock_count_note">Catatan (opsional)</string>
@@ -239,6 +243,7 @@
     <string name="movement_kind">Jenis</string>
     <string name="movement_kind_in">Masuk</string>
     <string name="movement_kind_sale">Penjualan</string>
+    <string name="movement_kind_use">Pemakaian</string>
     <string name="movement_kind_waste">Rusak</string>
     <string name="movement_kind_trial">RnD</string>
     <string name="movement_kind_adjustment">Penyesuaian</string>

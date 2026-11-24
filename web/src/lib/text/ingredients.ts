@@ -96,5 +96,8 @@ export const ingredientText = {
 	usedByBranches: 'Dipakai {count} cabang',
 	chooseIngredient: 'Pilih bahan',
 	linking: 'Menautkan...',
-	loadingList: 'Memuat...'
+	loadingList: 'Memuat...',
+	indirect: 'Bahan tidak langsung',
+	indirectHint: 'Tidak berkurang lewat resep; pemakaiannya dicatat manual di Bahan Tidak Langsung.',
+	indirectBadge: 'Tidak langsung'
 } as const;

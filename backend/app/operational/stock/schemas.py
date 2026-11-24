@@ -17,6 +17,7 @@ class TabletStockIngredientOut(BaseModel):
     minimum: Decimal
     opening: Decimal | None = Field(description="Stok awal periode berjalan; kosong berarti belum diisi")
     package_size: Decimal = Field(description="Isi satu kemasan beli dalam satuan bahan; 1 atau kurang berarti tanpa kemasan")
+    is_indirect: bool = Field(description="Berkurang lewat catatan keluar manual, bukan lewat resep")
 
 
 class TabletStockIngredientPageOut(BaseModel):
@@ -39,6 +40,14 @@ class TabletStockReceiptIn(BaseModel):
 
 class TabletStockWasteIn(TabletStockReceiptIn):
     cause: str = Field(min_length=1)
+
+
+class TabletStockUseIn(BaseModel):
+    ingredient_id: str = Field(min_length=1)
+    qty: Decimal = QUANTITY
+    cause: str = Field(min_length=1, max_length=30)
+    note: str | None = Field(None, max_length=MAX_NOTE_LENGTH)
+    client_id: str = Field(min_length=8, max_length=64, description="Kunci acak dari tablet; kirim ulang dengan kunci sama mengembalikan catatan pertama")
 
 
 class TabletStockTrialIn(BaseModel):

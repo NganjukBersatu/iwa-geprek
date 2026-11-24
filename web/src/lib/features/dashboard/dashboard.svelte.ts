@@ -7,13 +7,14 @@ import { access } from '$lib/auth/access.svelte';
 import { formatRange, type DateRange } from '$lib/date/range';
 import { collectPages } from '../manage/collect';
 import { rangeParams } from '../report/report.svelte';
-import { CustomersState } from './customers.svelte';
 import { createDashboardFilters } from './filters';
 import { SessionsState } from './sessions.svelte';
 import { ListSort, sortKeys } from '$lib/components/table/list-sort.svelte';
 import { cashierColumns } from './columns';
 
-export type PanelKey = 'income' | 'expense' | 'profit' | 'customers' | null;
+export type PanelKey = 'income' | 'expense' | 'profit' | null;
+/** Kartu yang membuka panel; dua kartu bisa membuka panel yang sama, tetapi hanya yang ditekan yang tampil terbuka. */
+export type PanelCard = 'income' | 'expense' | 'profit' | 'average';
 
 export type DashboardQuery = {
 	branch: string | null;
@@ -39,12 +40,12 @@ const sum = <T>(items: T[], pick: (item: T) => number): number => items.reduce((
 export class DashboardState {
 	filters = createDashboardFilters();
 	sessions = new SessionsState();
-	customers = new CustomersState();
 	readonly cashierSort = new ListSort('dasbor-kasir', sortKeys(cashierColumns), () => void this.loadCashiers());
 
 	loading = $state(true);
 	error = $state('');
 	panel = $state<PanelKey>(null);
+	private panelCard = $state<PanelCard | null>(null);
 	/** True once the first load has finished, whatever cards it brought; the skeleton page shows only before it. */
 	loaded = $state(false);
 
@@ -85,10 +86,7 @@ export class DashboardState {
 			income: Number(point.income),
 			expense: Number(point.expense),
 			orderCount: point.order_count,
-			averageTransaction: Number(point.average_transaction),
-			customers: point.customers,
-			newCustomers: point.new_customers,
-			repeatCustomers: point.returning_customers
+			averageTransaction: Number(point.average_transaction)
 		}));
 	}
 
@@ -113,21 +111,9 @@ export class DashboardState {
 		return this.totalOrderCount ? Math.round(this.totalIncome / this.totalOrderCount) : 0;
 	}
 
-	get totalCustomers(): number {
-		return this.summary?.customers.unique ?? sum(this.chartRows, (row) => row.customers);
-	}
-
-	get totalNewCustomers(): number {
-		return this.summary?.customers.new ?? sum(this.chartRows, (row) => row.newCustomers);
-	}
-
-	get totalRepeatCustomers(): number {
-		return this.summary?.customers.returning ?? sum(this.chartRows, (row) => row.repeatCustomers);
-	}
-
-	get averageCustomers(): number {
-		const rows = this.chartRows;
-		return rows.length ? Math.round(sum(rows, (row) => row.customers) / rows.length) : 0;
+	/** Pengunjung adalah jumlah struk yang tidak dibatalkan; pelanggan yang tercatat adalah rincian di dalamnya. */
+	get visitors(): number {
+		return this.summary?.sales.transaction_count ?? this.totalOrderCount;
 	}
 
 	get periodLabel(): string {
@@ -139,8 +125,15 @@ export class DashboardState {
 		return UNIT_LABELS[this.unit];
 	}
 
-	togglePanel(panel: Exclude<PanelKey, null>): void {
-		this.panel = this.panel === panel ? null : panel;
+	togglePanel(panel: Exclude<PanelKey, null>, card: PanelCard = panel): void {
+		const closing = this.panel === panel && this.panelCard === card;
+		this.panel = closing ? null : panel;
+		this.panelCard = closing ? null : card;
+	}
+
+	/** Kartu yang sedang membuka panel; panel yang ditutup dari tombol tutupnya tidak menyisakan kartu terbuka. */
+	opens(card: PanelCard): boolean {
+		return this.panel !== null && this.panelCard === card;
 	}
 
 	setBranches(options: { value: string; label: string }[]): void {
@@ -180,10 +173,7 @@ export class DashboardState {
 			} else {
 				this.points = [];
 			}
-			if (!quiet) this.customers.reset();
-			// The panel of customers loads itself when the range changes; with the same range it is reloaded from here.
 			if (this.appliedRange?.from !== range.from || this.appliedRange?.to !== range.to) this.appliedRange = range;
-			else if (this.can('view_customer_figures')) void this.customers.load(range, quiet);
 			const [summary, cashiers, profitLoss, comparison] = await Promise.all([
 				this.can('view_summary') ? api.reports.summary(dates) : null,
 				this.can('view_cashier_figures') ? api.reports.cashiers({ ...dates, sort: this.cashierSort.param }) : null,

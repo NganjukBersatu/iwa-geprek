@@ -2270,6 +2270,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v2/operational/stock/use-causes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Use Causes */
+        get: operations["use_causes_v2_operational_stock_use_causes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v2/operational/stock/causes": {
         parameters: {
             query?: never;
@@ -2373,6 +2390,23 @@ export interface paths {
         put?: never;
         /** Record Waste */
         post: operations["record_waste_v2_operational_stock_waste_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v2/operational/stock/uses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record Use */
+        post: operations["record_use_v2_operational_stock_uses_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5683,6 +5717,40 @@ export interface paths {
         get: operations["waste_causes_web_management_ingredient_movements_causes_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/web/management/ingredient-movements/usage-causes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Usage Causes */
+        get: operations["usage_causes_web_management_ingredient_movements_usage_causes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/web/management/ingredient-movements/uses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record Use */
+        post: operations["record_use_web_management_ingredient_movements_uses_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -11002,6 +11070,12 @@ export interface components {
              * @default 0
              */
             minimum: number | string;
+            /**
+             * Is Indirect
+             * @description Not taken from stock by a recipe; users write its use by hand
+             * @default false
+             */
+            is_indirect: boolean;
         };
         /** IngredientEverywhereOut */
         IngredientEverywhereOut: {
@@ -11073,6 +11147,8 @@ export interface components {
             is_active: boolean;
             /** Is Available */
             is_available: boolean;
+            /** Is Indirect */
+            is_indirect: boolean;
             /** Balance */
             balance: string;
             /** @description negative below zero, out at zero, low at the minimum; None while stock is enough */
@@ -11217,6 +11293,11 @@ export interface components {
             is_active?: boolean | null;
             /** Is Available */
             is_available?: boolean | null;
+            /**
+             * Is Indirect
+             * @description Refused while a recipe still uses the ingredient
+             */
+            is_indirect?: boolean | null;
         };
         /** InventoryValueOut */
         InventoryValueOut: {
@@ -14350,7 +14431,7 @@ export interface components {
          * Screen
          * @enum {string}
          */
-        Screen: "dashboard" | "issues" | "finance_overview" | "busy_sales" | "busy_products" | "categories_report" | "options_report" | "promos_report" | "voids_report" | "visitors_report" | "ingredient_stock_report" | "stock_turnover_report" | "attendance_report" | "margin" | "menu" | "menu_categories" | "options" | "recipes" | "promotions" | "order_notes" | "money_changes" | "station_monitor" | "station_performance" | "station_targets" | "station_setup" | "ingredients" | "ingredient_receipts" | "ingredient_waste" | "ingredient_counts" | "stock_items" | "session_history" | "overpayments" | "expenses" | "mutations" | "payment_methods" | "users" | "roles" | "schedule" | "shift_codes" | "attendance" | "sop" | "tasks" | "branches" | "cafe_settings" | "devices" | "printers" | "attendance_rules";
+        Screen: "dashboard" | "issues" | "finance_overview" | "busy_sales" | "busy_products" | "categories_report" | "options_report" | "promos_report" | "voids_report" | "visitors_report" | "ingredient_stock_report" | "stock_turnover_report" | "attendance_report" | "margin" | "menu" | "menu_categories" | "options" | "recipes" | "promotions" | "order_notes" | "money_changes" | "station_monitor" | "station_performance" | "station_targets" | "station_setup" | "ingredients" | "indirect_ingredients" | "ingredient_receipts" | "ingredient_waste" | "ingredient_counts" | "stock_items" | "session_history" | "overpayments" | "expenses" | "mutations" | "payment_methods" | "users" | "roles" | "schedule" | "shift_codes" | "attendance" | "sop" | "tasks" | "branches" | "cafe_settings" | "devices" | "printers" | "attendance_rules";
         /** ScreensOut */
         ScreensOut: {
             /** Screens */
@@ -16269,6 +16350,11 @@ export interface components {
              * @description Isi satu kemasan beli dalam satuan bahan; 1 atau kurang berarti tanpa kemasan
              */
             package_size: string;
+            /**
+             * Is Indirect
+             * @description Berkurang lewat catatan keluar manual, bukan lewat resep
+             */
+            is_indirect: boolean;
         };
         /** TabletStockIngredientPageOut */
         TabletStockIngredientPageOut: {
@@ -16486,6 +16572,25 @@ export interface components {
             qty: number | string;
             /** Note */
             note: string;
+        };
+        /** TabletStockUseIn */
+        TabletStockUseIn: {
+            /** Ingredient Id */
+            ingredient_id: string;
+            /**
+             * Qty
+             * @description In the unit of the ingredient
+             */
+            qty: number | string;
+            /** Cause */
+            cause: string;
+            /** Note */
+            note?: string | null;
+            /**
+             * Client Id
+             * @description Kunci acak dari tablet; kirim ulang dengan kunci sama mengembalikan catatan pertama
+             */
+            client_id: string;
         };
         /** TabletStockWasteIn */
         TabletStockWasteIn: {
@@ -16860,6 +16965,28 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+        };
+        /**
+         * UseIn
+         * @description Daily use of an indirect ingredient; the quantity is positive and the server stores it as a decrease.
+         */
+        UseIn: {
+            /** Ingredient Id */
+            ingredient_id: string;
+            /** Qty */
+            qty: number | string;
+            /**
+             * Cause
+             * @description A code from the usage causes list
+             */
+            cause: string;
+            /** Note */
+            note?: string | null;
+            /**
+             * Client Id
+             * @description Random key; a resend with the same key returns the first card
+             */
+            client_id?: string | null;
         };
         /** UserChoiceOut */
         UserChoiceOut: {
@@ -22284,6 +22411,8 @@ export interface operations {
                 sort?: string | null;
                 /** @description with: stok awal sudah diisi; without: belum */
                 opening?: string | null;
+                /** @description true: hanya bahan tidak langsung; false: hanya yang berkurang lewat resep; kosong: keduanya */
+                indirect?: boolean | null;
                 page?: number;
                 size?: number;
             };
@@ -22315,6 +22444,26 @@ export interface operations {
             };
         };
     };
+    use_causes_v2_operational_stock_use_causes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TabletStockCauseOut"][];
+                };
+            };
+        };
+    };
     waste_causes_v2_operational_stock_causes_get: {
         parameters: {
             query?: never;
@@ -22338,7 +22487,7 @@ export interface operations {
     list_movements_v2_operational_stock_movements_get: {
         parameters: {
             query: {
-                /** @description One or more of receipt, waste, trial; Rusak dan RnD share one list */
+                /** @description One or more of receipt, waste, trial, use; Rusak dan RnD share one list */
                 kind: string[];
                 /** @description Part of the ingredient name or the note */
                 search?: string | null;
@@ -22534,6 +22683,41 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["TabletStockWasteIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TabletStockMovementOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    record_use_v2_operational_stock_uses_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Device"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TabletStockUseIn"];
             };
         };
         responses: {
@@ -30342,6 +30526,8 @@ export interface operations {
                 search?: string | null;
                 /** @description Exactly this ingredient, for a direct link to change or remove it */
                 id?: string | null;
+                /** @description true: only indirect ingredients; false: only those a recipe takes from stock; left out: both */
+                indirect?: boolean | null;
                 /** @description A column key of the list; "-" in front for descending */
                 sort?: string | null;
                 page?: number;
@@ -30845,7 +31031,7 @@ export interface operations {
     list_movements_web_management_ingredient_movements_get: {
         parameters: {
             query?: {
-                kind?: ("masuk" | "keluar" | "rusak" | "rnd" | "penyesuaian") | null;
+                kind?: ("masuk" | "keluar" | "rusak" | "rnd" | "penyesuaian" | "use") | null;
                 start?: string | null;
                 end?: string | null;
                 /** @description Part of the ingredient name or the note */
@@ -30899,6 +31085,62 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CauseOut"][];
+                };
+            };
+        };
+    };
+    usage_causes_web_management_ingredient_movements_usage_causes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CauseOut"][];
+                };
+            };
+        };
+    };
+    record_use_web_management_ingredient_movements_uses_post: {
+        parameters: {
+            query?: {
+                /** @description Only for accounts without a branch; ignored otherwise */
+                outlet_id?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UseIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MovementOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

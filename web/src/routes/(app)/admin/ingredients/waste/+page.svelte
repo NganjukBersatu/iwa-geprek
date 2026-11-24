@@ -18,7 +18,7 @@
 	filters={losses.filters}
 	title={pageText.lossesTitle}
 	description={pageText.lossesDescription}
-	loadingText="Memuat catatan..."
+	loadingText={pageText.loadingLosses}
 >
 	{#snippet actions()}
 		<AddButton label={pageText.record} onone={() => void goto(lossNewPath(losses.kind))} onmany={() => void goto(lossBulkPath())} />

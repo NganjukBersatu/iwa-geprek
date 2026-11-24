@@ -1,7 +1,5 @@
 /** The sentences of the payment methods: the list, one method, its form, and the kinds of method. */
 export const paymentMethodText = {
-	completeness: 'Kelengkapan',
-	complete: 'Lengkap',
 	change: 'Kembalian',
 	fee: 'Biaya',
 	inUse: 'Dipakai',
@@ -43,11 +41,17 @@ export const paymentMethodText = {
 	kindCredit: 'Bon / piutang',
 	kindVoucher: 'Voucher',
 	notFilledList: 'Belum diisi: {fields}',
+	statusIncomplete: 'Belum lengkap',
+	statusReady: 'Siap',
+	incompleteActive: '{count} metode aktif belum bisa dipilih kasir karena belum punya gambar atau catatan. Buka metodenya untuk melengkapinya.',
 	imageOf: 'Gambar {name}',
 	methodUsageNote: '**{count} pesanan** memakai metode ini, jadi metode ini tidak bisa dihapus. Nonaktifkan agar tidak muncul di kasir dan riwayat tetap utuh.',
 	statusChangeFailed: 'Gagal mengubah status metode pembayaran.',
 	imageUploadFailed: 'Gagal mengunggah gambar.',
 	imageRemoveFailed: 'Gagal menghapus gambar.',
 	usedByOrders: '{count} pesanan',
-	missingFieldsHint: 'Belum diisi: {fields}. Lengkapi agar metode ini bisa dipakai di kasir.'
+	missingFieldsHint: 'Belum diisi: {fields}. Lengkapi agar metode ini bisa dipakai di kasir.',
+	activateNeedsComplete: 'Lengkapi gambar dan catatan dulu agar metode ini bisa diaktifkan.',
+	deactivateTitle: 'Nonaktifkan {name}?',
+	deactivateNote: 'Kasir tidak lagi bisa memilih metode ini di {branch}. Pesanan yang sudah dibayar dengannya tidak berubah, dan metode ini bisa diaktifkan lagi kapan saja.'
 } as const;

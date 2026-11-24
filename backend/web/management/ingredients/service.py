@@ -17,7 +17,7 @@ from web.management.ingredients.mappers import ingredient_out
 from web.management.ingredients.schemas import IngredientOut
 from app.models.category import Category, Unit
 
-UPDATABLE = ("package_price", "package_size", "unit_price", "shrink_tolerance", "minimum", "is_active", "is_available")
+UPDATABLE = ("package_price", "package_size", "unit_price", "shrink_tolerance", "minimum", "is_active", "is_available", "is_indirect")
 
 
 def get(db: Session, outlet_id: str | None, ingredient_id: str) -> Ingredient:
@@ -57,6 +57,7 @@ def _new_row(outlet_id: str, entry: CatalogIngredient, draft: IngredientDraft) -
         unit_price=draft.unit_price if draft.unit_price is not None else _starting_unit_price(draft.package_price, draft.package_size),
         shrink_tolerance=draft.shrink_tolerance,
         minimum=draft.minimum,
+        is_indirect=draft.is_indirect,
         is_active=True,
         is_available=True,
     )
@@ -169,6 +170,10 @@ def update(db: Session, admin: User, ingredient_id: str, values: dict) -> Ingred
     if "category_id" in values:
         _check_category(db, values["category_id"])
         row.category_id = values["category_id"] or None
+    if values.get("is_indirect") and not row.is_indirect:
+        in_recipes = repository.impact(db, row.id)[0]
+        if in_recipes:
+            raise DomainError(messages.INDIRECT_STILL_IN_RECIPES.format(count=in_recipes), code="INDIRECT_INGREDIENT_IN_RECIPE")
     for field in UPDATABLE:
         if values.get(field) is not None:
             setattr(row, field, values[field])

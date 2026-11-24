@@ -30,9 +30,9 @@ private const val MoreSkeletonRows = 2
 
 /** Memilih satu bahan dengan pencarian nama; dipakai semua layar yang mencatat atau menghitung stok. */
 @Composable
-internal fun IngredientPicker(repository: IngredientStockRepository, onPicked: (StockIngredient) -> Unit, onDismiss: () -> Unit) {
+internal fun IngredientPicker(repository: IngredientStockRepository, onPicked: (StockIngredient) -> Unit, onDismiss: () -> Unit, indirectOnly: Boolean = false) {
     var query by remember { mutableStateOf("") }
-    val choices = rememberChoicePages<StockIngredient>(key = { it.id }, fetch = repository::ingredientChoices)
+    val choices = rememberChoicePages<StockIngredient>(key = { it.id }, fetch = { query, page -> repository.ingredientChoices(query, page, indirectOnly) })
     val scroll = rememberScrollState()
     OnScrollEnd(scroll = scroll, count = choices.items.size, onEnd = choices::more)
 

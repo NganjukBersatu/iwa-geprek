@@ -16,6 +16,9 @@ val releaseKey = Properties().apply {
 // Identitas merek dibaca dari brand.properties hasil jawaban Copier; tanpa berkas itu build gagal sejak awal.
 val brand = Properties().apply { rootProject.file("brand.properties").inputStream().use { load(it) } }
 
+// Versi APK milik klien dibaca dari version.properties, supaya copier update tidak mengembalikannya ke versi template.
+val appVersion = Properties().apply { rootProject.file("version.properties").inputStream().use { load(it) } }
+
 android {
     namespace = "id.kongstudio.cafe.android"
     compileSdk = libs.versions.compileSdk.get().toInt()
@@ -25,8 +28,8 @@ android {
         applicationId = brand.getProperty("applicationId")
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = appVersion.getProperty("versionCode").toInt()
+        versionName = appVersion.getProperty("versionName")
     }
 
     buildFeatures {

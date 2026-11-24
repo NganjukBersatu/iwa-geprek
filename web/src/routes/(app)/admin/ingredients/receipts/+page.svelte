@@ -17,7 +17,7 @@
 	filters={receipts.filters}
 	title={pageText.receiptsTitle}
 	description={pageText.receiptsDescription}
-	loadingText="Memuat barang masuk..."
+	loadingText={pageText.loadingReceipts}
 >
 	{#snippet actions()}
 		<AddButton label={pageText.recordReceipt} onone={() => void goto(receiptNewPath())} onmany={() => void goto(receiptBulkPath())} />

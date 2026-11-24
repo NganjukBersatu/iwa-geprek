@@ -8,7 +8,7 @@ import { collectPages } from '../manage/collect';
 import { ManageState } from '../manage/manage.svelte';
 import { reportPresets } from '../report/filters';
 import { branchList } from '$lib/stores/branch';
-import { TRIAL, WASTE } from './kinds';
+import { TRIAL, USE, WASTE } from './kinds';
 import { ListSort, sortKeys } from '$lib/components/table/list-sort.svelte';
 import { lossColumns } from './columns';
 import { termText } from '$lib/text/terms';
@@ -17,23 +17,19 @@ export type LossQuery = { search: string | null; branch: string | null; range: D
 
 export class IngredientLossesState extends ManageState<IngredientMovement> {
 	override readonly tables = STOCK_TABLES;
-	readonly sort = new ListSort('bahan-susut', sortKeys(lossColumns(WASTE)), () => void this.queryChanged());
+	readonly sort: ListSort;
+	readonly filters: Filters;
 
-	readonly filters = new Filters(
-		[
-			{
-				kind: 'select',
-				key: 'jenis_susut',
-				label: termText.kind,
-				options: [
-					{ value: WASTE, label: termText.damaged },
-					{ value: TRIAL, label: 'RnD' }
-				]
-			},
+	/** Pemakaian punya halaman sendiri tanpa penyaring Jenis; rusak dan RnD berbagi satu halaman. */
+	constructor(readonly usage: boolean = false) {
+		super();
+		this.sort = new ListSort(usage ? 'bahan-pemakaian' : 'bahan-susut', sortKeys(lossColumns(usage ? USE : WASTE)), () => void this.queryChanged());
+		this.filters = new Filters([
+			...(usage ? [] : [{ kind: 'select' as const, key: 'jenis_susut', label: termText.kind, options: [{ value: WASTE, label: termText.damaged }, { value: TRIAL, label: 'RnD' }] }]),
 			{ kind: 'select', key: 'cabang', label: termText.branch, options: [] },
 			{ kind: 'date', key: 'rentang', label: termText.range, presets: reportPresets, reach: 'past' }
-		]
-	);
+		]);
+	}
 
 	outlets = $state<{ id: string; name: string }[]>([]);
 	causes = $state<WasteCause[]>([]);
@@ -41,7 +37,7 @@ export class IngredientLossesState extends ManageState<IngredientMovement> {
 	natural = $state(0);
 
 	get query(): LossQuery {
-		return { search: this.search || null, branch: this.filters.get('cabang'), range: this.filters.range('rentang'), kind: this.filters.get('jenis_susut') ?? WASTE };
+		return { search: this.search || null, branch: this.filters.get('cabang'), range: this.filters.range('rentang'), kind: this.usage ? USE : (this.filters.get('jenis_susut') ?? WASTE) };
 	}
 
 	get kind(): string {
@@ -62,7 +58,7 @@ export class IngredientLossesState extends ManageState<IngredientMovement> {
 		const [page, outlets, causes] = await Promise.all([
 			api.ingredientMovements.list(this.params(this.page, pageSize.value)),
 			branchList(),
-			api.ingredientMovements.causes()
+			this.usage ? api.ingredientMovements.usageCauses() : api.ingredientMovements.causes()
 		]);
 		this.outlets = outlets;
 		this.causes = causes;

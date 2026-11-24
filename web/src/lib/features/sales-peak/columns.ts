@@ -16,7 +16,6 @@ export function peakColumns(unitName: string): Column<BusySalesRow>[] {
 		{ key: 'transaksi_persen', label: '%', value: (row) => formatPercentPlain(row.transactions_percent), class: () => percent },
 		{ key: 'produk', label: salesPeakText.product, value: (row) => count(row.products), sort: 'products' },
 		{ key: 'produk_persen', label: '%', value: (row) => formatPercentPlain(row.products_percent), class: () => percent },
-		{ key: 'produk_rata_harian', label: salesPeakText.dailyAverage, value: (row) => formatNumber(row.products_average, 1) },
-		{ key: 'pelanggan', label: salesPeakText.customers, value: (row) => count(row.customers), sort: 'customers' }
+		{ key: 'produk_rata_harian', label: salesPeakText.dailyAverage, value: (row) => formatNumber(row.products_average, 1) }
 	];
 }

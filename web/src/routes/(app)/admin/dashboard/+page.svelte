@@ -20,7 +20,6 @@
 	import CashierCard from '$lib/features/dashboard/components/CashierCard.svelte';
 	import PeriodTotalsCard from '$lib/features/dashboard/components/PeriodTotalsCard.svelte';
 	import ProfitLossCard from '$lib/features/dashboard/components/ProfitLossCard.svelte';
-	import CustomerPanel from '$lib/features/dashboard/components/CustomerPanel.svelte';
 	import { syncBranchPeriod } from '$lib/features/report/branch-period.svelte';
 	import SessionPanel from '$lib/features/dashboard/components/SessionPanel.svelte';
 	import SummaryGrid from '$lib/features/dashboard/components/SummaryGrid.svelte';
@@ -81,11 +80,7 @@
 		<Reveal>
 			<SummaryGrid {dashboard}>
 				{#snippet children(panel)}
-					{#if panel === 'customers'}
-						<CustomerPanel {dashboard} />
-					{:else}
-						<SessionPanel {dashboard} kind={panel} />
-					{/if}
+					<SessionPanel {dashboard} kind={panel} />
 				{/snippet}
 			</SummaryGrid>
 

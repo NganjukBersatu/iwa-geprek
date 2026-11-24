@@ -21,7 +21,7 @@
 			<SummaryCard label={pageText.unsold} caption={pageText.menusWithoutSales} value={formatNumber(data.unsold.length, 0)} icon="alert-triangle" accent="ink" />
 		</div>
 
-		<div class="grid grid-cols-1 gap-4 laptop:grid-cols-2 tablet:gap-6">
+		<div class="flex flex-col gap-4 tablet:gap-6">
 			<CategoryTable {category} />
 			<UnsoldList {category} />
 		</div>

@@ -6,6 +6,7 @@ UNIT_UNKNOWN = "Satuan tidak ditemukan."
 CATEGORY_UNKNOWN = "Kategori tidak ditemukan."
 SHARED_ELSEWHERE = "Bahan ini dipakai di cabang lain. Nama dan satuannya hanya bisa diubah pemilik lintas-cabang."
 STILL_USED = "Bahan masih dipakai di tempat lain"
+INDIRECT_STILL_IN_RECIPES = "Bahan ini masih ada di {count} baris resep. Lepas dari resep dulu sebelum ditandai tidak langsung."
 
 
 def already_in_branch(name: str) -> str:

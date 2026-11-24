@@ -6,4 +6,5 @@ export type IngredientReceipt = Schemas['ReceiptIn'];
 export type IngredientMovementUpdate = Schemas['MovementUpdateIn'];
 export type IngredientWaste = Schemas['WasteIn'];
 export type IngredientTrial = Schemas['TrialIn'];
+export type IngredientUse = Schemas['UseIn'];
 export type WasteCause = Schemas['CauseOut'];

@@ -19,7 +19,7 @@
 	filters={shiftCodes.filters}
 	title={pageText.shiftCodesTitle}
 	description={pageText.shiftCodesDescription}
-	loadingText="Memuat kode shift..."
+	loadingText={pageText.loadingShiftCodes}
 >
 	{#snippet actions()}
 		<Button label={shiftCodeText.categorySettings} icon="adjustments" variant="tertiary" onclick={() => (shiftCodes.categoriesOpen = true)} />

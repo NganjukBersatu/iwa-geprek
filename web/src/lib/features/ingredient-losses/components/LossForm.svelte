@@ -7,7 +7,7 @@
 	import { formatNumber } from '$lib/format/currency';
 	import CancelButton from '$lib/components/button/CancelButton.svelte';
 	import SaveButton from '$lib/components/button/SaveButton.svelte';
-	import type { IngredientMovement, IngredientMovementUpdate, IngredientTrial, IngredientWaste, WasteCause } from '$lib/api/types';
+	import type { IngredientMovement, IngredientMovementUpdate, IngredientTrial, IngredientUse, IngredientWaste, WasteCause } from '$lib/api/types';
 	import BranchField from '$lib/components/form/BranchField.svelte';
 	import FormPage from '$lib/components/form/FormPage.svelte';
 	import FormSection from '$lib/components/form/FormSection.svelte';
@@ -15,12 +15,12 @@
 	import SelectField from '$lib/components/form/SelectField.svelte';
 	import TextArea from '$lib/components/form/TextArea.svelte';
 	import TextField from '$lib/components/form/TextField.svelte';
-	import { lossPath, PAGES } from '$lib/nav/pages';
+	import { lossPath, PAGES, usagePath } from '$lib/nav/pages';
 	import { FieldErrors, focusRefused } from '$lib/components/form/field-errors.svelte';
 	import { parseNumber } from '$lib/format/number';
 	import { untrack } from 'svelte';
 	import IngredientPicker from '../../ingredients/components/IngredientPicker.svelte';
-	import { WASTE } from '../kinds';
+	import { USE, USE_CARD, WASTE } from '../kinds';
 	import { termText } from '$lib/text/terms';
 	import { actionText } from '$lib/text/actions';
 	import { ingredientLossText } from '$lib/text/ingredient-losses';
@@ -43,17 +43,24 @@
 		error: string;
 		/** What the server refused, by field name, shown under the field itself. */
 		fieldErrors?: Record<string, string>;
-		onsave: (body: IngredientWaste | IngredientTrial | IngredientMovementUpdate, proof: File | null, outletId: string) => void;
+		onsave: (body: IngredientWaste | IngredientTrial | IngredientUse | IngredientMovementUpdate, proof: File | null, outletId: string) => void;
 		onclose: () => void;
 	} = $props();
 
 	const OTHER = 'lainnya';
 	const current = untrack(() => movement);
 	const isWaste = untrack(() => (current ? current.kind === WASTE : kind === WASTE));
-	const createTitle = isWaste ? ingredientLossText.recordDamaged : ingredientLossText.recordRnd;
+	const isUse = untrack(() => (current ? current.kind === USE_CARD : kind === USE));
+	// Bahan rusak dan pemakaian memilih sebab; RnD tidak punya sebab.
+	const hasCause = isWaste || isUse;
+	const listPage = isUse ? PAGES.indirectUsage : PAGES.ingredientWaste;
+	const recordPath = isUse ? usagePath : lossPath;
+	// Satu kunci untuk form ini, supaya simpan ulang setelah jawaban hilang tidak mencatat dua kali.
+	const clientId = crypto.randomUUID();
+	const createTitle = isUse ? ingredientLossText.recordUse : isWaste ? ingredientLossText.recordDamaged : ingredientLossText.recordRnd;
 	const trail = [
-		{ label: PAGES.ingredientWaste.label, href: PAGES.ingredientWaste.path },
-		...(current ? [{ label: current.ingredient_name, href: lossPath(current.id) }, { label: actionText.edit }] : [{ label: createTitle }])
+		{ label: listPage.label, href: listPage.path },
+		...(current ? [{ label: current.ingredient_name, href: recordPath(current.id) }, { label: actionText.edit }] : [{ label: createTitle }])
 	];
 
 	let ingredient = $state('');
@@ -63,7 +70,7 @@
 	let proof = $state<File | null>(null);
 	let outletId = $state('');
 	const causeChoices = $derived(causes.map((item) => ({ value: item.code, label: item.human_error ? format(ingredientLossText.negligenceLabel, { name: item.label }) : item.label })));
-	const errors = new FieldErrors({ outlet_id: termText.branch, qty: termText.quantity, cause: ingredientLossText.cause, ingredient_id: termText.ingredient, note: isWaste ? termText.note : ingredientLossText.triedMenu }, () => fieldErrors);
+	const errors = new FieldErrors({ outlet_id: termText.branch, ingredient_id: termText.ingredient, qty: termText.quantity, cause: ingredientLossText.cause, note: hasCause ? termText.note : ingredientLossText.triedMenu }, () => fieldErrors);
 
 	// A refusal from the server puts the cursor in the first refused box.
 	$effect(() => {
@@ -79,6 +86,10 @@
 	function send(amount: number): void {
 		if (current) {
 			onsave({ qty: String(amount), note: note.trim() || null }, proof, current.outlet_id);
+			return;
+		}
+		if (isUse) {
+			onsave({ ingredient_id: ingredient, qty: String(amount), cause, note: note.trim() || null, client_id: clientId }, proof, outletId);
 			return;
 		}
 		if (isWaste) {
@@ -102,11 +113,11 @@
 		const found: Record<string, string> = {};
 		const amount = parseNumber(qty);
 		if (!current && !outletId) found.outlet_id = ingredientLossText.branchRequired;
-		if (amount === null || amount <= 0) found.qty = ingredientLossText.quantityInvalid;
-		if (!current && isWaste && !cause) found.cause = ingredientLossText.causeRequired;
 		if (!current && outletId && !ingredient) found.ingredient_id = ingredientLossText.ingredientRequired;
-		if (isWaste && cause === OTHER && !note.trim()) found.note = ingredientLossText.otherNeedsNote;
-		if (!isWaste && !note.trim()) found.note = ingredientLossText.triedMenuRequired;
+		if (amount === null || amount <= 0) found.qty = ingredientLossText.quantityInvalid;
+		if (!current && hasCause && !cause) found.cause = isUse ? ingredientLossText.useCauseRequired : ingredientLossText.causeRequired;
+		if (hasCause && cause === OTHER && !note.trim()) found.note = ingredientLossText.otherNeedsNote;
+		if (!hasCause && !note.trim()) found.note = ingredientLossText.triedMenuRequired;
 		if (!errors.check(found) || amount === null) {
 			return;
 		}
@@ -142,31 +153,32 @@
 
 <FormPage
 	title={current ? format(controlText.editName, { name: current.ingredient_name }) : createTitle}
-	description={isWaste ? ingredientLossText.damagedFormDescription : ingredientLossText.rndFormDescription}
+	description={isUse ? ingredientLossText.useFormDescription : isWaste ? ingredientLossText.damagedFormDescription : ingredientLossText.rndFormDescription}
 	stacked
 	{trail}
 	{busy}
 	{onclose}
 >
-	<FormSection icon={isWaste ? 'trash' : 'flask'} title={isWaste ? ingredientLossText.damagedIngredients : ingredientLossText.rndIngredients} description={ingredientLossText.balanceNote}>
-		<div class="grid gap-2 {current ? 'tablet:grid-cols-2' : isWaste ? 'tablet:grid-cols-3' : 'tablet:grid-cols-2'}">
-			{#if !current}
+	<FormSection icon={isUse ? 'flame' : isWaste ? 'trash' : 'flask'} title={isUse ? ingredientLossText.usedIngredients : isWaste ? ingredientLossText.damagedIngredients : ingredientLossText.rndIngredients} description={ingredientLossText.balanceNote}>
+		<!-- Urutan menurut kepentingan: cabang menentukan daftar bahan, lalu bahan, baru jumlah dan sebabnya. -->
+		{#if !current}
+			<div class="grid gap-2 tablet:grid-cols-2">
 				<BranchField bind:value={outletId} error={errors.get('outlet_id')} />
-			{/if}
+				{#if outletId}
+					<div class="flex flex-col gap-1" tabindex="-1" aria-invalid={errors.get('ingredient_id') ? true : undefined}>
+						<IngredientPicker bind:value={ingredient} {outletId} indirect={isUse ? true : undefined} />
+						{#if errors.get('ingredient_id')}<p class="text-xs text-danger-700" role="alert">{errors.get('ingredient_id')}</p>{/if}
+					</div>
+				{/if}
+			</div>
+		{/if}
+		<div class="grid gap-2 tablet:grid-cols-2">
 			<TextField label={current?.unit ? format(controlText.quantityWithUnitBrackets, { unit: current.unit }) : termText.quantity} inputmode="decimal" bind:value={qty} required hint={ingredientLossText.quantityHint} error={errors.get('qty')} />
-			{#if isWaste && !current}
+			{#if hasCause && !current}
 				<SelectField label={ingredientLossText.cause} bind:value={cause} options={causeChoices} empty={ingredientLossText.chooseCause} required error={errors.get('cause')} />
 			{/if}
 		</div>
-		{#if !current && outletId}
-			<div class="grid gap-2 tablet:grid-cols-2">
-				<div class="flex flex-col gap-1" tabindex="-1" aria-invalid={errors.get('ingredient_id') ? true : undefined}>
-					<IngredientPicker bind:value={ingredient} {outletId} />
-					{#if errors.get('ingredient_id')}<p class="text-xs text-danger-700" role="alert">{errors.get('ingredient_id')}</p>{/if}
-				</div>
-			</div>
-		{/if}
-		<TextArea label={isWaste ? termText.note : ingredientLossText.triedMenu} bind:value={note} rows={2} maxlength={255} error={errors.get('note')} />
+		<TextArea label={hasCause ? termText.note : ingredientLossText.triedMenu} bind:value={note} rows={2} maxlength={255} error={errors.get('note')} />
 	</FormSection>
 	<FormSection icon="photo" title={ingredientLossText.proofPhoto} description={ingredientLossText.proofHint}>
 		<PhotoField label={ingredientLossText.proofPhoto} variant="chooser" current={current?.proof_url ?? null} alt={format(ingredientLossText.proofOf, { name: current?.ingredient_name ?? '' })} bind:file={proof} disabled={busy} />

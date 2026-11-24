@@ -1,15 +1,16 @@
 import { api } from '$lib/api';
-import type { CategoryReport } from '$lib/api/types';
+import type { CategoryReport, MenuSales } from '$lib/api/types';
 import { createReportFilters } from '../report/filters';
 import { rangeParams, ReportState, type ReportQuery } from '../report/report.svelte';
 import { ListSort, sortKeys } from '$lib/components/table/list-sort.svelte';
-import { categoryColumns, unsoldColumns } from './columns';
+import { categoryColumns, menuColumns, unsoldColumns } from './columns';
 import { categoryReportText } from '$lib/text/category-report';
 
 export type UnsoldEmptyReason = 'noMenu' | 'search' | 'hidden' | 'allSold';
 
 export class CategoryState extends ReportState<ReportQuery, CategoryReport> {
 	readonly sort = new ListSort('kategori', sortKeys(categoryColumns), () => void this.queryChanged(this.query));
+	readonly menuSort = new ListSort('kategori-menu', sortKeys(menuColumns), () => void this.queryChanged(this.query));
 	readonly unsoldSort = new ListSort('kategori-tidak-laku', sortKeys(unsoldColumns), () => void this.queryChanged(this.query));
 
 	filters = createReportFilters([
@@ -18,6 +19,10 @@ export class CategoryState extends ReportState<ReportQuery, CategoryReport> {
 
 	get query(): ReportQuery {
 		return { branch: this.filters.get('cabang'), range: this.filters.range('rentang') };
+	}
+
+	menusOf(category: string): MenuSales[] {
+		return (this.data?.menus ?? []).filter((menu) => menu.category === category);
 	}
 
 	get unsold() {
@@ -36,6 +41,6 @@ export class CategoryState extends ReportState<ReportQuery, CategoryReport> {
 	}
 
 	protected fetch(query: ReportQuery): Promise<CategoryReport> {
-		return api.reports.categories({ ...rangeParams(query.range), sort: this.sort.param, unsold_sort: this.unsoldSort.param });
+		return api.reports.categories({ ...rangeParams(query.range), sort: this.sort.param, menu_sort: this.menuSort.param, unsold_sort: this.unsoldSort.param });
 	}
 }

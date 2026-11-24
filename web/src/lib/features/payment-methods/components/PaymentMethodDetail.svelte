@@ -6,12 +6,14 @@
 	import Badge from '$lib/components/card/Badge.svelte';
 	import Banner from '$lib/components/card/Banner.svelte';
 	import Card from '$lib/components/card/Card.svelte';
+	import ConfirmDialog from '$lib/components/dialog/ConfirmDialog.svelte';
 	import FigureList from '$lib/components/card/FigureList.svelte';
 	import { EMPTY_VALUE, formatNumber } from '$lib/format/currency';
 	import { PAGES } from '$lib/nav/pages';
 	import { recordText } from '$lib/text/record-detail';
 	import RecordDetailView from '../../record-detail/components/RecordDetailView.svelte';
 	import { RecordDetailState } from '../../record-detail/record-detail.svelte';
+	import { methodStatus, missingText } from '../columns';
 	import PaymentMethodForm from './PaymentMethodForm.svelte';
 	import { termText } from '$lib/text/terms';
 	import { paymentMethodText } from '$lib/text/payment-methods';
@@ -29,6 +31,18 @@
 	});
 
 	const yesNo = (value: boolean) => (value ? termText.yes : termText.no);
+
+	// Menonaktifkan ditanyakan dulu karena kasir langsung kehilangan pilihan ini.
+	let deactivating = $state<PaymentMethod | null>(null);
+
+	function setActive(active: boolean): void {
+		void detail.change((current) => api.paymentMethods.update(current, { is_active: active }), paymentMethodText.statusChangeFailed);
+	}
+
+	function confirmDeactivate(): void {
+		deactivating = null;
+		setActive(false);
+	}
 </script>
 
 <RecordDetailView
@@ -40,19 +54,21 @@
 	description={(method) => method.outlet_name}
 >
 	{#snippet badge(method)}
-		<Badge tone={method.is_active ? 'success' : 'neutral'}>{method.is_active ? termText.active : termText.inactive}</Badge>
+		{@const status = methodStatus(method)}
+		<Badge tone={status.tone} title={missingText(method)}><i class="ti ti-{status.icon}" aria-hidden="true"></i>{status.label}</Badge>
 	{/snippet}
 	{#snippet extraActions(method)}
 		<Button
 			label={method.is_active ? paymentMethodText.deactivate : paymentMethodText.activate}
 			icon={method.is_active ? 'eye-off' : 'eye'}
 			variant="tertiary"
-			disabled={detail.busy}
-			onclick={() => void detail.change((current) => api.paymentMethods.update(current, { is_active: !current.is_active }), paymentMethodText.statusChangeFailed)}
+			disabled={detail.busy || (!method.is_active && method.missing.length > 0)}
+			hint={!method.is_active && method.missing.length > 0 ? paymentMethodText.activateNeedsComplete : undefined}
+			onclick={() => (method.is_active ? (deactivating = method) : setActive(true))}
 		/>
 	{/snippet}
 	{#snippet body(method)}
-		{#if method.is_active && method.missing.length > 0}
+		{#if method.missing.length > 0}
 			<Banner tone="warning" icon="alert-triangle">{format(paymentMethodText.missingFieldsHint, { fields: method.missing.join(' dan ') })}</Banner>
 		{/if}
 		<div class="grid items-stretch gap-4 tablet:gap-6 laptop:grid-cols-[20rem_minmax(0,1fr)]">
@@ -121,3 +137,14 @@
 		{/if}
 	{/snippet}
 </RecordDetailView>
+
+<ConfirmDialog
+	open={deactivating !== null}
+	title={format(paymentMethodText.deactivateTitle, { name: deactivating?.label ?? '' })}
+	confirmLabel={paymentMethodText.deactivate}
+	busy={detail.busy}
+	onconfirm={confirmDeactivate}
+	oncancel={() => (deactivating = null)}
+>
+	{format(paymentMethodText.deactivateNote, { branch: deactivating?.outlet_name ?? '' })}
+</ConfirmDialog>

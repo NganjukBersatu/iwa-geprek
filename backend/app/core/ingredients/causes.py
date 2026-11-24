@@ -26,3 +26,11 @@ CAUSES = (
 
 BY_CODE = {cause.code: cause for cause in CAUSES}
 HUMAN_ERROR_CODES = tuple(cause.code for cause in CAUSES if cause.human_error)
+
+# Sebab pemakaian manual bahan tidak langsung; satu daftar untuk web dan tablet.
+USAGE_CAUSES = (
+    Cause("masak", "Dipakai masak", False),
+    Cause(OTHER, "Lainnya (tulis di catatan)", False),
+)
+
+USAGE_BY_CODE = {cause.code: cause for cause in USAGE_CAUSES}

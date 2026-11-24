@@ -20,6 +20,7 @@ import id.kongstudio.cafe.feature.admin.PagedListViewModel
 import id.kongstudio.cafe.feature.devicesetup.DeviceResult
 import id.kongstudio.cafe.feature.userchoice.UserChoiceRepository
 import id.kongstudio.cafe.feature.userchoice.userFilter
+import id.kongstudio.cafe.offline.newClientId
 import id.kongstudio.cafe.resources.Res
 import id.kongstudio.cafe.resources.back_to_page
 import id.kongstudio.cafe.resources.common_all
@@ -40,6 +41,7 @@ import id.kongstudio.cafe.resources.movement_sale_locked
 import id.kongstudio.cafe.resources.movement_user
 import id.kongstudio.cafe.resources.movement_time
 import id.kongstudio.cafe.resources.nav_ingredient_receipts
+import id.kongstudio.cafe.resources.nav_ingredient_use
 import id.kongstudio.cafe.resources.nav_ingredient_waste
 import id.kongstudio.cafe.resources.stock_field_cause
 import id.kongstudio.cafe.resources.stock_field_ingredient
@@ -48,6 +50,7 @@ import id.kongstudio.cafe.resources.stock_field_note_required
 import id.kongstudio.cafe.resources.stock_field_qty
 import id.kongstudio.cafe.resources.stock_form_receipt
 import id.kongstudio.cafe.resources.stock_form_trial
+import id.kongstudio.cafe.resources.stock_form_use
 import id.kongstudio.cafe.resources.stock_form_waste
 import id.kongstudio.cafe.resources.stock_movement_by
 import id.kongstudio.cafe.resources.stock_movement_search
@@ -58,9 +61,12 @@ import id.kongstudio.cafe.resources.stock_problem_cause
 import id.kongstudio.cafe.resources.stock_problem_ingredient
 import id.kongstudio.cafe.resources.stock_problem_kind
 import id.kongstudio.cafe.resources.stock_problem_note
+import id.kongstudio.cafe.resources.stock_problem_use_note
 import id.kongstudio.cafe.resources.stock_problem_qty
 import id.kongstudio.cafe.resources.stock_receipt_add
 import id.kongstudio.cafe.resources.stock_save
+import id.kongstudio.cafe.resources.stock_use_add
+import id.kongstudio.cafe.resources.stock_use_negative
 import id.kongstudio.cafe.resources.stock_waste_add
 import id.kongstudio.cafe.ui.component.apptext.AppText
 import id.kongstudio.cafe.ui.component.apptext.TextRole
@@ -113,13 +119,18 @@ import id.kongstudio.cafe.ui.component.quantityfield.QuantityField
 import org.jetbrains.compose.resources.stringResource
 
 /** Dua layar pencatatan: barang masuk, serta rusak dan RnD yang berbagi satu daftar dengan penyaring Jenis. */
-internal enum class EntryMode { Receipts, WasteAndTrial }
+/** Tiga layar pencatatan: barang masuk, rusak dan RnD yang berbagi satu daftar, dan pemakaian manual bahan tidak langsung. */
+internal enum class EntryMode { Receipts, WasteAndTrial, Uses }
 
-private enum class EntryProblem { Kind, Ingredient, Quantity, Cause, Note }
+private enum class EntryProblem { Kind, Ingredient, Quantity, Cause, Note, UseNote }
+
+// Kode sebab Lainnya di server; wajib disertai catatan.
+private const val OtherCause = "lainnya"
 
 /** Penyaring Jenis kosong berarti Rusak dan RnD sekaligus. */
 internal fun movementKindsOf(mode: EntryMode, filter: String): Set<MovementKind> = when {
     mode == EntryMode.Receipts -> setOf(MovementKind.Receipt)
+    mode == EntryMode.Uses -> setOf(MovementKind.Use)
     filter == MovementKind.Waste.code -> setOf(MovementKind.Waste)
     filter == MovementKind.Trial.code -> setOf(MovementKind.Trial)
     else -> setOf(MovementKind.Waste, MovementKind.Trial)
@@ -147,7 +158,13 @@ internal fun IngredientEntryScreen(
     // Tombol tambah hanya untuk yang berhak menulis; yang hanya boleh membaca melihat riwayatnya saja.
     val canWrite = if (mode == EntryMode.Receipts) access.allows(Permission.StockReceive) else access.allows(Permission.StockAdjust)
     val actionError = state.actionFailure?.let { failureText(it) }
-    val title = stringResource(if (mode == EntryMode.Receipts) Res.string.nav_ingredient_receipts else Res.string.nav_ingredient_waste)
+    val title = stringResource(
+        when (mode) {
+            EntryMode.Receipts -> Res.string.nav_ingredient_receipts
+            EntryMode.Uses -> Res.string.nav_ingredient_use
+            EntryMode.WasteAndTrial -> Res.string.nav_ingredient_waste
+        },
+    )
     val viewing = viewingId?.let { id -> state.items.firstOrNull { it.id == id } }
 
     if (viewing != null) {
@@ -202,7 +219,17 @@ internal fun IngredientEntryScreen(
         sortOptions = timeSortOptions() + nameSortOptions(),
         selectedSort = state.sort,
         onSortChange = viewModel::setSort,
-        addLabel = if (canWrite) stringResource(if (mode == EntryMode.Receipts) Res.string.stock_receipt_add else Res.string.stock_waste_add) else null,
+        addLabel = if (canWrite) {
+            stringResource(
+                when (mode) {
+                    EntryMode.Receipts -> Res.string.stock_receipt_add
+                    EntryMode.Uses -> Res.string.stock_use_add
+                    EntryMode.WasteAndTrial -> Res.string.stock_waste_add
+                },
+            )
+        } else {
+            null
+        },
         onAdd = if (canWrite) {
             {
                 viewModel.clearActionFailure()
@@ -249,6 +276,7 @@ internal fun IngredientEntryScreen(
                         MovementKind.Receipt -> repository.receive(entry.ingredient.id, entry.qty, entry.note, entry.proof)
                         MovementKind.Waste -> repository.waste(entry.ingredient.id, entry.qty, entry.cause, entry.note, entry.proof)
                         MovementKind.Trial -> repository.trial(entry.ingredient.id, entry.qty, entry.note)
+                        MovementKind.Use -> repository.use(entry.ingredient.id, entry.qty, entry.cause, entry.note, entry.clientId)
                     }.also { result -> if (result is DeviceResult.Ok) saved = result.value }
                 }
             },
@@ -395,6 +423,8 @@ private class EntryInput(
     val causeLabel: String?,
     val note: String,
     val proof: ByteArray?,
+    /** Kunci acak satu isian; hanya pemakaian manual yang memakainya. */
+    val clientId: String,
 )
 
 private fun proofTitleOf(kind: CardKind) = if (kind == CardKind.In) Res.string.stock_proof_receipt else Res.string.stock_proof_waste
@@ -410,7 +440,17 @@ private fun EntryForm(
     onDismiss: () -> Unit,
 ) {
     val choices = listOf(MovementKind.Waste, MovementKind.Trial)
-    var kind by remember { mutableStateOf(if (mode == EntryMode.Receipts) MovementKind.Receipt else initialKind) }
+    var kind by remember {
+        mutableStateOf(
+            when (mode) {
+                EntryMode.Receipts -> MovementKind.Receipt
+                EntryMode.Uses -> MovementKind.Use
+                EntryMode.WasteAndTrial -> initialKind
+            },
+        )
+    }
+    // Satu kunci untuk form ini, supaya simpan ulang setelah jawaban hilang tidak mencatat dua kali.
+    val clientId = remember { newClientId() }
     var picked by remember { mutableStateOf<StockIngredient?>(null) }
     var picking by remember { mutableStateOf(false) }
     var qtyText by remember { mutableStateOf("") }
@@ -424,8 +464,8 @@ private fun EntryForm(
     var confirming by remember { mutableStateOf<EntryInput?>(null) }
 
     LaunchedEffect(mode) {
-        if (mode == EntryMode.WasteAndTrial) {
-            when (val result = repository.causes()) {
+        if (mode != EntryMode.Receipts) {
+            when (val result = if (mode == EntryMode.Uses) repository.useCauses() else repository.causes()) {
                 is DeviceResult.Ok -> {
                     causes = result.value
                     causesFailure = null
@@ -455,7 +495,8 @@ private fun EntryForm(
             chosenKind == null -> EntryProblem.Kind
             chosen == null -> EntryProblem.Ingredient
             qty == null -> EntryProblem.Quantity
-            chosenKind == MovementKind.Waste && cause == null -> EntryProblem.Cause
+            (chosenKind == MovementKind.Waste || chosenKind == MovementKind.Use) && cause == null -> EntryProblem.Cause
+            chosenKind == MovementKind.Use && cause == OtherCause && note.isBlank() -> EntryProblem.UseNote
             chosenKind == MovementKind.Trial && note.isBlank() -> EntryProblem.Note
             else -> null
         }
@@ -465,10 +506,11 @@ private fun EntryForm(
             ingredient = chosen,
             qty = qty,
             packages = typed.takeIf { perPackage },
-            cause = if (chosenKind == MovementKind.Waste) cause.orEmpty() else "",
-            causeLabel = causes.firstOrNull { it.code == cause }?.label.takeIf { chosenKind == MovementKind.Waste },
+            cause = if (chosenKind == MovementKind.Waste || chosenKind == MovementKind.Use) cause.orEmpty() else "",
+            causeLabel = causes.firstOrNull { it.code == cause }?.label.takeIf { chosenKind == MovementKind.Waste || chosenKind == MovementKind.Use },
             note = note,
-            proof = photo?.bytes.takeIf { chosenKind != MovementKind.Trial },
+            proof = photo?.bytes.takeIf { chosenKind != MovementKind.Trial && chosenKind != MovementKind.Use },
+            clientId = clientId,
         )
     }
 
@@ -477,6 +519,7 @@ private fun EntryForm(
             MovementKind.Receipt -> Res.string.stock_form_receipt
             MovementKind.Trial -> Res.string.stock_form_trial
             MovementKind.Waste -> Res.string.stock_form_waste
+            MovementKind.Use -> Res.string.stock_form_use
             null -> Res.string.stock_waste_add
         },
     )
@@ -488,6 +531,7 @@ private fun EntryForm(
                 EntryProblem.Quantity -> Res.string.stock_problem_qty
                 EntryProblem.Cause -> Res.string.stock_problem_cause
                 EntryProblem.Note -> Res.string.stock_problem_note
+                EntryProblem.UseNote -> Res.string.stock_problem_use_note
             },
         )
     }
@@ -566,7 +610,7 @@ private fun EntryForm(
                 )
             }
         }
-        if (kind == MovementKind.Waste && causes.isNotEmpty()) {
+        if ((kind == MovementKind.Waste || kind == MovementKind.Use) && causes.isNotEmpty()) {
             DropdownField(
                 label = stringResource(Res.string.stock_field_cause),
                 options = listOf(DropdownOption(null, stringResource(Res.string.stock_pick_cause))) + causes.map { DropdownOption(it.code, it.label) },
@@ -581,10 +625,10 @@ private fun EntryForm(
             value = note,
             onValueChange = {
                 note = it
-                if (problem == EntryProblem.Note) problem = null
+                if (problem == EntryProblem.Note || problem == EntryProblem.UseNote) problem = null
             },
             label = stringResource(if (kind == MovementKind.Trial) Res.string.stock_field_note_required else Res.string.stock_field_note),
-            isError = problem == EntryProblem.Note,
+            isError = problem == EntryProblem.Note || problem == EntryProblem.UseNote,
         )
         val proofKind = when (kind) {
             MovementKind.Receipt -> CardKind.In
@@ -607,6 +651,7 @@ private fun EntryForm(
                 if (problem == EntryProblem.Ingredient) problem = null
             },
             onDismiss = { picking = false },
+            indirectOnly = mode == EntryMode.Uses,
         )
     }
 
@@ -621,6 +666,7 @@ private fun EntryForm(
                 entry.causeLabel,
                 entry.note.trim().ifEmpty { null },
                 stringResource(Res.string.stock_confirm_with_photo).takeIf { entry.proof != null },
+                stringResource(Res.string.stock_use_negative).takeIf { entry.kind == MovementKind.Use && (entry.ingredient.stock.toDoubleOrNull() ?: 0.0) < (entry.qty.toDoubleOrNull() ?: 0.0) },
             ).joinToString("\n"),
             confirmLabel = stringResource(Res.string.stock_save),
             enabled = !submitting,
