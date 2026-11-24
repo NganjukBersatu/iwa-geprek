@@ -11,10 +11,16 @@ const DEV_BACKEND = 'http://localhost:8001';
 const POLICY_HEADER = 'content-security-policy';
 const STRIPPED_RESPONSE_HEADERS = ['content-encoding', 'content-length', 'transfer-encoding', 'connection'];
 
+// The local backend is whichever BACKEND_URL names, not a fixed port, so photos load whatever port the backend runs on.
+function localBackendOrigin(): string {
+	const configured = env.BACKEND_URL || DEV_BACKEND;
+	return URL.canParse(configured) ? new URL(configured).origin : DEV_BACKEND;
+}
+
 // In development file links point at the local backend over http, which the https-only media rule would block.
 function allowLocalFiles(response: Response): Response {
 	const policy = response.headers.get(POLICY_HEADER);
-	if (policy) response.headers.set(POLICY_HEADER, policy.replace(/(img-src|media-src)/g, `$1 ${DEV_BACKEND}`));
+	if (policy) response.headers.set(POLICY_HEADER, policy.replace(/(img-src|media-src)/g, `$1 ${localBackendOrigin()}`));
 	return response;
 }
 
