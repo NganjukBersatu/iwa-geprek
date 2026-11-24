@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ChefHat, ConciergeBell, Fish, Flame, Users } from 'lucide-vue-next'
-import ikanSegar from '@/assets/images/keunggulan-ikan-segar.jpg'
-import sambalKhas from '@/assets/images/keunggulan-sambal-khas.jpg'
-import rasaLezat from '@/assets/images/keunggulan-rasa-lezat.jpg'
-import digorengCrispy from '@/assets/images/keunggulan-digoreng-crispy.jpg'
-import penyajianMenarik from '@/assets/images/keunggulan-penyajian-menarik.jpg'
-import tempatNyaman from '@/assets/images/keunggulan-tempat-nyaman.jpg'
-import goreng from '@/assets/images/goreng.jpg'
+import ikanSegar from '@/assets/images/keunggulan-segar.jpeg'
+import sambalKhas from '@/assets/images/keunggulan-sambel.jpeg'
+import rasaLezat from '@/assets/images/keunggulan-lezat.jpeg'
+import digorengCrispy from '@/assets/images/keunggulan-digoreng.jpeg'
+import penyajianMenarik from '@/assets/images/keunggulan-rapi.jpeg'
+import tempatNyaman from '@/assets/images/keunggulan-tempat.jpeg'
 
 // ===== Data Keunggulan =====
 const advantagesIntro = {

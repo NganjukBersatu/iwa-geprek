@@ -154,6 +154,7 @@ const visibleItems = computed(() =>
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   gap: 26px;
+  align-items: start;
 }
 @media (max-width: 900px) {
   .grid {

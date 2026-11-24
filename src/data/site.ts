@@ -5,7 +5,7 @@ export type NavKey = 'beranda' | 'keunggulan' | 'menu' | 'kontak' | 'karier'
 export const navLinks: { key: NavKey; label: string; to: string }[] = [
   { key: 'beranda', label: 'Beranda', to: '/#beranda' },
   { key: 'keunggulan', label: 'Keunggulan', to: '/#keunggulan' },
-  { key: 'menu', label: 'Menu Andalan', to: '/menu' },
+  { key: 'menu', label: 'Menu', to: '/menu' },
   { key: 'kontak', label: 'Kontak', to: '/#kontak' },
   { key: 'karier', label: 'Karier', to: '/#karier' },
 ]

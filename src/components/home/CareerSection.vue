@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ClipboardList, Mail, MessageCircle, Star, Users } from 'lucide-vue-next'
-import logo from '@/assets/images/logo-iwageprek.png'
-import crewPhoto from '@/assets/images/crew-iwageprek.webp'
+import logo from '@/assets/images/logo.jpeg'
+import crewPhoto from '@/assets/images/crew.jpeg'
 
 // ===== Data Karier =====
 const APPLY_SUBJECT = 'Lamaran%20Crew%20Restoran%20IwaGeprek'
