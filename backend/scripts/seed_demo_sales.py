@@ -254,7 +254,7 @@ def seed_day(db: Session, rng: random.Random, plan: Plan, day: date, day_index: 
             status=CashSessionStatus.CLOSED if ended else CashSessionStatus.OPEN,
         )
         span = int((window_end - opened).total_seconds() // 60)
-        moments = sorted(opened + timedelta(minutes=rng.randint(2, max(3, span - 2))) for _ in range(round(rng.randint(7, 13) * busy * growth)))
+        moments = sorted(opened + timedelta(minutes=rng.randint(2, max(3, span - 2))) for _ in range(round(rng.randint(*CATALOG.orders_per_session) * busy * growth)))
         built = [build_order(rng, plan, session, moment, f"DEMO-{day:%Y%m%d}-{sessions + 1}{index:03d}") for index, moment in enumerate(moments, start=1)]
         spent = [build_expense(rng, plan, session, opened + timedelta(minutes=rng.randint(10, max(11, span - 5)))) for _ in range(rng.randint(0, 2) if CATALOG.expenses else 0)]
 
@@ -317,7 +317,7 @@ def main() -> int:
             return 1
 
         print(f"Cabang tujuan: {outlet.name}")
-        print(f"Rencana: {DAYS} hari terakhir, {len(CATALOG.shifts)} sesi kas per hari, sekitar 10 sampai 20 pesanan per sesi, {len(CASHIER_NAMES)} kasir demo, {len(CATALOG.menus())} menu demo.")
+        print(f"Rencana: {DAYS} hari terakhir, {len(CATALOG.shifts)} sesi kas per hari, sekitar {CATALOG.orders_per_session[0]} sampai {CATALOG.orders_per_session[1]} pesanan per sesi, {len(CASHIER_NAMES)} kasir demo, {len(CATALOG.menus())} menu demo.")
         if "--tulis" not in args:
             print("Belum ada yang ditulis. Jalankan dengan --tulis untuk membuatnya.")
             return 0

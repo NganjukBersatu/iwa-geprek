@@ -16,6 +16,9 @@ CATALOG_PATH = Path(__file__).resolve().parent / "demo_catalog.json"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 UNITS = ("gram", "ml", "pcs")
 IMAGE_SUFFIXES = (".jpg", ".jpeg", ".png", ".webp")
+STATIONS = ("bar", "kitchen")
+# Bawaan jumlah pesanan per sesi kas bila katalog tidak menyebutnya.
+DEFAULT_ORDERS_PER_SESSION = (7, 13)
 MOVE_KINDS = (INGREDIENT_IN, INGREDIENT_OUT, INGREDIENT_WASTE, INGREDIENT_RND, INGREDIENT_ADJUSTMENT)
 
 
@@ -35,6 +38,8 @@ class Menu:
 @dataclass(frozen=True)
 class MenuCategory:
     name: str
+    # Stasiun yang membuat menu kategori ini di papan stasiun demo: bar atau kitchen.
+    station: str
     menus: tuple[Menu, ...]
 
 
@@ -73,6 +78,7 @@ class Catalog:
     branch_name: str
     opening_cash: Decimal
     shifts: tuple[tuple[time, time], ...]
+    orders_per_session: tuple[int, int]
     menu_categories: tuple[MenuCategory, ...]
     ingredient_categories: tuple[str, ...]
     ingredients: tuple[Ingredient, ...]
@@ -179,6 +185,21 @@ def _menu(raw: dict, where: str, ingredients: set[str], indirect: set[str]) -> M
     return Menu(_text(raw.get("name"), f"{where}.name"), price, weight, _image(raw.get("image"), f"{where}.image"), tuple(recipe))
 
 
+def _station(value: object, where: str) -> str:
+    if value not in STATIONS:
+        raise CatalogError(f"{where}: pilih salah satu dari {', '.join(STATIONS)}")
+    return str(value)
+
+
+def _range(value: object, where: str) -> tuple[int, int]:
+    if value is None:
+        return DEFAULT_ORDERS_PER_SESSION
+    valid = isinstance(value, list) and len(value) == 2 and all(isinstance(item, int) and not isinstance(item, bool) for item in value)
+    if not valid or not 1 <= value[0] <= value[1] <= 500:
+        raise CatalogError(f"{where}: bentuknya [paling sedikit, paling banyak], antara 1 dan 500")
+    return value[0], value[1]
+
+
 def _unique(names: list[str], where: str) -> None:
     seen: set[str] = set()
     for name in names:
@@ -206,6 +227,7 @@ def load(path: Path = CATALOG_PATH) -> Catalog:
     menu_categories = tuple(
         MenuCategory(
             _text(category.get("name"), f"menu_categories[{index}].name"),
+            _station(category.get("station", "kitchen"), f"menu_categories[{index}].station"),
             tuple(_menu(menu, f"menu_categories[{index}].menus[{position}]", names, indirect) for position, menu in enumerate(category.get("menus", []))),
         )
         for index, category in enumerate(raw.get("menu_categories", []))
@@ -228,6 +250,7 @@ def load(path: Path = CATALOG_PATH) -> Catalog:
         branch_name=_text(raw.get("branch_name"), "branch_name"),
         opening_cash=_number(raw.get("opening_cash"), "opening_cash"),
         shifts=shifts,
+        orders_per_session=_range(raw.get("orders_per_session"), "orders_per_session"),
         menu_categories=menu_categories,
         ingredient_categories=categories,
         ingredients=ingredients,

@@ -36,6 +36,7 @@ from app.models.order_item import OrderItem  # noqa: E402
 from app.models.outlet import Outlet  # noqa: E402
 from app.models.payment_method import PaymentMethod  # noqa: E402
 from app.models.user import User  # noqa: E402
+from scripts import demo_catalog  # noqa: E402
 from app.models.station import (  # noqa: E402
     CategoryStation,
     MenuTarget,
@@ -65,7 +66,8 @@ STATIONS = (
     (CASHIER_ID, "Kasir", "handover", 13, HANDOVER_TARGET_SECONDS),
 )
 # Kategori demo penjualan diarahkan ke stasiun pembuatnya.
-CATEGORY_STATIONS = {"Kopi Demo": BAR_ID, "Non-Kopi Demo": BAR_ID, "Roti Demo": KITCHEN_ID, "Dessert Demo": KITCHEN_ID}
+# Kategori menu dan stasiun pembuatnya dari demo_catalog.json milik klien.
+CATEGORY_STATIONS = {category.name: BAR_ID if category.station == "bar" else KITCHEN_ID for category in demo_catalog.load().menu_categories}
 
 
 def new_id() -> str:
