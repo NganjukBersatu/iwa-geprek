@@ -70,6 +70,38 @@ STATIONS = (
 CATEGORY_STATIONS = {category.name: BAR_ID if category.station == "bar" else KITCHEN_ID for category in demo_catalog.load().menu_categories}
 
 
+# (jenis, meja, [(stasiun pembuat, jumlah)], menit sejak dibuat); menunya diambil bergiliran dari kategori katalog klien di stasiun itu.
+ORDER_SHAPES = (
+    (DINE_IN, "4", (("bar", 2), ("kitchen", 1)), 9),
+    (TAKE_AWAY, None, (("bar", 1), ("bar", 1)), 2),
+    (DINE_IN, "7", (("bar", 2), ("kitchen", 1)), 1),
+    (DINE_IN, "2", (("bar", 1),), 3),
+    (DINE_IN, "9", (("bar", 1), ("kitchen", 1)), 6),
+    (DINE_IN, "5", (("kitchen", 1),), 5),
+    (DINE_IN, "1", (("bar", 1),), 12),
+    (TAKE_AWAY, None, (("kitchen", 1),), 8),
+)
+
+
+def order_plan(catalog: demo_catalog.Catalog) -> list[tuple[str, str | None, list[tuple[str, int]], int]]:
+    """Pesanan antrean papan stasiun dengan menu klien sendiri; stasiun tanpa kategori memakai menu stasiun lainnya."""
+    by_station: dict[str, list[str]] = {}
+    for category in catalog.menu_categories:
+        by_station.setdefault(category.station, []).extend(menu.name for menu in category.menus)
+    every = [menu.name for menu in catalog.menus()]
+    turns: dict[str, int] = {}
+    plan = []
+    for order_type, table, lines, minutes in ORDER_SHAPES:
+        chosen = []
+        for station, qty in lines:
+            names = by_station.get(station) or every
+            turn = turns.get(station, 0)
+            chosen.append((names[turn % len(names)], qty))
+            turns[station] = turn + 1
+        plan.append((order_type, table, chosen, minutes))
+    return plan
+
+
 def new_id() -> str:
     return f"{PREFIX}-{uuid.uuid4()}"
 
@@ -192,17 +224,7 @@ def main() -> int:
             db.add(session)
         db.flush()
 
-        plan = (
-            # (jenis, meja, [(menu, jumlah)], menit sejak dibuat)
-            (DINE_IN, "4", [("Kopi Susu", 2), ("Croissant", 1)], 9),
-            (TAKE_AWAY, None, [("Americano", 1), ("Latte", 1)], 2),
-            (DINE_IN, "7", [("Matcha Latte", 2), ("Brownies", 1)], 1),
-            (DINE_IN, "2", [("Cappuccino", 1)], 3),
-            (DINE_IN, "9", [("Teh Lemon", 1), ("Cinnamon Roll", 1)], 6),
-            (DINE_IN, "5", [("Cheesecake", 1)], 5),
-            (DINE_IN, "1", [("Cokelat Panas", 1)], 12),
-            (TAKE_AWAY, None, [("Pudding Karamel", 1)], 8),
-        )
+        plan = order_plan(demo_catalog.load())
         orders: list[Order] = []
         for index, (order_type, table, lines, minutes) in enumerate(plan, start=1):
             created = stamp - timedelta(minutes=minutes)
@@ -260,8 +282,17 @@ def main() -> int:
         def ids(order: Order, station_id: str) -> list[str]:
             return [task.id for task in tasks_at(db, order.id, station_id)]
 
+        # Klien yang semua menunya di satu stasiun tidak punya tugas di stasiun lain; langkah untuk stasiun itu dilewati.
+        def start(task_ids: list[str]) -> None:
+            if task_ids:
+                stations.start(db, actor, None, task_ids, waiting)
+
+        def finish(task_ids: list[str]) -> None:
+            if task_ids:
+                stations.finish(db, actor, None, task_ids, started)
+
         # 1: Bar diproses dan sudah lewat targetnya, Dapur masih menunggu.
-        stations.start(db, actor, None, ids(orders[0], BAR_ID), waiting)
+        start(ids(orders[0], BAR_ID))
         for task_id in ids(orders[0], BAR_ID):
             age(db, task_id, arrived=9, started=6)
         for task_id in ids(orders[0], KITCHEN_ID):
@@ -272,7 +303,7 @@ def main() -> int:
                 for task_id in ids(order, station_id):
                     age(db, task_id, arrived=minutes)
         # 4: Bar baru dimulai, masih ada sisa waktu.
-        stations.start(db, actor, None, ids(orders[3], BAR_ID), waiting)
+        start(ids(orders[3], BAR_ID))
         for task_id in ids(orders[3], BAR_ID):
             age(db, task_id, arrived=3, started=1)
         # 5: pengajuan pembatalan yang menunggu keputusan.
@@ -284,11 +315,11 @@ def main() -> int:
         orders[5].voided_by_id = counter.id
         db.commit()
         # 7: Bar selesai, menunggu diantar Waiters.
-        stations.start(db, actor, None, ids(orders[6], BAR_ID), waiting)
-        stations.finish(db, actor, None, ids(orders[6], BAR_ID), started)
+        start(ids(orders[6], BAR_ID))
+        finish(ids(orders[6], BAR_ID))
         # 8: Dapur selesai, menunggu diantar Waiters.
-        stations.start(db, actor, None, ids(orders[7], KITCHEN_ID), waiting)
-        stations.finish(db, actor, None, ids(orders[7], KITCHEN_ID), started)
+        start(ids(orders[7], KITCHEN_ID))
+        finish(ids(orders[7], KITCHEN_ID))
 
         valid = [order for order in orders if order.voided_at is None]
         session.system_revenue = sum((order.total for order in valid), Decimal("0"))

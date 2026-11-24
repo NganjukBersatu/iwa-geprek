@@ -35,30 +35,54 @@ from app.models.order_item import OrderItem  # noqa: E402
 from app.models.overpayment import Overpayment  # noqa: E402
 from app.models.payment_method import PaymentMethod  # noqa: E402
 from app.models.user import User  # noqa: E402
+from scripts import demo_catalog  # noqa: E402
 
 PREFIX = "demo-fin"
 CONFIRMATION = "ya"
 COST_RATIO = Decimal("0.35")
 
-# (jenis, meja, [(menu, jumlah)], dibayar lebih dari total, menit sejak dibuat, dibatalkan)
-ORDERS = (
-    (DINE_IN, "3", [("Kopi Susu", 2), ("Croissant", 1)], 6000, 95, False),
-    (TAKE_AWAY, None, [("Matcha Latte", 1)], 3000, 80, False),
-    (DINE_IN, "6", [("Latte", 2), ("Brownies", 1)], 1000, 60, False),
-    (TAKE_AWAY, None, [("Americano", 3)], 6000, 40, False),
-    (DINE_IN, "2", [("Cheesecake", 1), ("Teh Lemon", 1)], 8000, 25, True),
-    (DINE_IN, "8", [("Cappuccino", 1)], 500, 10, False),
+# (jenis, meja, jumlah tiap baris, dibayar lebih dari total, menit sejak dibuat, dibatalkan); menunya diambil bergiliran dari katalog klien.
+ORDER_SHAPES = (
+    (DINE_IN, "3", (2, 1), 6000, 95, False),
+    (TAKE_AWAY, None, (1,), 3000, 80, False),
+    (DINE_IN, "6", (2, 1), 1000, 60, False),
+    (TAKE_AWAY, None, (3,), 6000, 40, False),
+    (DINE_IN, "2", (1, 1), 8000, 25, True),
+    (DINE_IN, "8", (1,), 500, 10, False),
 )
-# (nama, nominal, sumber dana, catatan, menit sejak dicatat)
-EXPENSES = (
-    ("Susu segar 12 liter", 216000, FundSource.DRAWER_CASH, "Supplier langganan", 110),
-    ("Gas elpiji 3 kg", 85000, FundSource.DRAWER_CASH, None, 100),
-    ("Kertas struk 10 roll", 120000, FundSource.OTHER_FUNDS, "Untuk printer kasir dan stasiun", 90),
-    ("Es batu 2 karung", 40000, FundSource.DRAWER_CASH, None, 70),
-    ("Gula aren 5 kg", 175000, FundSource.OTHER_FUNDS, None, 55),
-    ("Gelas plastik 500 pcs", 150000, FundSource.DRAWER_CASH, "Ukuran 16 oz", 30),
-    ("Tisu meja 6 pak", 66000, FundSource.DRAWER_CASH, None, 15),
+# (sumber dana, catatan, menit sejak dicatat) untuk pengeluaran contoh dari katalog klien, berurutan.
+EXPENSE_SLOTS = (
+    (FundSource.DRAWER_CASH, "Supplier langganan", 110),
+    (FundSource.DRAWER_CASH, None, 100),
+    (FundSource.OTHER_FUNDS, None, 90),
+    (FundSource.DRAWER_CASH, None, 70),
+    (FundSource.OTHER_FUNDS, None, 55),
+    (FundSource.DRAWER_CASH, None, 30),
+    (FundSource.DRAWER_CASH, None, 15),
 )
+EXPENSE_ROUNDING = 1000
+
+
+def planned_orders(menu_names: list[str]) -> list[tuple]:
+    """Pesanan contoh dengan menu bergiliran dari katalog, sehingga setiap klien melihat menunya sendiri."""
+    plan = []
+    position = 0
+    for order_type, table, quantities, extra, minutes, voided in ORDER_SHAPES:
+        lines = []
+        for qty in quantities:
+            lines.append((menu_names[position % len(menu_names)], qty))
+            position += 1
+        plan.append((order_type, table, lines, extra, minutes, voided))
+    return plan
+
+
+def planned_expenses(catalog: demo_catalog.Catalog) -> list[tuple[str, int, FundSource, str | None, int]]:
+    """Pengeluaran contoh dari daftar pengeluaran katalog, dengan nominal di tengah rentangnya."""
+    return [
+        (item.name, ((item.low + item.high) // 2 + EXPENSE_ROUNDING // 2) // EXPENSE_ROUNDING * EXPENSE_ROUNDING, source, note, minutes)
+        # Paling banyak sebanyak slot yang ada; pengeluaran katalog selebihnya tidak dipakai di contoh hari ini.
+        for item, (source, note, minutes) in zip(catalog.expenses, EXPENSE_SLOTS, strict=False)
+    ]
 
 
 def new_id() -> str:
@@ -142,7 +166,8 @@ def main() -> int:
         floor = session.opened_at
         drawer_total = Decimal("0")
         revenue_total = Decimal("0")
-        for index, (order_type, table, lines, extra, minutes, voided) in enumerate(ORDERS, start=1):
+        catalog = demo_catalog.load()
+        for index, (order_type, table, lines, extra, minutes, voided) in enumerate(planned_orders([item.name for item in catalog.menus()]), start=1):
             created = max(stamp - timedelta(minutes=minutes), floor + timedelta(minutes=index))
             order_id = new_id()
             total = Decimal("0")
@@ -189,7 +214,7 @@ def main() -> int:
             overpayment.sync(db, order, method)
             if not voided:
                 revenue_total += total
-        for name, amount, source, note, minutes in EXPENSES:
+        for name, amount, source, note, minutes in planned_expenses(catalog):
             db.add(
                 Expense(
                     id=new_id(),
