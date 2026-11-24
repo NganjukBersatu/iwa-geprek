@@ -43,7 +43,7 @@ const advantages = [
     id: 'digoreng-crispy',
     title: 'Digoreng Crispy',
     description: 'Digoreng hingga garing dan renyah di luar, tetap juicy di dalam.',
-    image: digorengCrispy,
+    image: goreng,
     imageAlt: 'Digoreng Crispy',
     icon: Flame,
   },

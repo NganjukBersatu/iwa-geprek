@@ -99,6 +99,15 @@ export const menuItems: MenuItem[] = [
     imageAlt: 'Kulit salmon crispy',
     variants: [sambalGeprek(11000, 13000, 16000), sausLautApi(13000, 16000)],
   },
+   {
+    id: 'lodeh',
+    name: "Sayur Lodeh",
+    description: "Hidangan berkuah santan khas Indonesia",
+    price: 15000,
+    category: 'Sayur',
+    image: lodeh,
+    imageAlt: "Sayur Lodeh",
+  },
   {
     id: 'salmon-crispy',
     name: 'Salmon Crispy',
