@@ -1,0 +1,1491 @@
+{
+ "branch_name": "IWAGEPREK Kertosono",
+ "opening_cash": 300000,
+ "shifts": [
+  [
+   "10:00",
+   "16:00"
+  ],
+  [
+   "16:00",
+   "22:00"
+  ]
+ ],
+ "menu_categories": [
+  {
+   "name": "Ikan Geprek",
+   "menus": [
+    {
+     "name": "Kulit Patin Crispy Sambal Geprek",
+     "price": 9000,
+     "weight": 14,
+     "image": "site/src/assets/images/kulit-patin.png",
+     "recipe": [
+      [
+       "Kulit Patin",
+       "60"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Cabai Rawit Merah",
+       "15"
+      ],
+      [
+       "Bawang Putih",
+       "5"
+      ],
+      [
+       "Garam",
+       "2"
+      ]
+     ]
+    },
+    {
+     "name": "Kulit Patin Crispy Sambal Ijo",
+     "price": 9000,
+     "weight": 7,
+     "image": "site/src/assets/images/kulit-patin.png",
+     "recipe": [
+      [
+       "Kulit Patin",
+       "60"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Cabai Hijau",
+       "15"
+      ],
+      [
+       "Bawang Putih",
+       "5"
+      ],
+      [
+       "Garam",
+       "2"
+      ]
+     ]
+    },
+    {
+     "name": "Kulit Patin Crispy Saus Laut Api",
+     "price": 11000,
+     "weight": 9,
+     "image": "site/src/assets/images/kulit-patin.png",
+     "recipe": [
+      [
+       "Kulit Patin",
+       "60"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Saus Sambal Botol",
+       "40"
+      ],
+      [
+       "Cabai Rawit Merah",
+       "5"
+      ]
+     ]
+    },
+    {
+     "name": "Patin Crispy Sambal Geprek",
+     "price": 11000,
+     "weight": 14,
+     "image": "site/src/assets/images/patin.png",
+     "recipe": [
+      [
+       "Fillet Patin",
+       "70"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Cabai Rawit Merah",
+       "15"
+      ],
+      [
+       "Bawang Putih",
+       "5"
+      ],
+      [
+       "Garam",
+       "2"
+      ]
+     ]
+    },
+    {
+     "name": "Patin Crispy Sambal Ijo",
+     "price": 11000,
+     "weight": 7,
+     "image": "site/src/assets/images/patin.png",
+     "recipe": [
+      [
+       "Fillet Patin",
+       "70"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Cabai Hijau",
+       "15"
+      ],
+      [
+       "Bawang Putih",
+       "5"
+      ],
+      [
+       "Garam",
+       "2"
+      ]
+     ]
+    },
+    {
+     "name": "Patin Crispy Saus Laut Api",
+     "price": 13000,
+     "weight": 9,
+     "image": "site/src/assets/images/patin.png",
+     "recipe": [
+      [
+       "Fillet Patin",
+       "70"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Saus Sambal Botol",
+       "40"
+      ],
+      [
+       "Cabai Rawit Merah",
+       "5"
+      ]
+     ]
+    },
+    {
+     "name": "Kulit Salmon Crispy Sambal Geprek",
+     "price": 11000,
+     "weight": 9,
+     "image": "site/src/assets/images/kulit-salmon.png",
+     "recipe": [
+      [
+       "Kulit Salmon",
+       "50"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Cabai Rawit Merah",
+       "15"
+      ],
+      [
+       "Bawang Putih",
+       "5"
+      ],
+      [
+       "Garam",
+       "2"
+      ]
+     ]
+    },
+    {
+     "name": "Kulit Salmon Crispy Sambal Ijo",
+     "price": 11000,
+     "weight": 5,
+     "image": "site/src/assets/images/kulit-salmon.png",
+     "recipe": [
+      [
+       "Kulit Salmon",
+       "50"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Cabai Hijau",
+       "15"
+      ],
+      [
+       "Bawang Putih",
+       "5"
+      ],
+      [
+       "Garam",
+       "2"
+      ]
+     ]
+    },
+    {
+     "name": "Kulit Salmon Crispy Saus Laut Api",
+     "price": 13000,
+     "weight": 6,
+     "image": "site/src/assets/images/kulit-salmon.png",
+     "recipe": [
+      [
+       "Kulit Salmon",
+       "50"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Saus Sambal Botol",
+       "40"
+      ],
+      [
+       "Cabai Rawit Merah",
+       "5"
+      ]
+     ]
+    },
+    {
+     "name": "Salmon Crispy Sambal Geprek",
+     "price": 13000,
+     "weight": 9,
+     "image": "site/src/assets/images/salmon.png",
+     "recipe": [
+      [
+       "Fillet Salmon",
+       "45"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Cabai Rawit Merah",
+       "15"
+      ],
+      [
+       "Bawang Putih",
+       "5"
+      ],
+      [
+       "Garam",
+       "2"
+      ]
+     ]
+    },
+    {
+     "name": "Salmon Crispy Sambal Ijo",
+     "price": 13000,
+     "weight": 5,
+     "image": "site/src/assets/images/salmon.png",
+     "recipe": [
+      [
+       "Fillet Salmon",
+       "45"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Cabai Hijau",
+       "15"
+      ],
+      [
+       "Bawang Putih",
+       "5"
+      ],
+      [
+       "Garam",
+       "2"
+      ]
+     ]
+    },
+    {
+     "name": "Salmon Crispy Saus Laut Api",
+     "price": 15000,
+     "weight": 6,
+     "image": "site/src/assets/images/salmon.png",
+     "recipe": [
+      [
+       "Fillet Salmon",
+       "45"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ],
+      [
+       "Saus Sambal Botol",
+       "40"
+      ],
+      [
+       "Cabai Rawit Merah",
+       "5"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Tambahan",
+   "menus": [
+    {
+     "name": "Nasi Putih",
+     "price": 4000,
+     "weight": 42,
+     "image": "site/src/assets/images/menu-nasi-putih.jpg",
+     "recipe": [
+      [
+       "Beras",
+       "100"
+      ]
+     ]
+    },
+    {
+     "name": "Nasi Daun Jeruk",
+     "price": 5000,
+     "weight": 12,
+     "image": "site/src/assets/images/menu-nasi-daun-jeruk.jpg",
+     "recipe": [
+      [
+       "Beras",
+       "100"
+      ],
+      [
+       "Daun Jeruk",
+       "2"
+      ],
+      [
+       "Bawang Putih",
+       "3"
+      ]
+     ]
+    },
+    {
+     "name": "Air Mineral",
+     "price": 5000,
+     "weight": 21,
+     "image": "site/src/assets/images/air.jpeg",
+     "recipe": [
+      [
+       "Air Mineral 600 ml",
+       "1"
+      ]
+     ]
+    },
+    {
+     "name": "Sambal Geprek",
+     "price": 2000,
+     "weight": 6,
+     "image": "site/src/assets/images/menu-sambal-geprek.jpg",
+     "recipe": [
+      [
+       "Cabai Rawit Merah",
+       "15"
+      ],
+      [
+       "Bawang Putih",
+       "5"
+      ],
+      [
+       "Garam",
+       "2"
+      ]
+     ]
+    },
+    {
+     "name": "Sambal Ijo",
+     "price": 2000,
+     "weight": 3,
+     "image": "site/src/assets/images/menu-sambal-ijo.jpg",
+     "recipe": [
+      [
+       "Cabai Hijau",
+       "15"
+      ],
+      [
+       "Bawang Putih",
+       "5"
+      ],
+      [
+       "Garam",
+       "2"
+      ]
+     ]
+    },
+    {
+     "name": "Saus Sachet",
+     "price": 2000,
+     "weight": 6,
+     "image": "site/src/assets/images/menu-saus-sachet.jpg",
+     "recipe": [
+      [
+       "Saus Sachet",
+       "1"
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "ingredient_categories": [
+  "Ikan",
+  "Bahan Kering",
+  "Bumbu dan Sayur",
+  "Saus dan Minuman",
+  "Kemasan dan Operasional"
+ ],
+ "ingredients": [
+  {
+   "name": "Fillet Patin",
+   "category": "Ikan",
+   "unit": "gram",
+   "package_price": 45000,
+   "package_size": 1000,
+   "minimum": 3500,
+   "shrink_tolerance": 3,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "10000",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-4500",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "6000",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-5000",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "5000",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-3500",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-200",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Kulit Patin",
+   "category": "Ikan",
+   "unit": "gram",
+   "package_price": 25000,
+   "package_size": 1000,
+   "minimum": 2500,
+   "shrink_tolerance": 3,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "7500",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-3375",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "4500",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-3750",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "3750",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-2625",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-150",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Fillet Salmon",
+   "category": "Ikan",
+   "unit": "gram",
+   "package_price": 90000,
+   "package_size": 1000,
+   "minimum": 1500,
+   "shrink_tolerance": 3,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "4500",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-2025",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "2700",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-2250",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "2250",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-1575",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-90",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Kulit Salmon",
+   "category": "Ikan",
+   "unit": "gram",
+   "package_price": 40000,
+   "package_size": 1000,
+   "minimum": 1500,
+   "shrink_tolerance": 3,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "4500",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-2025",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "2700",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-2250",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "2250",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-1575",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-90",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Tepung Bumbu Crispy",
+   "category": "Bahan Kering",
+   "unit": "gram",
+   "package_price": 28000,
+   "package_size": 1000,
+   "minimum": 5000,
+   "shrink_tolerance": 2,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "15000",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-6750",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "9000",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-7500",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "7500",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-5250",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-300",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Beras",
+   "category": "Bahan Kering",
+   "unit": "gram",
+   "package_price": 70000,
+   "package_size": 5000,
+   "minimum": 15000,
+   "shrink_tolerance": 2,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "50000",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-22500",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "30000",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-25000",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "25000",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-17500",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-1000",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Garam",
+   "category": "Bahan Kering",
+   "unit": "gram",
+   "package_price": 12000,
+   "package_size": 1000,
+   "minimum": 500,
+   "shrink_tolerance": 2,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "2000",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-900",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "1200",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-1000",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "1000",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-700",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-40",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Cabai Rawit Merah",
+   "category": "Bumbu dan Sayur",
+   "unit": "gram",
+   "package_price": 60000,
+   "package_size": 1000,
+   "minimum": 2500,
+   "shrink_tolerance": 5,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "6000",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-2700",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "3600",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-3000",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "3000",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-2100",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-120",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Cabai Hijau",
+   "category": "Bumbu dan Sayur",
+   "unit": "gram",
+   "package_price": 45000,
+   "package_size": 1000,
+   "minimum": 1000,
+   "shrink_tolerance": 5,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "3000",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-1350",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "1800",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-1500",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "1500",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-1050",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-60",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Bawang Putih",
+   "category": "Bumbu dan Sayur",
+   "unit": "gram",
+   "package_price": 40000,
+   "package_size": 1000,
+   "minimum": 1000,
+   "shrink_tolerance": 4,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "3000",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-1350",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "1800",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-1500",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "1500",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-1050",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-60",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Daun Jeruk",
+   "category": "Bumbu dan Sayur",
+   "unit": "gram",
+   "package_price": 40000,
+   "package_size": 1000,
+   "minimum": 150,
+   "shrink_tolerance": 5,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "500",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-225",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "300",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-250",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "250",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-175",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-10",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Saus Sambal Botol",
+   "category": "Saus dan Minuman",
+   "unit": "ml",
+   "package_price": 25000,
+   "package_size": 1000,
+   "minimum": 2000,
+   "shrink_tolerance": 2,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "6000",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-2700",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "3600",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-3000",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "3000",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-2100",
+     null
+    ],
+    [
+     4,
+     "rusak",
+     "-120",
+     "kedaluwarsa"
+    ]
+   ]
+  },
+  {
+   "name": "Saus Sachet",
+   "category": "Saus dan Minuman",
+   "unit": "pcs",
+   "package_price": 15000,
+   "package_size": 50,
+   "minimum": 50,
+   "shrink_tolerance": 0,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "300",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-135",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "180",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-150",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "150",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-105",
+     null
+    ]
+   ]
+  },
+  {
+   "name": "Air Mineral 600 ml",
+   "category": "Saus dan Minuman",
+   "unit": "pcs",
+   "package_price": 48000,
+   "package_size": 24,
+   "minimum": 24,
+   "shrink_tolerance": 0,
+   "active": true,
+   "indirect": false,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "96",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-43",
+     null
+    ],
+    [
+     18,
+     "masuk",
+     "58",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-48",
+     null
+    ],
+    [
+     6,
+     "masuk",
+     "48",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-34",
+     null
+    ]
+   ]
+  },
+  {
+   "name": "Minyak Goreng",
+   "category": "Kemasan dan Operasional",
+   "unit": "ml",
+   "package_price": 38000,
+   "package_size": 2000,
+   "minimum": 3000,
+   "shrink_tolerance": 3,
+   "active": true,
+   "indirect": true,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "10000",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-4500",
+     "masak"
+    ],
+    [
+     18,
+     "masuk",
+     "6000",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-5000",
+     "masak"
+    ],
+    [
+     6,
+     "masuk",
+     "5000",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-3500",
+     "masak"
+    ]
+   ]
+  },
+  {
+   "name": "Gas LPG 12 kg",
+   "category": "Kemasan dan Operasional",
+   "unit": "pcs",
+   "package_price": 210000,
+   "package_size": 1,
+   "minimum": 1,
+   "shrink_tolerance": 0,
+   "active": true,
+   "indirect": true,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "3",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-1",
+     "masak"
+    ],
+    [
+     18,
+     "masuk",
+     "2",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-2",
+     "masak"
+    ],
+    [
+     6,
+     "masuk",
+     "2",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-1",
+     "masak"
+    ]
+   ]
+  },
+  {
+   "name": "Kotak Makan Kertas",
+   "category": "Kemasan dan Operasional",
+   "unit": "pcs",
+   "package_price": 75000,
+   "package_size": 100,
+   "minimum": 100,
+   "shrink_tolerance": 0,
+   "active": true,
+   "indirect": true,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "300",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-135",
+     "lainnya"
+    ],
+    [
+     18,
+     "masuk",
+     "180",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-150",
+     "lainnya"
+    ],
+    [
+     6,
+     "masuk",
+     "150",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-105",
+     "lainnya"
+    ]
+   ]
+  },
+  {
+   "name": "Kantong Plastik",
+   "category": "Kemasan dan Operasional",
+   "unit": "pcs",
+   "package_price": 25000,
+   "package_size": 100,
+   "minimum": 100,
+   "shrink_tolerance": 0,
+   "active": true,
+   "indirect": true,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "500",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-225",
+     "lainnya"
+    ],
+    [
+     18,
+     "masuk",
+     "300",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-250",
+     "lainnya"
+    ],
+    [
+     6,
+     "masuk",
+     "250",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-175",
+     "lainnya"
+    ]
+   ]
+  },
+  {
+   "name": "Tisu",
+   "category": "Kemasan dan Operasional",
+   "unit": "pcs",
+   "package_price": 15000,
+   "package_size": 10,
+   "minimum": 5,
+   "shrink_tolerance": 0,
+   "active": true,
+   "indirect": true,
+   "moves": [
+    [
+     30,
+     "masuk",
+     "20",
+     null
+    ],
+    [
+     24,
+     "keluar",
+     "-9",
+     "lainnya"
+    ],
+    [
+     18,
+     "masuk",
+     "12",
+     null
+    ],
+    [
+     12,
+     "keluar",
+     "-10",
+     "lainnya"
+    ],
+    [
+     6,
+     "masuk",
+     "10",
+     null
+    ],
+    [
+     2,
+     "keluar",
+     "-7",
+     "lainnya"
+    ]
+   ]
+  }
+ ],
+ "expenses": [
+  {
+   "name": "Fillet patin dan kulit patin",
+   "min": 150000,
+   "max": 350000
+  },
+  {
+   "name": "Fillet salmon dan kulit salmon",
+   "min": 200000,
+   "max": 450000
+  },
+  {
+   "name": "Cabai, bawang, dan daun jeruk",
+   "min": 60000,
+   "max": 150000
+  },
+  {
+   "name": "Minyak goreng",
+   "min": 76000,
+   "max": 152000
+  },
+  {
+   "name": "Gas LPG 12 kg",
+   "min": 210000,
+   "max": 210000
+  },
+  {
+   "name": "Kemasan bawa pulang",
+   "min": 50000,
+   "max": 100000
+  },
+  {
+   "name": "Air mineral",
+   "min": 48000,
+   "max": 96000
+  }
+ ]
+}
