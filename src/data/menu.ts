@@ -7,6 +7,7 @@ import imgNasiDaunJeruk from '@/assets/images/menu-nasi-daun-jeruk.jpg'
 import imgSambalGeprek from '@/assets/images/menu-sambal-geprek.jpg'
 import imgSambalIjo from '@/assets/images/menu-sambal-ijo.jpg'
 import imgSausSachet from '@/assets/images/menu-saus-sachet.jpg'
+import imgAir from '@/assets/images/air.jpeg'
 
 export type FilterKey = 'all' | 'Anti Ayam' | 'Tambahan'
 
@@ -99,15 +100,6 @@ export const menuItems: MenuItem[] = [
     imageAlt: 'Kulit salmon crispy',
     variants: [sambalGeprek(11000, 13000, 16000), sausLautApi(13000, 16000)],
   },
-   {
-    id: 'lodeh',
-    name: "Sayur Lodeh",
-    description: "Hidangan berkuah santan khas Indonesia",
-    price: 15000,
-    category: 'Sayur',
-    image: lodeh,
-    imageAlt: "Sayur Lodeh",
-  },
   {
     id: 'salmon-crispy',
     name: 'Salmon Crispy',
@@ -122,6 +114,8 @@ export const menuItems: MenuItem[] = [
     image: imgNasiPutih, imageAlt: 'Nasi putih' },
   { id: 'nasi-daun-jeruk', name: 'Nasi Daun Jeruk', category: 'Tambahan', price: 5000,
     image: imgNasiDaunJeruk, imageAlt: 'Nasi daun jeruk' },
+     { id: 'air-mineral', name: 'Air Mineral', category: 'Tambahan', price: 5000,
+    image: imgAir, imageAlt: 'Air Mineral' },
   { id: 'sambal-geprek', name: 'Sambal Geprek', category: 'Tambahan', price: 2000,
     image: imgSambalGeprek, imageAlt: 'Sambal geprek' },
   { id: 'sambal-ijo', name: 'Sambal Ijo', category: 'Tambahan', price: 2000,
