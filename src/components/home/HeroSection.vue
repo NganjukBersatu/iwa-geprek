@@ -331,33 +331,86 @@ h1 .r {
   letter-spacing: 0.1em;
 }
 
-/* ===== Tablet & Mobile ===== */
+/* ===== Tablet & Mobile — Opsi A: judul → deskripsi → foto → tombol → chip ===== */
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: minmax(0, 1fr);
-    text-align: left;
-    gap: 30px;
-    padding-top: 28px;
-    padding-bottom: 128px;
-  }
-  .copy,
-  .visual {
-    min-width: 0;
+    align-content: start; /* baris tidak melar saat layar tinggi */
+    gap: 0;
+    padding-top: 16px;
+    padding-bottom: 120px;
   }
   .hwave {
-    height: 110px;
+    height: 100px;
   }
   .wm {
-    width: 50vw;
+    width: 38vw;
+    right: -8%;
+    top: 0;
+    opacity: 0.1;
   }
+
+  /* .copy "dilebur" supaya anak-anaknya bisa diurutkan bersama .visual (tanpa ubah template) */
+  .copy {
+    display: contents;
+  }
+  .eyebrow,
+  h1,
+  .sub,
+  .cta,
+  .chips {
+    position: relative;
+    z-index: 1;
+  }
+  .eyebrow {
+    order: 1;
+    gap: 10px;
+    letter-spacing: 0.18em;
+    font-size: clamp(0.6rem, 2.9vw, 0.76rem);
+    white-space: nowrap;
+    margin-bottom: 10px;
+  }
+  .eyebrow::before {
+    width: 28px;
+    flex: none;
+  }
+  h1 {
+    order: 2;
+    overflow-wrap: anywhere;
+  }
+  .sub {
+    order: 3;
+    margin: 12px 0 0;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    max-width: 34ch;
+  }
+
+  /* Kotak visual diberi tinggi tetap (rasio 1 : 0,8) dan semua lingkaran
+     dikecilkan sampai muat di dalamnya, supaya tidak menimpa teks/tombol. */
   .visual {
-    order: -1;
+    order: 4;
+    min-width: 0;
+    width: 100%;
     max-width: 520px;
-    margin: 0 auto clamp(28px, 9vw, 56px);
+    margin: 18px auto 0;
+    padding: 0;
+    aspect-ratio: 1 / 0.8;
   }
   .visual::before {
-    width: 92%;
-    right: -8%;
+    width: 78%;
+    right: -10%;
+  }
+  .ring-red {
+    width: 70%;
+    transform: translate(6%, -2%);
+  }
+  .ring-dash {
+    width: 76%;
+  }
+  .photo {
+    width: 78%;
+    border-width: 6px;
   }
   .orbit .badge {
     font-size: 0.72rem;
@@ -368,39 +421,52 @@ h1 .r {
     height: 78px;
     font-size: 0.9rem;
   }
-  .eyebrow {
-    gap: 10px;
-    letter-spacing: 0.18em;
-    font-size: clamp(0.6rem, 2.9vw, 0.76rem);
-    white-space: nowrap;
-    margin-bottom: 12px;
-  }
-  .eyebrow::before {
-    width: 26px;
-    flex: none;
-  }
-  h1 {
-    overflow-wrap: anywhere;
-  }
+
   .cta {
+    order: 5;
     flex-wrap: nowrap;
-    gap: 8px;
+    gap: 10px;
+    margin-top: 20px;
   }
   .cta .btn {
     flex: 1 1 0;
     min-width: 0;
+    min-height: 48px;
     justify-content: center;
     gap: 6px;
     padding: 13px 8px;
     font-size: clamp(0.74rem, 3.7vw, 0.92rem);
     white-space: nowrap;
   }
+  .cta .btn:first-child {
+    flex-grow: 1.15;
+  }
   .cta .btn .ic {
     width: 1em;
     height: 1em;
   }
+
+  /* 3 chip rata dalam satu baris, ikon di atas teks */
   .chips {
-    margin-top: 22px;
+    order: 6;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chip {
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px 4px;
+    border-radius: 14px;
+    font-size: 0.72rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .chip .ic {
+    width: 20px;
+    height: 20px;
   }
 }
 </style>
