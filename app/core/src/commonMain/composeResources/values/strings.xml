@@ -1,0 +1,909 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigasi -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_cashier">Kasir</string>
+    <string name="nav_schedule">Jadwal</string>
+    <string name="nav_attendance">Absen</string>
+    <string name="nav_tasks">Tugas</string>
+    <string name="nav_sop">Prosedur Kerja</string>
+    <string name="nav_profile">Profil</string>
+    <string name="nav_more">Lainnya</string>
+    <string name="nav_logout">Keluar</string>
+    <string name="nav_logout_failed">Gagal keluar. Periksa koneksi, lalu coba lagi.</string>
+    <string name="nav_info">Info Aplikasi</string>
+    <string name="nav_leave_overtime">Izin dan Lembur</string>
+    <string name="nav_performance">Kinerja</string>
+    <string name="nav_presence">Kehadiran</string>
+    <string name="nav_activity">Riwayat</string>
+    <string name="more_group_work">Pekerjaan</string>
+    <string name="more_group_attendance">Kehadiran</string>
+    <string name="more_group_result">Hasil kerja</string>
+    <string name="more_group_app">Aplikasi</string>
+    <string name="more_note_tasks">Tugas pribadi dan tugas outlet</string>
+    <string name="more_note_sop">Panduan kerja di outlet</string>
+    <string name="more_note_presence">Rekap hadir dan telat per bulan</string>
+    <string name="more_note_leave_overtime">Ajukan dan lihat statusnya</string>
+    <string name="more_note_activity">Catatan absen dan aktivitas</string>
+    <string name="more_note_performance">Ringkasan hasil kerja Anda</string>
+    <string name="more_note_info">Versi dan bantuan</string>
+    <string name="leave_overtime_tab_leave">Izin</string>
+    <string name="leave_overtime_tab_overtime">Lembur</string>
+    <string name="about_version_line">Versi %1$s</string>
+    <string name="about_purpose_title">Tentang aplikasi</string>
+    <string name="about_thanks_title">Terima kasih</string>
+
+    <!-- Kerangka -->
+    <string name="login_subtitle">Gunakan akun yang diberikan pemilik untuk membuka kasir dan jadwal kerja.</string>
+    <string name="login_username_label">Nama pengguna</string>
+    <string name="login_username_placeholder">Masukkan nama pengguna</string>
+    <string name="login_password_label">Kata sandi</string>
+    <string name="login_password_placeholder">Masukkan kata sandi</string>
+    <string name="login_submit">Masuk</string>
+    <string name="login_submitting">Memproses…</string>
+    <string name="login_help">Lupa kata sandi? Hubungi pemilik untuk mengatur ulang.</string>
+    <string name="quantity_increase">Tambah</string>
+    <string name="quantity_decrease">Kurangi</string>
+    <string name="quantity_remove">Hapus</string>
+    <string name="print_label_receipt_number">No. Nota</string>
+    <string name="print_label_ticket_number">No Nota</string>
+    <string name="print_label_time">Waktu</string>
+    <string name="print_label_cashier">Kasir</string>
+    <string name="print_label_order_type">Jenis Order</string>
+    <string name="print_label_order">Order</string>
+    <string name="print_label_table_number">No Meja</string>
+    <string name="print_label_order_name">Nama Order</string>
+    <string name="print_label_name">Nama</string>
+    <string name="print_label_entered">Masuk</string>
+    <string name="print_walk_in_customer">Pelanggan Umum</string>
+    <string name="print_no_name">Tanpa nama</string>
+    <string name="print_order_with_table">Meja %1$s %2$s</string>
+    <string name="print_line_note">catatan: %1$s</string>
+    <string name="print_subtotal">Subtotal</string>
+    <string name="print_discount">Diskon</string>
+    <string name="print_total">TOTAL</string>
+    <string name="print_total_paid">Total Bayar</string>
+    <string name="print_change">Kembalian</string>
+    <string name="print_wifi_available">WiFi tersedia</string>
+    <string name="print_wifi_password">Kata sandi WiFi : %1$s</string>
+    <string name="print_complaint_number">Nomor Aduan : %1$s</string>
+    <string name="print_paid_at">Terbayar : %1$s</string>
+    <string name="print_printed_by">Dicetak : %1$s</string>
+    <string name="print_ticket_printed_by">dicetak: %1$s</string>
+    <string name="print_order_note">CATATAN: %1$s</string>
+    <string name="print_reprint">CETAK ULANG %1$s</string>
+    <string name="print_take_away">Take Away</string>
+    <string name="print_free_table">Free Table</string>
+    <string name="print_destination_take_away">BAWA PULANG</string>
+    <string name="print_destination_table">MEJA %1$s</string>
+    <string name="print_destination_no_table">TANPA MEJA</string>
+    <string name="shell_rail_title">Kasir</string>
+    <string name="shell_rail_collapse">Ciutkan menu samping</string>
+    <string name="shell_rail_expand">Perluas menu samping</string>
+
+    <!-- Umum -->
+    <string name="common_loading">Memuat data.</string>
+    <string name="common_retry">Coba lagi</string>
+    <string name="common_cancel">Batal</string>
+    <string name="common_back">Kembali</string>
+
+    <!-- Profil -->
+    <string name="profile_section_account">Akun</string>
+    <string name="profile_section_personal">Data diri</string>
+    <string name="profile_section_password">Ganti kata sandi</string>
+    <string name="profile_account_username">Nama pengguna</string>
+    <string name="profile_account_role">Peran</string>
+    <string name="profile_account_outlet">Cabang</string>
+    <string name="profile_account_joined">Bergabung</string>
+    <string name="profile_birth_date">Tanggal lahir</string>
+    <string name="profile_name">Nama</string>
+    <string name="profile_phone">Nomor telepon</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_address">Alamat</string>
+    <string name="profile_gender">Jenis kelamin</string>
+    <string name="profile_gender_male">Laki-laki</string>
+    <string name="profile_gender_female">Perempuan</string>
+    <string name="profile_emergency_name">Nama kontak darurat</string>
+    <string name="profile_emergency_phone">Nomor telepon kontak darurat</string>
+    <string name="profile_emergency_relation">Hubungan kontak darurat</string>
+    <string name="profile_section_contact">Kontak</string>
+    <string name="profile_menu_personal">Ubah data diri</string>
+    <string name="profile_password_hint">Kata sandi baru minimal 15 karakter. Sebuah kalimat pendek lebih aman dan lebih mudah diingat.</string>
+    <string name="profile_photo_change_short">Ubah foto</string>
+    <string name="profile_logout_title">Keluar dari akun?</string>
+    <string name="profile_logout_message">Anda perlu masuk lagi untuk memakai aplikasi.</string>
+    <string name="profile_logout_confirm">Ya, keluar</string>
+    <string name="profile_save">Simpan</string>
+    <string name="profile_saving">Menyimpan...</string>
+    <string name="profile_saved">Perubahan berhasil disimpan.</string>
+    <string name="profile_photo_change">Ubah foto profil</string>
+    <string name="profile_photo_title">Foto profil</string>
+    <string name="profile_photo_save">Simpan foto</string>
+    <string name="profile_photo_delete">Hapus foto profil</string>
+    <string name="profile_photo_delete_title">Hapus foto profil</string>
+    <string name="profile_photo_delete_message">Foto profil Anda dihapus dari akun. Foto baru bisa dipasang kapan saja.</string>
+    <string name="profile_photo_delete_confirm">Hapus</string>
+    <string name="profile_name_required">Nama wajib diisi.</string>
+    <string name="profile_change_password">Ubah kata sandi</string>
+    <string name="profile_changing">Menyimpan...</string>
+    <string name="password_old">Kata sandi lama</string>
+    <string name="password_new">Kata sandi baru</string>
+    <string name="password_confirm">Ulangi kata sandi baru</string>
+    <string name="password_show">Tampilkan kata sandi</string>
+    <string name="password_hide">Sembunyikan kata sandi</string>
+    <string name="password_too_short">Kata sandi baru minimal 15 karakter, misalnya sebuah kalimat pendek yang mudah diingat.</string>
+    <string name="password_mismatch">Kata sandi baru dan pengulangannya tidak sama.</string>
+    <string name="password_changed">Kata sandi berhasil diubah.</string>
+
+    <!-- Jadwal -->
+    <string name="schedule_empty">Tidak ada jadwal pada tanggal ini.</string>
+    <string name="schedule_codes">Keterangan kode</string>
+    <string name="schedule_only_mine">Jadwal saya</string>
+    <string name="schedule_overtime_total">Lembur %1$s · %2$s</string>
+    <string name="schedule_outlet">Cabang %1$s</string>
+    <string name="schedule_mine">Saya</string>
+    <string name="schedule_overtime">Lembur %1$s</string>
+    <string name="schedule_as_role">Sebagai %1$s</string>
+    <string name="schedule_day_off">Libur</string>
+
+    <!-- Pengajuan izin -->
+    <string name="leave_title">Pengajuan izin</string>
+    <string name="leave_action">Ajukan izin</string>
+    <string name="leave_empty">Belum ada pengajuan.</string>
+    <string name="leave_type">Jenis</string>
+    <string name="leave_type_permit">Izin</string>
+    <string name="leave_type_sick">Sakit</string>
+    <string name="leave_start">Dari tanggal</string>
+    <string name="leave_end">Sampai tanggal</string>
+    <string name="leave_reason">Alasan</string>
+    <string name="leave_link">Tautan lampiran (bila tanpa foto atau PDF)</string>
+    <string name="leave_pdf_pick">Lampirkan PDF</string>
+    <string name="leave_pdf_remove">Hapus PDF</string>
+    <string name="leave_pdf_selected">PDF terpilih: %1$s. PDF ini yang dikirim sebagai lampiran, bukan foto.</string>
+    <string name="leave_submit">Kirim pengajuan</string>
+    <string name="leave_date_invalid">Tanggal selesai lebih awal dari tanggal mulai.</string>
+    <string name="leave_date_range">%1$s – %2$s</string>
+    <string name="leave_detail_title">Detail pengajuan</string>
+    <string name="leave_detail_type">Jenis</string>
+    <string name="leave_detail_date">Tanggal</string>
+    <string name="leave_detail_reason">Alasan</string>
+    <string name="leave_detail_status">Status</string>
+    <string name="leave_detail_decided_by">Diputuskan oleh</string>
+    <string name="leave_detail_note">Catatan atasan</string>
+    <string name="leave_detail_link">Tautan lampiran</string>
+    <string name="leave_attachment">Lampiran</string>
+    <string name="leave_attachment_pdf">Berkas PDF</string>
+    <string name="leave_status_pending">Menunggu</string>
+    <string name="leave_status_approved">Disetujui</string>
+    <string name="leave_status_rejected">Ditolak</string>
+    <string name="leave_cancel_action">Batalkan pengajuan</string>
+    <string name="leave_cancel_title">Batalkan pengajuan</string>
+    <string name="leave_cancel_message">Pengajuan yang dibatalkan tidak bisa dikembalikan.</string>
+    <string name="leave_cancel_confirm">Ya, batalkan</string>
+
+    <!-- Lembur -->
+    <string name="overtime_title">Lembur</string>
+    <string name="overtime_start">Mulai lembur</string>
+    <string name="overtime_history">Riwayat lembur bulan ini</string>
+    <string name="overtime_empty">Belum ada lembur bulan ini.</string>
+    <string name="overtime_kind_scheduled">Terjadwal</string>
+    <string name="overtime_kind_unplanned">Dadakan</string>
+    <string name="overtime_unplanned_title">Lembur di luar jadwal</string>
+    <string name="overtime_unplanned_message">Fitur ini khusus lembur yang tidak ada di jadwal, misalnya kegiatan mendadak. Isi waktu mulai, waktu selesai, dan alasan lembur.</string>
+    <string name="overtime_unplanned_blocked">Hari ini sudah ada jadwal lembur pukul %1$s. Lembur terjadwal tercatat otomatis, sehingga tidak perlu dicatat lagi.</string>
+    <string name="overtime_unplanned_continue">Lanjut</string>
+    <string name="overtime_unplanned_back">Kembali</string>
+    <string name="overtime_form_title">Catat lembur</string>
+    <string name="overtime_form_start_date">Tanggal mulai</string>
+    <string name="overtime_form_start_time">Jam mulai</string>
+    <string name="overtime_form_end_date">Tanggal selesai</string>
+    <string name="overtime_form_end_time">Jam selesai</string>
+    <string name="overtime_form_note">Alasan lembur</string>
+    <string name="overtime_form_submit">Simpan lembur</string>
+    <string name="overtime_form_order_invalid">Waktu selesai harus setelah waktu mulai.</string>
+    <string name="phase_none">Belum ada jam aktif</string>
+    <string name="phase_work">Jam kerja</string>
+    <string name="phase_overtime">Lembur</string>
+    <string name="phase_overtime_unplanned">Lembur dadakan</string>
+    <string name="phase_duration">Durasi %1$s</string>
+    <string name="phase_duration_remaining">Durasi %1$s · sisa %2$s</string>
+    <string name="phase_title">%1$s %2$s</string>
+    <string name="phase_hint">Ketuk bilah untuk rincian</string>
+    <string name="phase_filter_work">Kerja saja</string>
+    <string name="phase_filter_all">Kerja dan lembur</string>
+    <string name="phase_filter_overtime">Hanya lembur</string>
+
+    <!-- Absen -->
+    <string name="attendance_status_none">Belum absen datang</string>
+    <string name="attendance_status_in">Sudah absen datang</string>
+    <string name="attendance_status_out">Sudah absen pulang</string>
+    <string name="attendance_clock_in">Jam datang</string>
+    <string name="attendance_clock_out">Jam pulang</string>
+    <string name="attendance_today_schedule">Jadwal hari ini</string>
+    <string name="attendance_no_schedule">Tidak ada jadwal hari ini.</string>
+    <string name="attendance_no_active_schedule">Belum ada jadwal yang berlaku saat ini, jadi belum bisa absen.</string>
+    <string name="attendance_block_not_open_yet">Absen datang untuk jadwal %1$s dibuka pada %2$s.</string>
+    <string name="attendance_block_already_used">Jadwal %1$s sudah dipakai untuk absen datang. Setiap jadwal hanya bisa diabsen sekali.</string>
+    <string name="attendance_block_ended">Jadwal %1$s sudah berakhir pada %2$s tanpa absen datang, jadi tidak bisa diabsen lagi.</string>
+    <string name="attendance_block_no_permission">Peran Anda tidak diizinkan absen sendiri. Kehadiran dicatat oleh admin; hubungi atasan bila perlu.</string>
+    <string name="attendance_block_no_schedule">Tidak ada jadwal yang bisa diabsen saat ini. Hubungi atasan bila seharusnya bertugas.</string>
+    <string name="self_schedule_intro_title">Tidak terdaftar di jadwal</string>
+    <string name="self_schedule_intro_message">Anda tidak punya jadwal yang bisa diabsen saat ini. Lanjutkan dengan absen mandiri untuk mencatat jadwal sendiri sebelum absen datang.</string>
+    <string name="self_schedule_intro_confirm">Absen mandiri</string>
+    <string name="self_schedule_title">Absen mandiri</string>
+    <string name="self_schedule_outlet">Cabang</string>
+    <string name="self_schedule_outlet_pick">Pilih cabang</string>
+    <string name="self_schedule_role">Peran</string>
+    <string name="self_schedule_role_pick">Pilih peran</string>
+    <string name="self_schedule_shift">Kode shift</string>
+    <string name="self_schedule_shift_label">%1$s · %2$s</string>
+    <string name="self_schedule_shift_pick_outlet">Pilih cabang dulu untuk melihat kode shift.</string>
+    <string name="self_schedule_shift_empty">Tidak ada kode shift di cabang ini yang jam mulainya dalam rentang 30 menit dari sekarang dan tidak bertabrakan dengan jadwal Anda yang lain.</string>
+    <string name="self_schedule_reason">Alasan (opsional)</string>
+    <string name="self_schedule_submit">Simpan jadwal</string>
+    <string name="self_schedule_saved">Jadwal tersimpan. Lanjutkan dengan foto absen datang.</string>
+    <string name="attendance_action_in">Absen datang</string>
+    <string name="attendance_action_out">Absen pulang</string>
+    <string name="attendance_submit">Kirim absen</string>
+    <string name="attendance_late_badge">Terlambat</string>
+    <string name="attendance_outside_toggle">Saya bertugas di luar lokasi cabang</string>
+    <string name="attendance_outside_note">Catatan lokasi (wajib)</string>
+    <string name="attendance_location_unavailable">Lokasi belum terbaca. Pastikan GPS aktif, lalu coba lagi.</string>
+    <string name="attendance_key_reused">Absen ini sudah pernah dikirim dengan isi yang berbeda. Status absen terbaru sudah dimuat; periksa dulu, lalu absen lagi bila belum tercatat.</string>
+    <string name="attendance_distance_locating">Membaca lokasi untuk menghitung jarak ke cabang.</string>
+    <string name="attendance_distance_inside">%1$s m dari %2$s (batas %3$s m).</string>
+    <string name="attendance_distance_outside">Anda %1$s m dari %2$s, di luar batas %3$s m. Pilih "Saya bertugas di luar lokasi cabang" bila bertugas di tempat lain.</string>
+    <string name="attendance_distance_refresh">Baca ulang lokasi</string>
+    <string name="attendance_stamp_time">Jam: %1$s</string>
+    <string name="attendance_stamp_date">Tanggal: %1$s</string>
+    <string name="attendance_stamp_name">Nama: %1$s</string>
+    <string name="attendance_stamp_branch">Cabang: %1$s</string>
+    <string name="attendance_stamp_coordinates">Koordinat: %1$s, %2$s (±%3$s m)</string>
+    <string name="attendance_stamp_distance">Jarak: %1$s m dari titik cabang (radius %2$s m)</string>
+    <string name="attendance_stamp_inside">Absen di lokasi</string>
+    <string name="attendance_stamp_outside">DI LUAR LOKASI: %1$s</string>
+    <string name="attendance_notice_title">Absen %1$s ditutup otomatis</string>
+    <string name="attendance_notice_caption">Jam pulang diisi sistem: %1$s</string>
+    <string name="attendance_notice_ack">Mengerti</string>
+
+    <!-- Pemberitahuan -->
+    <string name="notices_title">Pemberitahuan</string>
+    <string name="notices_close">Tutup</string>
+    <string name="release_title">Yang baru di versi %1$s</string>
+    <string name="notice_task_assigned">Tugas baru: %1$s</string>
+    <string name="notice_task_overdue">Lewat tenggat: %1$s</string>
+    <string name="notice_due_changed">Tenggat diubah: %1$s</string>
+    <string name="attendance_done_in_title">Absen datang berhasil</string>
+    <string name="attendance_done_in_message">Jam datang tercatat. Selamat bekerja.</string>
+    <string name="attendance_done_out_title">Absen pulang berhasil</string>
+    <string name="attendance_done_out_message">Durasi kerja hari ini. Terima kasih.</string>
+    <string name="attendance_done_action">Selesai</string>
+
+    <!-- Tugas -->
+    <string name="tasks_filter_pending">Belum selesai</string>
+    <string name="tasks_filter_done">Selesai</string>
+    <string name="tasks_filter_outlet">Cabang</string>
+    <string name="tasks_filter_outlet_all">Semua</string>
+    <string name="tasks_empty">Belum ada tugas.</string>
+    <string name="network_lost_title">Tidak ada koneksi internet</string>
+    <string name="network_lost_message">Periksa Wi-Fi atau data seluler. Halaman ini tertutup otomatis begitu koneksi kembali.</string>
+    <string name="tasks_add_action">Tambah tugas</string>
+    <string name="batch_tag">Tugas outlet</string>
+    <string name="batch_fill">Isi</string>
+    <string name="batch_done">Tugas outlet selesai diisi</string>
+    <string name="batch_routine_tag">Tugas rutin</string>
+    <string name="batch_routine_done">Tugas rutin selesai diisi</string>
+    <string name="batch_each_done">Tugas rutin sudah Anda isi</string>
+    <string name="batch_fill_one">Cukup satu orang</string>
+    <string name="batch_fill_each">Diisi tiap orang</string>
+    <string name="batch_submit">Selesaikan</string>
+    <string name="batch_manage_action">Perbaiki atau hapus</string>
+    <string name="batch_manage_hint">Pilih yang ingin dilakukan pada pengisian ini.</string>
+    <string name="batch_fix_action">Perbaiki isian</string>
+    <string name="batch_fix_submit">Simpan perbaikan</string>
+    <string name="batch_keep_photo">Foto sebelumnya tetap dipakai. Ambil foto baru untuk menggantinya.</string>
+    <string name="batch_cancel_action">Batalkan pengisian</string>
+    <string name="batch_cancel_message">Tugas kembali belum diisi dan bisa diisi ulang. Isian sebelumnya tetap tercatat di riwayat admin.</string>
+    <string name="batch_cancel_confirm">Ya, batalkan pengisian</string>
+    <string name="batch_delete_action">Hapus pengisian</string>
+    <string name="batch_delete_message">Jawaban dan foto pengisian ini dihapus permanen dan tidak bisa dikembalikan. Admin tetap melihat bahwa pengisian ini dihapus, oleh siapa, dan kapan.</string>
+    <string name="batch_delete_confirm">Ya, hapus pengisian</string>
+    <string name="batch_optional_suffix"> (opsional)</string>
+    <string name="batch_missing">Belum diisi: %1$s</string>
+    <string name="batch_toggle_ok">Oke</string>
+    <string name="batch_toggle_problem">Bermasalah</string>
+    <string name="dashboard_task_kind_personal">Pribadi</string>
+    <string name="dashboard_task_kind_outlet">Outlet</string>
+    <string name="dashboard_task_personal">%1$s pribadi</string>
+    <string name="dashboard_task_outlet">%1$s outlet</string>
+    <string name="dashboard_task_kind_routine">Rutin</string>
+    <string name="dashboard_task_routine">%1$s rutin</string>
+    <string name="tasks_add_short">Tambah</string>
+    <string name="tasks_section_personal">Tugas karyawan</string>
+    <string name="tasks_search_label">Cari judul, isi, atau orang</string>
+    <string name="tasks_filter_open">Filter</string>
+    <string name="tasks_filter_title">Filter tugas</string>
+    <string name="tasks_filter_count">%1$s tugas ditemukan</string>
+    <string name="tasks_filter_date">Tanggal</string>
+    <string name="tasks_filter_period_month">Bulan ini</string>
+    <string name="tasks_filter_period_today">Hari ini</string>
+    <string name="tasks_filter_period_week">7 hari</string>
+    <string name="tasks_filter_period_custom">Pilih tanggal</string>
+    <string name="tasks_filter_from">Dari</string>
+    <string name="tasks_filter_to">Sampai</string>
+    <string name="tasks_filter_person">Orang</string>
+    <string name="tasks_filter_person_all">Semua orang</string>
+    <string name="tasks_filter_person_mine">Tugas saya</string>
+    <string name="tasks_filter_person_search">Cari nama</string>
+    <string name="tasks_filter_no_match">Tidak ada yang cocok.</string>
+    <string name="tasks_filter_hint">Pilihan langsung diterapkan.</string>
+    <string name="tasks_filter_reset">Atur ulang filter</string>
+    <string name="tasks_detail_title">Detail tugas</string>
+    <string name="tasks_detail_name">Tugas</string>
+    <string name="tasks_detail_status">Status</string>
+    <string name="tasks_detail_outlet">Cabang</string>
+    <string name="tasks_detail_follow_up">Tindak lanjut dari</string>
+    <string name="tasks_fix_note_submit">Simpan catatan</string>
+    <string name="tasks_source_open">Lihat pengisian asal</string>
+    <string name="tasks_source_title">Pengisian asal</string>
+    <string name="tasks_source_day">Tanggal</string>
+    <string name="tasks_source_filler">Diisi oleh</string>
+    <string name="tasks_source_done_at">Selesai pada</string>
+    <string name="tasks_source_problems">%1$d isian bermasalah</string>
+    <string name="tasks_source_empty_answer">Tidak diisi</string>
+    <string name="tasks_detail_follow_up_value">%1$s, %2$s (tindak lanjut ke-%3$d dari %4$d)</string>
+    <string name="tasks_detail_description">Keterangan</string>
+    <string name="tasks_detail_giver">Pemberi tugas</string>
+    <string name="tasks_detail_performer">Pelaksana</string>
+    <string name="tasks_detail_due">Batas waktu</string>
+    <string name="tasks_detail_done_at">Selesai pada</string>
+    <string name="tasks_detail_note">Catatan</string>
+    <string name="tasks_complete_note">Catatan (opsional)</string>
+    <string name="tasks_complete_submit">Selesaikan tugas</string>
+    <string name="tasks_attach_submit">Tambah lampiran</string>
+    <string name="tasks_edit_action">Ubah</string>
+    <string name="tasks_edit_title">Ubah tugas</string>
+    <string name="tasks_edit_submit">Simpan</string>
+    <string name="tasks_delete_action">Hapus tugas</string>
+    <string name="tasks_delete_message">Tugas beserta lampirannya akan dihapus dan tidak bisa dikembalikan.</string>
+    <string name="tasks_delete_confirm">Hapus</string>
+    <string name="tasks_form_title_required">Isi judul tugas.</string>
+    <string name="tasks_form_outlet_required">Pilih cabang tugas ini.</string>
+    <string name="tasks_form_assignee_required">Pilih karyawan yang menerima tugas ini.</string>
+    <string name="tasks_proof_required">Tambahkan foto bukti untuk menyelesaikan tugas.</string>
+    <string name="tasks_form_title">Tambah tugas</string>
+    <string name="tasks_form_mode_self">Untuk saya</string>
+    <string name="tasks_form_mode_employee">Karyawan</string>
+    <string name="tasks_form_assignee">Karyawan</string>
+    <string name="tasks_form_assignee_pick">Pilih karyawan</string>
+    <string name="tasks_form_outlet">Cabang</string>
+    <string name="tasks_form_outlet_pick">Pilih cabang</string>
+    <string name="tasks_form_name">Judul tugas</string>
+    <string name="tasks_form_description">Keterangan (opsional)</string>
+    <string name="tasks_form_due_toggle">Pakai batas waktu</string>
+    <string name="tasks_form_due_date">Tanggal batas</string>
+    <string name="tasks_form_due_time">Jam batas</string>
+    <string name="tasks_form_done">Sudah selesai dikerjakan</string>
+    <string name="tasks_form_submit">Simpan</string>
+    <string name="media_take_photo">Foto</string>
+    <string name="media_video_record">Video</string>
+    <string name="media_video_too_large">Video maksimal 30 MB.</string>
+    <string name="media_limit_reached">Batas lampiran sudah tercapai: foto maksimal 5 dan video 1.</string>
+    <string name="media_remove">Hapus lampiran</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_section_attendance">Kehadiran</string>
+    <string name="dashboard_section_detail">Rincian</string>
+    <string name="dashboard_section_tasks">Tugas</string>
+    <string name="dashboard_stat_present">Hadir</string>
+    <string name="dashboard_stat_late">Telat</string>
+    <string name="dashboard_stat_not_present">Izin / Sakit / Alfa</string>
+    <string name="dashboard_stat_work">Total jam kerja</string>
+    <string name="dashboard_stat_overtime">Total lembur</string>
+    <string name="dashboard_stat_penalty">Potongan keterlambatan</string>
+    <string name="dashboard_empty_attendance">Belum ada catatan kehadiran bulan ini.</string>
+    <string name="dashboard_empty_tasks">Tidak ada tugas.</string>
+    <string name="dashboard_empty_history">Belum ada aktivitas.</string>
+    <string name="dashboard_no_schedule">Tidak ada jadwal</string>
+    <string name="dashboard_task_due">Tenggat %1$s</string>
+    <string name="dashboard_hero_label">Kehadiran %1$s %2$s</string>
+    <string name="dashboard_hero_value">%1$s/%2$s hari</string>
+    <string name="dashboard_hero_sub">%1$s telat, %2$s tidak hadir</string>
+    <string name="dashboard_hero_empty">–</string>
+    <string name="dashboard_attendance_title">Kehadiran %1$s</string>
+    <string name="dashboard_attendance_present">%1$s hari hadir</string>
+    <string name="dashboard_stat_absent">Tidak hadir</string>
+    <string name="dashboard_stat_overtime_short">Lembur</string>
+    <string name="dashboard_open_attendance">Buka rincian kehadiran</string>
+    <string name="dashboard_task_label">Tugas menunggu</string>
+    <string name="dashboard_task_count">%1$s tugas</string>
+    <string name="dashboard_open_tasks">Buka daftar tugas</string>
+    <string name="sop_empty">Belum ada SOP.</string>
+    <string name="sop_new">Baru</string>
+    <string name="sop_slide_count">%1$s slide</string>
+    <string name="sop_branch_only">Khusus %1$s</string>
+    <string name="markdown_video_play">Putar video</string>
+    <string name="markdown_video_hint">Dibuka di pemutar video perangkat</string>
+    <string name="sop_previous">Sebelumnya</string>
+    <string name="sop_next">Berikutnya</string>
+    <string name="sop_finish">Selesai</string>
+    <string name="sop_read_not_sent">Tanda selesai membaca belum terkirim, jadi admin masih melihat SOP ini belum Anda baca. Kirim ulang di bawah.</string>
+
+    <!-- Status kehadiran -->
+    <string name="status_present">Hadir</string>
+    <string name="status_late">Telat %1$sm</string>
+    <string name="status_permit">Izin</string>
+    <string name="status_sick">Sakit</string>
+    <string name="status_absent">Alfa</string>
+
+    <!-- Riwayat aktivitas -->
+    <string name="activity_clock_in">Absen masuk</string>
+    <string name="activity_clock_out">Absen pulang</string>
+    <string name="activity_task_done">Menyelesaikan tugas</string>
+    <string name="activity_leave_permit">Mengajukan izin</string>
+    <string name="activity_leave_sick">Mengajukan sakit</string>
+    <string name="activity_leave_pending">Menunggu keputusan</string>
+    <string name="activity_leave_approved">Disetujui</string>
+    <string name="activity_leave_rejected">Ditolak</string>
+    <string name="activity_overtime">Lembur</string>
+    <string name="activity_running">Sedang berjalan</string>
+    <string name="activity_late">Terlambat</string>
+    <string name="activity_auto_closed">Ditutup otomatis</string>
+    <string name="activity_leave_decided">Keputusan pengajuan</string>
+    <string name="activity_order_created">Membuat pesanan</string>
+    <string name="activity_order_voided">Membatalkan pesanan</string>
+    <string name="activity_cash_opened">Membuka sesi kas</string>
+    <string name="activity_cash_closed">Menutup sesi kas</string>
+    <string name="activity_filter_label">Jenis aktivitas</string>
+    <string name="activity_group_all">Semua</string>
+    <string name="activity_group_attendance">Absen</string>
+    <string name="activity_group_task">Tugas</string>
+    <string name="activity_group_overtime">Lembur</string>
+    <string name="activity_group_leave">Izin</string>
+    <string name="activity_group_operations">Operasional</string>
+    <string name="performance_range_cycle">Siklus ini</string>
+    <string name="performance_range_previous">Siklus lalu</string>
+    <string name="performance_range_all">Sejak bergabung</string>
+    <string name="performance_period">%1$s – %2$s</string>
+    <string name="performance_counted">Dihitung dari %1$s hari</string>
+    <string name="performance_empty">Belum ada data pada rentang ini.</string>
+    <string name="performance_ontime_title">Ketepatan waktu</string>
+    <string name="performance_ontime_caption">Persen hari tepat waktu</string>
+    <string name="performance_composition_title">Komposisi hari</string>
+    <string name="performance_slice_on_time">Tepat waktu</string>
+    <string name="performance_slice_late">Telat</string>
+    <string name="performance_slice_leave">Izin / sakit</string>
+    <string name="performance_slice_absent">Tidak hadir</string>
+    <string name="performance_hours_title">Jam kerja</string>
+    <string name="performance_hours_caption">Kerja %1$s, lembur %2$s</string>
+    <string name="performance_tasks_title">Tugas selesai</string>
+    <string name="performance_tasks_caption">%1$s dari %2$s tugas</string>
+    <string name="performance_rating_title">Penilaian</string>
+    <string name="performance_rating_value">%1$s dari 5</string>
+    <string name="performance_rating_none">Belum cukup data</string>
+    <string name="performance_rating_stars_description">Penilaian %1$s dari 5 bintang</string>
+    <string name="performance_rating_open">Lihat rincian</string>
+    <string name="performance_rating_close">Tutup rincian</string>
+    <string name="performance_rating_group_behavior">Perilaku</string>
+    <string name="performance_rating_group_work">Hasil kerja</string>
+    <string name="performance_rating_attendance">Kehadiran</string>
+    <string name="performance_rating_given_tasks_done">Tugas diberikan selesai</string>
+    <string name="performance_rating_given_tasks_in_time">Tugas diberikan tepat tenggat</string>
+    <string name="performance_rating_own_tasks_done">Tugas sendiri selesai</string>
+    <string name="performance_rating_own_tasks_in_time">Tugas sendiri tepat tenggat</string>
+
+    <!-- Detail absensi -->
+    <string name="attendance_detail_title">Detail absensi</string>
+    <string name="attendance_detail_date">Tanggal</string>
+    <string name="attendance_detail_status">Status</string>
+    <string name="attendance_detail_shift">Kode shift</string>
+    <string name="attendance_detail_role">Peran</string>
+    <string name="attendance_detail_clock_in">Masuk</string>
+    <string name="attendance_detail_clock_out">Pulang</string>
+    <string name="attendance_detail_work">Durasi kerja</string>
+    <string name="attendance_detail_late">Telat</string>
+    <string name="attendance_detail_late_value">%1$s menit</string>
+    <string name="attendance_detail_penalty">Potongan</string>
+    <string name="attendance_detail_reason">Alasan di luar jadwal</string>
+    <string name="attendance_detail_note">Catatan</string>
+    <string name="attendance_detail_none">—</string>
+    <string name="attendance_detail_auto_closed">Ditutup otomatis</string>
+    <string name="attendance_detail_photo_in">Foto datang</string>
+    <string name="attendance_detail_photo_out">Foto pulang</string>
+    <string name="attendance_detail_distance_in">Jarak datang</string>
+    <string name="attendance_detail_distance_out">Jarak pulang</string>
+    <string name="attendance_detail_distance_value">%1$s m</string>
+    <string name="attendance_detail_distance_limit">%1$s m (batas %2$s m)</string>
+    <string name="attendance_detail_accuracy_in">Akurasi datang</string>
+    <string name="attendance_detail_accuracy_out">Akurasi pulang</string>
+    <string name="attendance_detail_accuracy_value">±%1$s m</string>
+    <string name="attendance_detail_outside_in">Datang di luar lokasi</string>
+    <string name="attendance_detail_outside_out">Pulang di luar lokasi</string>
+    <string name="attendance_detail_location_in">Keterangan lokasi datang</string>
+    <string name="attendance_detail_location_out">Keterangan lokasi pulang</string>
+    <string name="image_preview_close">Tutup pratinjau foto</string>
+    <string name="remote_image_unavailable">Foto tidak tersedia</string>
+    <string name="remote_image_retry">Muat ulang foto</string>
+
+    <!-- Pendaftaran perangkat operasional -->
+    <string name="device_setup_menu">Menu perangkat</string>
+    <string name="device_setup_title">Daftarkan perangkat operasional</string>
+    <string name="device_setup_description">Pindai QR perangkat dari web admin, halaman Cabang, tab Perangkat, atau ketik kodenya.</string>
+    <string name="device_setup_code_label">Kode perangkat</string>
+    <string name="device_setup_code_placeholder">Masukkan kode perangkat</string>
+    <string name="device_setup_action">Daftarkan</string>
+    <string name="device_release_title">Lepas perangkat</string>
+    <string name="device_release_description">Masukkan kode perangkat untuk melepas tablet ini dari mode operasional.</string>
+    <string name="device_release_action">Lepas</string>
+    <string name="device_release_invalid">Kode perangkat tidak sesuai.</string>
+
+    <!-- Layar operasional -->
+    <string name="operational_title">Perangkat operasional</string>
+    <string name="operational_refresh">Berganti dalam %1$s</string>
+    <string name="operational_step_open">Buka aplikasi di HP, menu Absen.</string>
+    <string name="operational_step_scan">Tekan Pindai QR di bagian paling bawah.</string>
+    <string name="operational_step_aim">Arahkan kamera ke QR ini.</string>
+    <string-array name="operational_welcome_messages">
+        <item>Hari ini milik kita. Ayo mulai!</item>
+        <item>Energi penuh, hasil terbaik!</item>
+        <item>Siap, fokus, gas!</item>
+        <item>Mulai dengan semangat, tutup dengan bangga.</item>
+        <item>Hari baru, semangat baru!</item>
+        <item>Langkah pertama menentukan segalanya. Semangat!</item>
+        <item>Bekerja dengan hati, hasilnya pasti berarti!</item>
+        <item>Fokus hari ini, bangga esok hari.</item>
+        <item>Setiap usaha kecil membawa hasil besar. Ayo!</item>
+        <item>Tim hebat dimulai dari Anda. Semangat!</item>
+    </string-array>
+    <string-array name="operational_farewell_messages">
+        <item>Terima kasih atas dedikasi Anda hari ini.</item>
+        <item>Kerja keras Anda sangat berarti.</item>
+        <item>Terima kasih sudah memberikan yang terbaik.</item>
+        <item>Kontribusi Anda hari ini membuat semuanya berjalan lancar.</item>
+        <item>Kami menghargai setiap usaha Anda hari ini.</item>
+        <item>Hari ini berjalan baik berkat Anda.</item>
+        <item>Dedikasi Anda tidak luput dari perhatian. Terima kasih.</item>
+        <item>Usaha Anda hari ini layak dibanggakan.</item>
+        <item>Terima kasih telah bekerja dengan sepenuh hati.</item>
+        <item>Terima kasih atas kerja hebatnya. Selamat beristirahat.</item>
+    </string-array>
+    <string name="operational_qr_closed">QR ditutup karena tidak ada aktivitas.</string>
+    <string name="operational_qr_show">Tampilkan QR</string>
+    <string name="operational_relink_message">Identitas karyawan tidak diterima atau sudah kedaluwarsa. Pindai ulang QR untuk melanjutkan.</string>
+    <string name="operational_relink_action">Pindai ulang</string>
+    <string name="greeting_morning">Selamat pagi</string>
+    <string name="greeting_afternoon">Selamat siang</string>
+    <string name="greeting_evening">Selamat sore</string>
+    <string name="greeting_night">Selamat malam</string>
+    <string name="pairing_success_title">Berhasil terhubung</string>
+    <string name="pairing_success_message">%1$s siap digunakan.</string>
+
+
+    <!-- Pairing perangkat operasional -->
+    <string name="pairing_title">Perangkat operasional</string>
+    <string name="pairing_description">Pindai QR di perangkat operasional untuk menghubungkan.</string>
+    <string name="pairing_action">Pindai QR</string>
+    <string name="pairing_sheet_title">Pindai QR</string>
+    <string name="pairing_sheet_hint">Arahkan kamera ke QR di perangkat operasional.</string>
+
+    <!-- Izin perangkat -->
+    <string name="permission_title">Izin diperlukan</string>
+    <string name="permission_message">Absen memerlukan izin Lokasi, izin Kamera, dan GPS yang menyala.</string>
+    <string name="permission_location_title">Lokasi</string>
+    <string name="permission_location_description">Memastikan absen dilakukan di kafe. Pilih lokasi tepat.</string>
+    <string name="permission_camera_title">Kamera</string>
+    <string name="permission_camera_description">Mengambil foto saat absen.</string>
+    <string name="permission_gps_title">GPS</string>
+    <string name="permission_gps_description">Layanan lokasi perangkat harus menyala.</string>
+    <string name="permission_status_on">Menyala</string>
+    <string name="permission_status_off">Mati</string>
+    <string name="permission_status_granted">Diizinkan</string>
+    <string name="permission_status_denied">Belum diizinkan</string>
+    <string name="permission_action_allow">Izinkan</string>
+    <string name="permission_success_title">Izin lengkap</string>
+    <string name="permission_success_message">Lokasi, Kamera, dan GPS sudah siap.</string>
+    <string name="permission_operational_message">Perangkat operasional memerlukan izin Kamera dan Bluetooth.</string>
+    <string name="permission_operational_camera_description">Memotret nota pengeluaran.</string>
+    <string name="permission_bluetooth_title">Bluetooth</string>
+    <string name="permission_bluetooth_description">Mencari dan menyambung ke printer.</string>
+    <string name="permission_operational_success_message">Kamera dan Bluetooth sudah siap.</string>
+
+    <!-- Komponen -->
+    <string name="photo_camera">Kamera</string>
+    <string name="photo_reading">Membaca foto...</string>
+    <string name="photo_gallery">Galeri</string>
+    <string name="sheet_close">Tutup</string>
+    <string name="pagination_range">Menampilkan %1$d–%2$d dari %3$d</string>
+    <string name="pagination_jump">Ke hal.</string>
+    <string name="pagination_back">Kembali</string>
+    <string name="pagination_next">Lanjut</string>
+    <string name="pagination_previous_description">Halaman sebelumnya</string>
+    <string name="pagination_next_description">Halaman berikutnya</string>
+    <string name="month_picker_previous">Bulan sebelumnya</string>
+    <string name="month_picker_next">Bulan berikutnya</string>
+
+    <!-- Format -->
+    <string name="format_duration">%1$s j %2$s m</string>
+    <string name="format_when">%1$s %2$s %3$s · %4$s</string>
+    <string name="format_month_year">%1$s %2$s</string>
+    <string name="format_detail_pair">%1$s · %2$s</string>
+    <string name="format_time_range">%1$s – %2$s</string>
+    <string name="format_date_plain">%1$s %2$s %3$s</string>
+    <string name="format_date_long">%1$s, %2$s %3$s %4$s</string>
+
+    <string-array name="months">
+        <item>Januari</item>
+        <item>Februari</item>
+        <item>Maret</item>
+        <item>April</item>
+        <item>Mei</item>
+        <item>Juni</item>
+        <item>Juli</item>
+        <item>Agustus</item>
+        <item>September</item>
+        <item>Oktober</item>
+        <item>November</item>
+        <item>Desember</item>
+    </string-array>
+
+    <string-array name="months_short">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>Mei</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Agu</item>
+        <item>Sep</item>
+        <item>Okt</item>
+        <item>Nov</item>
+        <item>Des</item>
+    </string-array>
+
+    <string-array name="weekdays_long">
+        <item>Minggu</item>
+        <item>Senin</item>
+        <item>Selasa</item>
+        <item>Rabu</item>
+        <item>Kamis</item>
+        <item>Jumat</item>
+        <item>Sabtu</item>
+    </string-array>
+
+    <string-array name="weekdays_short">
+        <item>Min</item>
+        <item>Sen</item>
+        <item>Sel</item>
+        <item>Rab</item>
+        <item>Kam</item>
+        <item>Jum</item>
+        <item>Sab</item>
+    </string-array>
+
+    <string name="cashier_search">Cari menu</string>
+    <string name="cashier_all">Semua</string>
+    <string name="cashier_bestseller">Terlaris</string>
+    <string name="cashier_menu_empty">Menu tidak ditemukan.</string>
+    <string name="cashier_order_title">Pesanan</string>
+    <string name="cashier_order_empty">Belum ada item.</string>
+    <string name="cashier_items_count">%1$d item</string>
+    <string name="cashier_total">Total</string>
+    <string name="cashier_pay">Bayar</string>
+    <string name="cashier_clear">Kosongkan pesanan</string>
+    <string name="cashier_order_type">Jenis pesanan</string>
+    <string name="cashier_dine_in">Free Table</string>
+    <string name="cashier_take_away">Take Away</string>
+    <string name="cashier_customer">Nama pelanggan</string>
+    <string name="cashier_details_hint">Pelanggan, kategori, dan catatan (opsional)</string>
+    <string name="cashier_details_title">Detail pesanan</string>
+    <string name="cashier_table">No. meja</string>
+    <string name="cashier_no_shift">Sesi belum dibuka.</string>
+    <string name="cashier_list_last">%1$s dan %2$s</string>
+    <string name="nav_my_session">Sesi Kasir Saya</string>
+    <string name="session_chart_composition">Komposisi pendapatan sesi ini</string>
+    <string name="session_chart_trend">Pendapatan per sesi</string>
+    <string name="session_last">Sesi terakhir</string>
+    <string name="session_open">Buka sesi</string>
+    <string name="session_close">Tutup sesi</string>
+    <string name="session_card_none">Sesi belum dibuka</string>
+    <string name="session_card_cash">Modal awal %1$s</string>
+    <string name="session_form_opening_cash">Uang di laci saat mulai</string>
+    <string name="session_form_actual_cash">Uang aktual di laci sekarang</string>
+    <string name="session_form_expected_cash">Uang yang seharusnya ada di laci: %1$s</string>
+    <string name="session_note">Catatan (opsional)</string>
+    <string name="session_three_parts_hint">Hitung tiga bagian uang secara terpisah.</string>
+    <string name="session_part_float">Modal</string>
+    <string name="session_part_shopping">Uang belanja</string>
+    <string name="session_part_revenue">Omzet tunai</string>
+    <string name="session_part_expected">Seharusnya %1$s</string>
+    <string name="session_large_difference">%1$s berbeda jauh dari angka seharusnya (lebih dari Rp 100.000 atau lebih dari separuhnya). Periksa kembali hitungan. Bila angkanya sudah benar, tekan \"Ya, tutup sesi\".</string>
+    <string name="session_close_anyway">Ya, tutup sesi</string>
+    <string name="session_form_actual_cash_short">Uang di laci</string>
+    <string name="session_history">Riwayat sesi</string>
+    <string name="session_history_empty">Belum ada sesi pada rentang ini.</string>
+    <string name="session_row_transactions">%1$d transaksi</string>
+    <string name="session_orders">Pesanan</string>
+    <string name="session_orders_empty">Tidak ada pesanan pada sesi ini.</string>
+    <string name="order_no_receipt">Tanpa nomor nota</string>
+    <string name="order_voided">Dibatalkan</string>
+    <string name="order_line">%1$d× %2$s</string>
+    <string name="order_line_options">%1$d× %2$s (%3$s)</string>
+    <string name="date_any">Semua tanggal</string>
+    <string name="date_clear">Hapus filter tanggal</string>
+    <string name="cashier_status_sold_out">Habis</string>
+    <string name="cashier_status_ingredient">Bahan habis</string>
+    <string name="cashier_status_no_recipe">Belum ada resep</string>
+    <string name="cashier_variant_required">Wajib dipilih</string>
+    <string name="cashier_extras">Ekstra</string>
+    <string name="cashier_note">Catatan untuk menu ini (opsional)</string>
+    <string name="cashier_note_edit">Catatan untuk menu ini</string>
+    <string name="cashier_add_to_order">Tambah ke pesanan</string>
+    <string name="cashier_payment_title">Pembayaran</string>
+    <string name="cashier_payment_method">Metode pembayaran</string>
+    <string name="cashier_visitor_category">Kategori pengunjung</string>
+    <string name="cashier_visitor_gender">Jenis kelamin</string>
+    <string name="cashier_not_filled">Tidak diisi</string>
+    <string name="cashier_order_note">Catatan untuk seluruh pesanan (opsional)</string>
+    <string name="cashier_order_note_confirm_title">Tambahkan ke daftar catatan</string>
+    <string name="cashier_order_note_confirm_message">Tambahkan "%1$s" ke daftar catatan semua cabang?</string>
+    <string name="cashier_order_note_confirm_action">Tambahkan</string>
+    <string name="cashier_clear_title">Kosongkan pesanan</string>
+    <string name="cashier_clear_message">Semua item, nama pelanggan, no. meja, kategori pengunjung, catatan untuk seluruh pesanan, dan promo pada pesanan ini akan dihapus.</string>
+    <string name="cashier_clear_action">Kosongkan</string>
+    <string name="cashier_order_note_search">Cari atau ketik catatan baru</string>
+    <string name="cashier_order_note_add">Tambah catatan "%1$s"</string>
+    <string name="cashier_order_note_empty">Belum ada catatan.</string>
+    <string name="cashier_line_note">Catatan: %1$s</string>
+    <string name="cashier_promo">Promo</string>
+    <string name="cashier_no_promo">Tanpa promo</string>
+    <string name="cashier_discount">Potongan %1$s</string>
+    <string name="receipt_discount">Potongan</string>
+    <string name="cashier_cash_received">Uang diterima</string>
+    <string name="cashier_change">Kembalian %1$s</string>
+    <string name="cashier_cash_short">Uang diterima kurang dari total.</string>
+    <string name="cashier_confirm_pay">Simpan transaksi</string>
+    <string name="cashier_payment_pick">Pilih metode pembayaran</string>
+    <string name="cashier_method_ready">Tersedia</string>
+    <string name="cashier_method_unready">Tidak tersedia</string>
+    <string name="cashier_method_unready_reason">Metode yang tidak tersedia belum lengkap disetel di web admin, menu Pembayaran: %1$s.</string>
+    <string name="cashier_method_unready_item">%1$s (belum diisi: %2$s)</string>
+    <string name="cashier_method_none">Belum ada cara pembayaran yang aktif. Atur dulu di menu Pembayaran.</string>
+    <string name="cashier_method_none_ready">Belum ada cara pembayaran yang lengkap disetel, jadi belum ada yang bisa dipakai. Lengkapi dulu di menu Pembayaran.</string>
+    <string name="cashier_show_customer">Tunjukkan ke Pelanggan</string>
+    <string name="cashier_show_customer_hint">Buka layar QR dan total pembayaran</string>
+    <string name="cashier_direct_customer">Arahkan pelanggan untuk membayar via %1$s.</string>
+    <string name="cashier_order_summary">Ringkasan pesanan</string>
+    <string name="cashier_kitchen_bar">Cetak struk pesanan</string>
+    <string name="cashier_tickets_printed">Struk pesanan stasiun sudah tercetak.</string>
+    <string name="cashier_receipt_missing">Nomor nota belum didapat. Tiket dicetak tanpa nomor; nomor diberikan saat pesanan terkirim.</string>
+    <string name="cashier_subtotal">Subtotal</string>
+    <string name="cashier_bill_total">Total tagihan</string>
+    <string name="cashier_process_pay">Proses bayar</string>
+    <string name="cashier_processing">Memproses…</string>
+    <string name="cashier_customer_total">Total yang harus dibayar</string>
+    <string name="cashier_scan_to_pay">Scan kode ini untuk membayar via %1$s</string>
+    <string name="cashier_close">Tutup</string>
+    <string name="cashier_cash_exact">Uang pas</string>
+    <string name="cashier_bank_received">Nominal masuk ke rekening</string>
+    <string name="cashier_change_label">Kembalian</string>
+    <string name="cashier_overpaid">Kelebihan pembayaran</string>
+    <string name="cashier_overpaid_hint">Tidak ada kembalian tunai. Kelebihan pembayaran ini dicatat otomatis (nominal, waktu, dan kasir) di halaman Kelebihan Pembayaran.</string>
+    <string name="cashier_short_by">Uang kurang</string>
+    <string name="cashier_hand_change">Serahkan kembalian</string>
+    <string name="cashier_no_cash_change">Jangan beri kembalian tunai</string>
+    <string name="cashier_paid">Lunas</string>
+    <string name="cashier_total_paid">Total dibayar</string>
+    <string name="cashier_change_handed">Kembalian sudah diserahkan</string>
+    <string name="cashier_understood">Selesai</string>
+    <string name="cashier_saved_receipt">Transaksi tersimpan · No. Nota %1$s</string>
+    <string name="cashier_saved">Transaksi tersimpan</string>
+    <string name="cashier_saved_offline">Tersimpan di tablet. Internet putus, transaksi terkirim otomatis saat online; struk tetap dicetak.</string>
+    <string name="cashier_method">Metode</string>
+    <string name="cashier_receipt_printed">Struk tercetak.</string>
+    <string name="printer_logo_title">Logo struk</string>
+    <string name="printer_logo_on">Cetak logo di struk</string>
+    <string name="printer_logo_off">Struk dicetak tanpa logo, jadi data yang dikirim jauh lebih ringan.</string>
+    <string name="printer_logo_full">Dikirim lengkap setiap struk (±5 KB).</string>
+    <string name="printer_logo_stored">Logo tersimpan di printer; setiap struk sekitar 79% lebih ringan.</string>
+    <string name="printer_logo_store">Simpan logo ke printer</string>
+    <string name="printer_logo_restore">Simpan ulang logo</string>
+    <string name="printer_logo_check">Kertas uji sudah keluar. Struk dan logo tercetak utuh?</string>
+    <string name="printer_logo_yes">Ya, tercetak utuh</string>
+    <string name="printer_logo_no">Tidak, cetak tanpa logo</string>
+    <string name="printer_notice_logo_stored">Printer siap. Struk berikutnya memakai logo dari printer.</string>
+    <string name="printer_notice_logo_full">Printer siap. Struk dicetak tanpa logo.</string>
+    <string name="cashier_success_title">Transaksi tersimpan</string>
+    <string name="cashier_success_message">Nota %1$s. Kembalian %2$s.</string>
+    <string name="cashier_success_message_plain">Kembalian %1$s.</string>
+    <string name="cashier_done">Selesai</string>
+    <string name="orders_refresh">Segarkan</string>
+    <string name="sync_queued">%1$d pesanan menunggu dikirim ke server.</string>
+    <string name="sync_needs_login">%1$d pesanan menunggu pembuatnya memindai QR lagi.</string>
+    <string name="sync_rejected">%1$d pesanan ditolak server.</string>
+    <string name="sync_rejected_action">Lihat</string>
+    <string name="sync_rejected_title">Pesanan ditolak</string>
+    <string name="sync_item_count">%1$d item</string>
+    <string name="sync_reason_unknown">Ditolak server.</string>
+    <string name="sync_retry">Kirim ulang</string>
+    <string name="sync_discard">Hapus</string>
+    <string name="user_sign_out">Keluar</string>
+    <string name="user_close_and_sign_out">Tutup sesi dan keluar</string>
+    <string name="user_sign_out_needs_network">Status sesi belum terbaca. Sambungkan internet untuk keluar.</string>
+    <string name="session_close_signs_out">Setelah sesi ditutup, Anda keluar dari tablet.</string>
+    <string name="queue_gate_title">Mengirim pesanan</string>
+    <string name="queue_gate_sending">%1$d pesanan belum terkirim. Proses dilanjutkan setelah semua pesanan diterima server.</string>
+    <string name="queue_gate_offline">Tablet offline. Pesanan dikirim otomatis saat internet tersambung.</string>
+    <string name="queue_gate_rejected_title">Pesanan ditolak server</string>
+    <string name="queue_gate_rejected">%1$d pesanan ditolak. Kirim ulang atau hapus pesanan tersebut sebelum melanjutkan.</string>
+    <string name="queue_gate_rejected_action">Lihat pesanan</string>
+    <string name="cashier_cart_hide">Sembunyikan panel pesanan</string>
+    <string name="cashier_cart_show">Tampilkan panel pesanan</string>
+    <string name="cashier_cart_expand">Lebarkan panel pesanan</string>
+    <string name="cashier_cart_shrink">Ciutkan panel pesanan</string>
+    <string name="cashier_queued_title">Tersimpan di tablet</string>
+    <string name="cashier_queued_message">Belum terkirim ke server dan akan dikirim otomatis saat tersambung. Kembalian %1$s.</string>
+    <string name="update_title">Pembaruan wajib</string>
+    <string name="update_message">Versi aplikasi ini sudah tidak didukung. Unduh dan pasang versi terbaru untuk melanjutkan.</string>
+    <string name="update_message_session">Versi aplikasi ini sudah tidak didukung. Selesaikan sesi kasir yang berjalan, lalu perbarui.</string>
+    <string name="update_installed">Versi terpasang</string>
+    <string name="update_minimum">Versi minimum</string>
+    <string name="update_session_note">Sesi kasir masih berjalan. Penjualan tetap bisa dilanjutkan sampai sesi ditutup.</string>
+    <string name="update_open_download">Buka halaman unduhan</string>
+    <string name="update_continue_session">Lanjutkan sampai sesi ditutup</string>
+    <string name="update_no_link">Hubungi admin untuk mendapatkan versi terbaru.</string>
+    <string name="cashier_customer_linked">Pelanggan terhubung</string>
+    <string name="cashier_customer_visits">%1$d×</string>
+    <string name="cashier_printer_station_offline">Printer %1$s terputus. %2$s belum tentu tercetak. Pastikan printer menyala dan dekat tablet.</string>
+    <string name="cashier_printer_station_unpaired">Printer %1$s belum dipasang di tablet ini. %2$s tidak tercetak. Sampaikan pesanan ini ke %1$s secara langsung.</string>
+    <string name="device_setup_or_type">Atau ketik kode perangkat</string>
+    <string name="device_setup_scan">Pindai QR</string>
+    <string name="device_setup_scan_hint">Arahkan kamera ke QR perangkat di web admin. Tablet terdaftar otomatis begitu QR terbaca.</string>
+    <string name="device_setup_scan_invalid">QR ini bukan QR perangkat. Pindai QR dari web admin, halaman Cabang, tab Perangkat, atau ketik kodenya.</string>
+    <string name="session_card_unknown">Belum terbaca</string>
+    <string name="session_chart_cash_use">Uang tunai sesi ini</string>
+    <string name="session_chart_methods">Pendapatan per metode bayar</string>
+    <string name="session_chart_no_sales">Belum ada penjualan di sesi ini. Grafik pendapatan muncul setelah ada transaksi.</string>
+    <string name="session_chart_split">Tunai dan non tunai</string>
+    <string name="session_counted_revenue">Omzet dihitung kasir</string>
+    <string name="session_drawer_spent">Belanja dari laci</string>
+    <string name="session_expiring">Sesi berakhir dalam %1$d detik. Selesaikan pekerjaan, lalu pindai kode QR kembali.</string>
+    <string name="session_method_row">%1$s · %2$d transaksi</string>
+    <string name="session_methods_failed">Rincian per metode bayar belum terbaca. Ketuk muat ulang di kanan atas.</string>
+    <string name="session_other_fund_spent">Pengeluaran dari dana lain</string>
+    <string name="session_real_revenue">Omzet riil</string>
+    <string name="session_shopping_fund_used">Dana belanja terpakai</string>
+    <string name="bill_ack">Mengerti</string>
+    <string name="bill_add_menu">Tambah menu</string>
+    <string name="bill_add_to">Tambah ke bill %1$s</string>
+    <string name="bill_added">Menu ditambahkan ke bill %1$s.</string>
+    <string name="bill_adding_banner">Menambah menu ke bill %1$s</string>
+    <string name="bill_cancel">Batalkan bill</string>
+    <string name="bill_cancel_adding">Batal tambah menu</string>
+    <string name="bill_cancel_message">Menu yang sudah dikirim ke dapur ikut dibatalkan dan stoknya dikembalikan. Bill yang dibatalkan tidak bisa dibuka lagi.</string>
+    <string name="bill_cancel_reason">Alasan (opsional)</string>
+    <string name="bill_cancel_title">Batalkan bill ini?</string>
+    <string name="bill_empty">Tidak ada bill yang belum dibayar.</string>
+    <string name="bill_not_mine">Bill ini milik sesi kasir lain. Hanya pemilik sesinya yang bisa mengubah atau membayarnya.</string>
+    <string name="bill_pay">Bayar</string>
+    <string name="bill_promo_not_kept">Promo tidak ikut disimpan; pilih lagi saat bill dibayar.</string>
+    <string name="bill_row_caption">%1$s · %2$s</string>
+    <string name="bill_save">Simpan Bill</string>
+    <string name="bill_saved">Bill %1$s disimpan. Tiket sudah dikirim ke dapur.</string>
+    <string name="bill_search">Cari nomor atau meja</string>
+    <string name="bill_subtotal">Subtotal</string>
+    <string name="bill_table">Meja %1$s</string>
+    <string name="bill_take_away">Bawa pulang</string>
+    <string name="bill_total_due">Total tagihan</string>
+    <string name="bill_untitled">Bill</string>
+    <string name="cashier_cart_restored">Pesanan yang belum dibayar dipulihkan. Periksa isinya sebelum membayar.</string>
+    <string name="cashier_cart_restored_ack">Mengerti</string>
+    <string name="nav_open_bill_setting">Open Bill</string>
+    <string name="nav_open_bills">Bill Terbuka</string>
+    <string name="openbill_setting_blocked">Masih ada %1$d bill yang belum dibayar. Bayar atau batalkan semuanya dulu sebelum Open Bill dimatikan.</string>
+    <string name="openbill_setting_caption">Kasir bisa menyimpan pesanan sebagai bill, mengirimnya ke dapur, lalu membayarnya belakangan. Pengaturan ini hanya untuk tablet ini.</string>
+    <string name="openbill_setting_check_failed">Belum bisa memeriksa bill yang belum dibayar. Periksa koneksi, lalu coba lagi.</string>
+    <string name="openbill_setting_off_hint">Tombol Simpan Bill dan menu Bill Terbuka disembunyikan di tablet ini. Bill yang masih ada tetap bisa dibuka lewat menu ini setelah dinyalakan lagi.</string>
+    <string name="openbill_setting_title">Simpan Bill di kasir</string>
+    <string name="user_sign_out_close_session_first">Tutup sesi di Sesi Kasir Saya sebelum keluar.</string>
+</resources>

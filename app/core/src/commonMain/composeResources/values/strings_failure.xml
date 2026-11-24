@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="failure_unreachable">Tidak dapat terhubung ke server. Periksa jaringan perangkat.</string>
+    <string name="failure_timeout">Server tidak menjawab tepat waktu. Coba lagi.</string>
+    <string name="failure_secure">Sambungan aman ke server gagal. Periksa tanggal dan jam perangkat.</string>
+    <string name="failure_unexpected">Terjadi kesalahan di aplikasi (%1$s).</string>
+    <string name="failure_server">Server bermasalah (kode %1$d). Coba lagi sebentar lagi.</string>
+    <string name="failure_not_found">Alamat tidak ditemukan di server: %1$s (%2$d).</string>
+    <string name="failure_unauthorized">Sesi karyawan berakhir. Pindai QR lagi.</string>
+    <string name="failure_rejected">Ditolak server (kode %1$d).</string>
+    <string name="failure_login_invalid">Username atau password salah. Periksa lagi, lalu coba ulang.</string>
+    <string name="failure_login_inactive">Akun ini tidak aktif. Hubungi admin/pemilik kafe.</string>
+    <string name="orders_refresh_failed">Gagal menyegarkan. Data mungkin sudah usang.</string>
+    <string name="session_offline">Buka dan tutup sesi membutuhkan jaringan.</string>
+    <string name="receipt_print_failed">Struk belum tercetak: %1$s.</string>
+    <string name="receipt_printer_unpaired">Struk belum tercetak karena printer %1$s belum dipasang. Pasang di menu Printer, lalu cetak ulang dari tab Kasir di Papan Stasiun.</string>
+    <string name="receipt_printer_unpaired_history">Struk belum tercetak karena printer %1$s belum dipasang. Pasang di menu Printer, lalu cetak ulang dari Riwayat Pesanan.</string>
+</resources>

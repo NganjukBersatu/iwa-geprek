@@ -1,0 +1,8 @@
+PERMISSION_MANAGE = "pembayaran.kelola"
+
+IMAGE_FOLDER = "metode-bayar"
+
+CODE_PATTERN = r"^[a-z0-9_]{2,16}$"
+MAX_LABEL_LENGTH = 40
+MAX_NOTE_LENGTH = 500
+MAX_FEE_PERCENT = 100

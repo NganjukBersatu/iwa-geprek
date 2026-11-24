@@ -1,0 +1,12 @@
+"""Where each kind of stored file lives; every folder outside the public ones needs a sign-in and a right to the record that owns the file (15.3)."""
+
+RECEIPT = "bukti"
+SHARED_RECEIPT = "nota"
+DEPOSIT_PHOTO = "setoran-nota"
+INGREDIENT_PROOF = "bahan-bukti"
+PROFILE_PHOTO = "profil"
+ATTENDANCE_PHOTO = "absensi"
+CLOCK_OUT_PHOTO_SUFFIX = "-pulang"
+LEAVE_ATTACHMENT = "pengajuan-izin"
+BATCH_PHOTO = "batch"
+TASK_MEDIA = "tugas"

@@ -1,0 +1,469 @@
+/* Every CSS-driven movement of the app; Svelte transitions take the same values from $lib/motion/tokens.ts. */
+
+:root {
+  /* Tombol dan toggle: umpan balik sentuhan, 70 ms menurut 6.11.3. */
+  --duration-instant: 70ms;
+  --duration-fast: 150ms;
+  --duration-standard: 250ms;
+  --duration-enter: 300ms;
+  --duration-data: 400ms;
+  --ease-enter: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-exit: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  --ease-move: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* Modal: the layer grows from 95% over a fading backdrop. */
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.95); }
+}
+@keyframes backdrop-in {
+  from { opacity: 0; }
+}
+.modal-in {
+  animation: modal-in var(--duration-enter) var(--ease-enter);
+}
+.backdrop-in {
+  animation: backdrop-in var(--duration-standard) var(--ease-enter);
+}
+
+/* The head above a scroll area once it is scrolled; set by the scrollShadow action. */
+[data-scroll-head] {
+  position: relative;
+  z-index: 10;
+  transition: box-shadow var(--duration-fast) var(--ease-move);
+}
+[data-scroll-head][data-scrolled] {
+  box-shadow: 0 6px 12px -8px color-mix(in oklab, var(--color-slate-700) 35%, transparent);
+}
+
+/* Garis tipis tanpa persen di atas daftar yang sedang dimuat, misalnya hasil cari pilihan. */
+@keyframes progress-line-run {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+.progress-line {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  overflow: hidden;
+  background: var(--color-brand-soft);
+  pointer-events: none;
+}
+.progress-line::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: var(--color-brand);
+  animation: progress-line-run 1.4s var(--ease-move) infinite;
+}
+
+/* The bar at the top while a screen is on its way. */
+@keyframes nav-progress-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(0.8); }
+}
+.nav-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 70;
+  height: 3px;
+  background: var(--color-brand-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+  pointer-events: none;
+}
+.nav-progress[data-state='loading'] {
+  opacity: 1;
+  animation: nav-progress-grow 8s cubic-bezier(0.1, 0.6, 0.2, 1) forwards;
+}
+.nav-progress[data-state='done'] {
+  transform: scaleX(1);
+  opacity: 0;
+  transition: transform var(--duration-standard) var(--ease-enter), opacity var(--duration-fast) linear var(--duration-standard);
+}
+
+/* A running bar under a busy toast, for work that has no known length. */
+@keyframes toast-progress-run {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+.toast-progress {
+  height: 3px;
+  background: color-mix(in oklab, white 25%, transparent);
+  overflow: hidden;
+}
+.toast-progress::after {
+  content: '';
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: var(--color-brand-accent);
+  animation: toast-progress-run 1.2s var(--ease-move) infinite;
+}
+
+/* The check that closes a large action: it pops in, then is drawn from left to right. */
+@keyframes success-pop {
+  from { transform: scale(0.6); }
+  60% { transform: scale(1.12); }
+}
+@keyframes success-draw {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+.success-mark {
+  display: inline-block;
+  animation: success-pop var(--duration-data) var(--ease-enter) both, success-draw var(--duration-data) var(--ease-enter) 120ms both;
+}
+
+/* A section reached through a link with #id is framed for a moment. */
+@keyframes spotlight-fade {
+  from, 40% { box-shadow: 0 0 0 3px var(--color-brand-accent); }
+  to { box-shadow: 0 0 0 3px transparent; }
+}
+.spotlight {
+  scroll-margin-top: 1rem;
+  animation: spotlight-fade 1.4s var(--ease-exit);
+}
+
+/* Moving to another screen: only the page area moves, the sidebar stays still. */
+.page-transition {
+  view-transition-name: page;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+::view-transition-group(page) {
+  animation-duration: var(--duration-fast);
+}
+@keyframes page-out {
+  to { opacity: 0; transform: translateY(10px); }
+}
+@keyframes page-in {
+  from { opacity: 0; }
+}
+::view-transition-old(page) {
+  animation: page-out var(--duration-fast) var(--ease-exit) both;
+}
+::view-transition-new(page) {
+  animation: page-in var(--duration-fast) var(--ease-enter) 100ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-in,
+  .backdrop-in,
+  .success-mark,
+  .toast-progress::after,
+  .progress-line::after {
+    animation: none;
+  }
+  .nav-progress {
+    display: none;
+  }
+  [data-scroll-head] {
+    transition: none;
+  }
+  .spotlight {
+    animation: spotlight-fade 1.4s step-end;
+  }
+}
+
+/* ---------- Halaman unduhan: sambutan layar penuh ---------- */
+html.welcome-lock,
+html.welcome-lock body {
+  overflow: hidden;
+  scrollbar-width: none;
+}
+html.welcome-lock::-webkit-scrollbar,
+html.welcome-lock body::-webkit-scrollbar {
+  display: none;
+}
+.welcome {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--color-brand-deep);
+  color: white;
+  transition: opacity 900ms var(--ease-enter), transform 900ms var(--ease-enter), visibility 0s linear 900ms;
+}
+.welcome-gone {
+  opacity: 0;
+  transform: scale(1.06);
+  visibility: hidden;
+  pointer-events: none;
+}
+.welcome::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-slate-800);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1600ms var(--ease-enter);
+}
+.welcome[data-mood='dim']::after { opacity: 0.55; }
+.welcome-blob {
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.75;
+  transition: opacity 1600ms var(--ease-enter), scale 1600ms var(--ease-enter);
+}
+.welcome-blob-1 { background: var(--color-brand); top: -30vmax; left: -20vmax; animation: welcome-drift-1 16s ease-in-out infinite alternate; }
+.welcome-blob-2 { background: var(--color-brand-accent-deep); bottom: -35vmax; right: -25vmax; opacity: 0.45; animation: welcome-drift-2 19s ease-in-out infinite alternate; }
+.welcome-blob-3 { background: var(--color-brand-accent); width: 40vmax; height: 40vmax; top: 30%; left: 45%; opacity: 0.3; animation: welcome-drift-3 13s ease-in-out infinite alternate; }
+.welcome[data-mood='dim'] .welcome-blob { animation-duration: 30s; }
+.welcome[data-mood='bloom'] .welcome-blob-1,
+.welcome[data-mood='bloom'] .welcome-blob-2 { opacity: 0.95; }
+.welcome[data-mood='bloom'] .welcome-blob-3 { opacity: 0.75; scale: 1.6; }
+@keyframes welcome-drift-1 { to { transform: translate(18vmax, 14vmax) scale(1.15); } }
+@keyframes welcome-drift-2 { to { transform: translate(-16vmax, -12vmax) scale(1.1); } }
+@keyframes welcome-drift-3 { to { transform: translate(-22vmax, 10vmax) scale(0.85); } }
+.welcome-stage {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 2.25rem;
+  padding-inline: 1.5rem;
+  text-align: center;
+}
+.welcome-line {
+  max-width: 18ch;
+  font-size: clamp(2rem, 6vw, 4.25rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(6px);
+  transition: opacity 700ms var(--ease-enter), transform 700ms var(--ease-enter), filter 700ms var(--ease-enter);
+}
+.welcome-big {
+  font-size: clamp(3rem, 11vw, 7rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  transition-duration: 1600ms;
+}
+.welcome-logo {
+  width: clamp(5.5rem, 16vw, 8.5rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(0.6);
+  filter: blur(8px);
+  transition: opacity 1200ms var(--ease-enter), transform 1400ms var(--ease-enter), filter 1200ms var(--ease-enter), box-shadow 1800ms var(--ease-enter);
+}
+.welcome-line.welcome-show,
+.welcome-logo.welcome-show {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.welcome-logo.welcome-show {
+  box-shadow: 0 0 0 1.75rem color-mix(in oklab, white 14%, transparent), 0 0 0 3.5rem color-mix(in oklab, white 8%, transparent);
+}
+.welcome-sub {
+  min-height: 1.6em;
+  font-size: 0.95rem;
+  color: color-mix(in oklab, white 85%, transparent);
+}
+.welcome-spinner {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  opacity: 0;
+  transition: opacity 500ms;
+}
+.welcome-spinner.welcome-show { opacity: 1; }
+.welcome-spinner i {
+  position: absolute;
+  inset: 0;
+  animation: welcome-orbit 4.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+}
+.welcome-spinner i::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(50% - 3px);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: white;
+}
+.welcome-spinner i:nth-child(2) { animation-delay: 0.15s; }
+.welcome-spinner i:nth-child(3) { animation-delay: 0.3s; }
+.welcome-spinner i:nth-child(4) { animation-delay: 0.45s; }
+.welcome-spinner i:nth-child(5) { animation-delay: 0.6s; }
+@keyframes welcome-orbit {
+  0% { transform: rotate(0); opacity: 1; }
+  75% { transform: rotate(720deg); opacity: 1; }
+  76%, 100% { transform: rotate(720deg); opacity: 0; }
+}
+/* Isi halaman naik setelah sambutan selesai. */
+.welcome-rise { transition: opacity 800ms var(--ease-enter), transform 800ms var(--ease-enter); }
+.welcome-pending .welcome-rise { opacity: 0; transform: translateY(24px); }
+
+/* ---------- Halaman unduhan: kartu dan ponsel peraga ---------- */
+.platform-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(420px circle at var(--glow-x, 50%) var(--glow-y, 50%), var(--color-brand-soft), transparent 60%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms;
+}
+.platform-card-brand::before {
+  background: radial-gradient(420px circle at var(--glow-x, 50%) var(--glow-y, 50%), color-mix(in oklab, white 14%, transparent), transparent 60%);
+}
+.platform-card:hover::before { opacity: 1; }
+.phone-demo { transition: transform 600ms var(--ease-enter); }
+.phone-demo-left { transform: rotate(-3deg); }
+.phone-demo-right { transform: rotate(3deg); }
+.platform-card:hover .phone-demo { transform: translateY(-4px); }
+.phone-demo::after {
+  content: '';
+  position: absolute;
+  top: 1.2rem;
+  left: 50%;
+  width: 30%;
+  height: 0.9rem;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: var(--color-brand-deep);
+}
+.phone-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 2.75rem 1.1rem 1.25rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateX(30px) scale(0.98);
+  transition: opacity 500ms var(--ease-enter), transform 600ms var(--ease-enter);
+}
+.phone-screen-on { opacity: 1; transform: none; }
+.phone-screen-out { transform: translateX(-30px) scale(0.98); }
+.phone-icon {
+  display: grid;
+  place-items: center;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 1.3rem;
+  background: var(--color-brand);
+  color: white;
+  font-size: 2rem;
+  object-fit: cover;
+}
+.phone-title { font-weight: 700; font-size: 1rem; line-height: 1.25; color: var(--color-brand-deep); }
+.phone-text { font-size: 0.75rem; line-height: 1.45; color: var(--color-slate-500); }
+.phone-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  background: var(--color-brand);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 700;
+  animation: phone-tap 2.4s var(--ease-move) infinite;
+}
+.phone-ghost { padding: 0.45rem 1rem; border-radius: 999px; border: 1px solid var(--color-brand-line); font-size: 0.74rem; font-weight: 600; }
+.phone-bar { display: block; width: 80%; height: 6px; overflow: hidden; border-radius: 99px; background: var(--color-brand-tint); }
+.phone-bar i { display: block; width: 100%; height: 100%; background: var(--color-brand); transform-origin: left; animation: phone-load 2.6s var(--ease-move) infinite; }
+.phone-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.9rem;
+  background: white;
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-align: left;
+}
+.phone-toggle i { position: relative; flex: none; width: 2.1rem; height: 1.2rem; border-radius: 99px; background: var(--color-brand-line); animation: phone-switch 2.6s var(--ease-move) infinite; }
+.phone-toggle i::after { content: ''; position: absolute; top: 0.15rem; left: 0.15rem; width: 0.9rem; height: 0.9rem; border-radius: 50%; background: white; animation: phone-knob 2.6s var(--ease-move) infinite; }
+.phone-sheet { display: grid; gap: 0.15rem; width: 100%; padding: 0.4rem; border-radius: 1rem; background: white; font-size: 0.74rem; text-align: left; }
+.phone-sheet > span { display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0.55rem; border-radius: 0.6rem; }
+.phone-sheet .phone-sheet-hit { background: var(--color-brand-soft); font-weight: 700; animation: phone-glow 2.4s var(--ease-move) infinite; }
+.phone-home { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; width: 100%; }
+.phone-home > span { aspect-ratio: 1; border-radius: 0.75rem; background: var(--color-brand-tint); }
+.phone-home-app { width: 100%; aspect-ratio: 1; border-radius: 0.75rem; object-fit: cover; animation: phone-pop 2.4s var(--ease-enter) infinite; }
+@keyframes phone-tap { 0%, 60%, 100% { transform: scale(1); } 70% { transform: scale(0.92); } 80% { transform: scale(1.04); } }
+@keyframes phone-load { from { transform: scaleX(0); } 70%, to { transform: scaleX(1); } }
+@keyframes phone-switch { 0%, 40% { background: var(--color-brand-line); } 55%, 100% { background: var(--color-brand); } }
+@keyframes phone-knob { 0%, 40% { transform: none; } 55%, 100% { transform: translateX(0.9rem); } }
+@keyframes phone-glow { 0%, 100% { box-shadow: 0 0 0 0 var(--color-brand-soft); } 50% { box-shadow: 0 0 0 4px var(--color-brand-soft); } }
+@keyframes phone-pop { 0% { transform: scale(0.4); opacity: 0; } 25% { transform: scale(1.1); opacity: 1; } 35%, 100% { transform: scale(1); } }
+
+/* ---------- Halaman unduhan: garis waktu panduan, diisi oleh traceScroll ---------- */
+.guide-trace::before,
+.guide-trace::after {
+  content: '';
+  position: absolute;
+  left: 1.375rem;
+  top: 1.5rem;
+  bottom: 0;
+  width: 2px;
+  background: color-mix(in oklab, white 15%, transparent);
+}
+.guide-trace::after {
+  background: var(--color-brand-accent);
+  transform-origin: top;
+  transform: scaleY(var(--trace-fill, 0));
+}
+.guide-dot { transition: background 400ms, border-color 400ms, color 400ms, transform 400ms var(--ease-enter); }
+.guide-step[data-lit] .guide-dot {
+  background: var(--color-brand-accent);
+  border-color: var(--color-brand-accent);
+  color: var(--color-brand-deep);
+  transform: scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome,
+  .welcome::after,
+  .welcome-blob,
+  .welcome-line,
+  .welcome-logo,
+  .welcome-spinner,
+  .welcome-rise,
+  .platform-card::before,
+  .phone-demo,
+  .phone-screen,
+  .guide-dot {
+    transition: none;
+  }
+  .welcome-blob,
+  .welcome-spinner i,
+  .phone-pill,
+  .phone-bar i,
+  .phone-toggle i,
+  .phone-toggle i::after,
+  .phone-sheet .phone-sheet-hit,
+  .phone-home-app {
+    animation: none;
+  }
+  .phone-demo-left,
+  .phone-demo-right {
+    transform: none;
+  }
+}

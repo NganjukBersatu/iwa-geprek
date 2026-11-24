@@ -1,0 +1,25 @@
+/** The sentences of who has read a SOP: the page, its filters, its columns, and the statuses. */
+export const sopReadersText = {
+	readers: 'Pembaca',
+	pageTitle: 'Pembaca {title}',
+	pageTitleFallback: 'Pembaca SOP',
+	pageDescription: 'Karyawan aktif yang melihat SOP ini di aplikasi. Dihitung sudah membaca setelah menyelesaikan slide terakhir versi terbaru.',
+	loading: 'Memuat pembaca...',
+	back: 'Kembali ke rincian SOP',
+	summary: '{read} dari {audience} karyawan sudah membaca versi {version} sampai slide terakhir. Karyawan yang baru membaca versi lama dihitung belum.',
+	empty: 'Belum ada karyawan aktif yang melihat SOP ini di aplikasi.',
+	unit: 'karyawan',
+	filterStatus: 'Status baca',
+	filterBranch: 'Cabang',
+	filterRead: 'Sudah membaca versi terbaru',
+	filterUnread: 'Belum membaca versi terbaru',
+	columnEmployee: 'Karyawan',
+	columnRole: 'Peran',
+	columnBranch: 'Cabang',
+	columnStatus: 'Status',
+	columnReadAt: 'Selesai dibaca',
+	allBranches: 'Semua cabang',
+	statusRead: 'Sudah membaca',
+	statusUnread: 'Belum membaca',
+	statusOldVersion: 'Baru versi {version}'
+} as const;

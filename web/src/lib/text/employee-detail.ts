@@ -1,0 +1,36 @@
+/** Every sentence of one employee's page. */
+export const employeeDetailText = {
+	back: 'Kembali ke Kelola Karyawan',
+	loadFailed: 'Karyawan gagal dimuat',
+	loading: 'Memuat karyawan...',
+	remove: 'Hapus',
+	locked: 'Akun terkunci',
+	active: 'Aktif',
+	inactive: 'Nonaktif',
+	allBranches: 'Semua cabang',
+	male: 'Laki-laki',
+	female: 'Perempuan',
+	sections: { account: 'Akun', personal: 'Data diri', emergency: 'Kontak darurat' },
+	labels: {
+		name: 'Nama',
+		username: 'Nama pengguna',
+		role: 'Peran',
+		branch: 'Cabang',
+		status: 'Status',
+		joined: 'Tanggal bergabung',
+		phone: 'Telepon',
+		address: 'Alamat',
+		birthDate: 'Tanggal lahir',
+		gender: 'Jenis kelamin',
+		email: 'Email',
+		emergencyName: 'Nama',
+		emergencyPhone: 'Telepon',
+		emergencyRelation: 'Hubungan'
+	},
+	saved: '{name} tersimpan.',
+	saveFailed: 'Gagal menyimpan data karyawan.',
+	removeFailed: 'Gagal menghapus karyawan.',
+	removeTitle: 'Hapus karyawan?',
+	removeLead: 'akan hilang dari daftar karyawan dan tidak bisa masuk lagi.',
+	removeNote: 'Riwayat penjualan, sesi kas, pengeluaran, jadwal, dan kehadirannya tetap tersimpan dengan namanya. Penghapusan tidak bisa dibatalkan; untuk berhenti sementara, nonaktifkan akunnya lewat Ubah.'
+} as const;

@@ -1,0 +1,11 @@
+"""Every sentence shown to the admin on the branch screen, in one place."""
+
+NOT_FOUND = "Cabang tidak ditemukan"
+NAME_REQUIRED = "Nama cabang tidak boleh kosong"
+RADIUS_REQUIRED = "Radius absen tidak boleh kosong"
+PERIOD_INCOMPLETE = "Isi tanggal mulai dan tanggal akhir periode berjalan, atau kosongkan keduanya"
+REMOVAL_ACTIVE = "Tutup cabang ini dulu sebelum menghapusnya permanen"
+REMOVAL_NAME_MISMATCH = "Ketik nama cabang persis seperti yang tertulis untuk mengonfirmasi penghapusan"
+REMOVAL_OWN_BRANCH = "Akun Anda masih ditempatkan di cabang ini. Pindahkan akun Anda ke cabang lain dulu, lalu hapus cabang ini"
+REMOVAL_STARTED = "Cabang ini sedang dihapus permanen, jadi tidak bisa dibuka kembali. Lanjutkan penghapusannya sampai selesai"
+REMOVAL_BLOCKED = "Penghapusan berhenti karena data {table} di cabang ini masih dipakai cabang lain. Data yang sudah terhapus tidak kembali; laporkan nama data ini ke pengembang"

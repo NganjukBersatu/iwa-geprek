@@ -1,0 +1,2 @@
+PERMISSION_SELF = "lembur.mandiri"
+NOTE_MAX_LENGTH = 500

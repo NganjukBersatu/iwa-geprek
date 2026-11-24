@@ -1,0 +1,18 @@
+/* Warna merek klien ini, diisi dari jawaban Copier; token di app.css hanya meneruskannya. */
+:root {
+	--brand-primary: #015DF7;
+	--brand-primary-deep: #083878;
+	--brand-accent: #CC0B14;
+	--brand-accent-deep: #830000;
+	--brand-accent-soft: #FDECEE;
+	--brand-accent-line: #F7C5C8;
+	--brand-soft: #EEF6FC;
+	--brand-tint: #DCEEF8;
+	--brand-line: #C9D8F0;
+	--brand-page: #FDFDFD;
+	--brand-on-primary: #FDFDFD;
+	--brand-ink: #083878;
+	--brand-ink-soft: #EEF6FC;
+	--brand-ink-line: #B9CCE8;
+	--brand-muted: #5D6672;
+}

@@ -1,0 +1,26 @@
+/** The sentences of the leave requests: the list, approving, rejecting, and removing. */
+export const leaveRequestText = {
+	leave: 'Izin',
+	title: 'Pengajuan izin',
+	description: 'Persetujuan menandai karyawan izin atau sakit pada setiap shift yang dijadwalkan di rentangnya. Keputusan bisa diubah kalau salah tekan.',
+	searchPlaceholder: 'Cari nama atau alasan...',
+	search: 'Cari pengajuan izin',
+	loadFailedTitle: 'Pengajuan gagal dimuat',
+	loading: 'Memuat pengajuan',
+	noMatch: 'Tidak ada pengajuan yang cocok dengan pencarian.',
+	noRequests: 'Tidak ada pengajuan.',
+	viewAttachment: 'Lihat lampiran',
+	attachmentLink: 'Link lampiran',
+	reject: 'Tolak',
+	approve: 'Setujui',
+	removeTitle: 'Hapus pengajuan izin?',
+	removeNote: 'Tanda izin atau sakit di kehadiran dari pengajuan ini juga dihapus.',
+	removeIrreversible: 'Pengajuan ini dihapus dan tidak bisa dikembalikan.',
+	pending: 'Menunggu',
+	approved: 'Disetujui',
+	rejected: 'Ditolak',
+	all: 'Semua',
+	decisionFailed: 'Gagal menyimpan keputusan.',
+	removeFailed: 'Gagal menghapus pengajuan.',
+	decidedBy: 'Diputuskan {name}'
+} as const;

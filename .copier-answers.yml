@@ -1,0 +1,26 @@
+# Dikelola Copier; jangan diubah tangan.
+_commit: v0.1.0
+_src_path: C:/project/cashier/Template_Cashier
+application_id: id.iwageprek.management
+brand_name: IWAGEPREK
+brand_short_name: IWAGEPREK
+brand_slug: iwageprek
+brand_storefront_caption: Tampak depan toko IWAGEPREK
+color_accent: CC0B14
+color_accent_deep: '830000'
+color_accent_line: F7C5C8
+color_accent_soft: FDECEE
+color_ink: 083878
+color_ink_line: B9CCE8
+color_ink_soft: EEF6FC
+color_line: C9D8F0
+color_muted: 5D6672
+color_on_primary: FDFDFD
+color_page: FDFDFD
+color_primary: 015DF7
+color_primary_deep: 083878
+color_soft: EEF6FC
+color_tint: DCEEF8
+developer_credit: NganjukBersatu
+github_repository: NganjukBersatu/iwa-geprek
+railway_bucket_region: sin

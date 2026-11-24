@@ -1,0 +1,15 @@
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-hp-sedang: 22.5rem;
+  --breakpoint-hp-besar: 25rem;
+  --breakpoint-tablet: 40rem;
+  /* Dibutuhkan Skeleton, jangan dipakai di halaman; selalu sama dengan tablet. */
+  --breakpoint-md: 40rem;
+  --breakpoint-laptop: 64rem;
+  --breakpoint-monitor-kecil: 90rem;
+  --breakpoint-monitor-besar: 120rem;
+}
+
+:root {
+  --page-max: 100rem;
+}

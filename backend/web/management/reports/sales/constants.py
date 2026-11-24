@@ -1,0 +1,1 @@
+MONTHS_PER_YEAR = 12

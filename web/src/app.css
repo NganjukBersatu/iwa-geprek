@@ -1,0 +1,237 @@
+@import "tailwindcss";
+@import "@skeletonlabs/skeleton";
+@import "@skeletonlabs/skeleton-svelte";
+@import "@skeletonlabs/skeleton/themes/cerberus";
+@import "@fontsource/poppins/latin-400.css";
+@import "@fontsource/poppins/latin-500.css";
+@import "@fontsource/poppins/latin-600.css";
+@import "@fontsource/poppins/latin-700.css";
+@import "./styles/breakpoints.css";
+@import "./styles/motion.css";
+@import "./styles/brand.css";
+
+@theme {
+  --color-red-*: initial;
+  --color-orange-*: initial;
+  --color-amber-*: initial;
+  --color-yellow-*: initial;
+  --color-lime-*: initial;
+  --color-green-*: initial;
+  --color-emerald-*: initial;
+  --color-teal-*: initial;
+  --color-cyan-*: initial;
+  --color-sky-*: initial;
+  --color-blue-*: initial;
+  --color-indigo-*: initial;
+  --color-violet-*: initial;
+  --color-purple-*: initial;
+  --color-fuchsia-*: initial;
+  --color-pink-*: initial;
+  --color-rose-*: initial;
+  --color-gray-*: initial;
+  --color-zinc-*: initial;
+  --color-neutral-*: initial;
+  --color-stone-*: initial;
+  --color-mauve-*: initial;
+  --color-olive-*: initial;
+  --color-mist-*: initial;
+  --color-taupe-*: initial;
+
+  /* Satu-satunya huruf aplikasi: Poppins untuk semua teks, dari judul sampai isian. */
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+
+  /* Teks menu di sidebar: sedikit di bawah teks isi supaya label panjang tidak terpotong. */
+  --text-nav: 0.875rem;
+  --text-nav--line-height: 1.25rem;
+
+  /* Teks tombol: sedikit di bawah teks isi. */
+  --text-control: 0.875rem;
+  --text-control--line-height: 1.25rem;
+
+  /* Catatan kaki di bawah tabel: satu tingkat di bawah teks kecil. */
+  --text-note: 0.75rem;
+  --text-note--line-height: 1rem;
+  --text-display: 2rem;
+  --text-display--line-height: 2.5rem;
+
+  /* Palet merek berasal dari styles/brand.css yang diisi jawaban Copier; token di bawah hanya meneruskannya. */
+  --color-brand: var(--brand-primary);
+  --color-brand-deep: var(--brand-primary-deep);
+  /* Tombol utama: hover dan ditekan menurunkan kecerahan warna utama (OKLCH) selangkah demi selangkah, supaya bedanya terlihat. */
+  --color-brand-hover: oklch(from var(--color-brand) calc(l - 0.07) c h);
+  --color-brand-pressed: oklch(from var(--color-brand) calc(l - 0.13) c h);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-deep: var(--brand-accent-deep);
+  --color-brand-accent-soft: var(--brand-accent-soft);
+  --color-brand-accent-line: var(--brand-accent-line);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-tint: var(--brand-tint);
+  --color-brand-line: var(--brand-line);
+  --color-brand-page: var(--brand-page);
+  --color-brand-on: var(--brand-on-primary);
+  --color-brand-focus: var(--color-brand);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-ink-soft: var(--brand-ink-soft);
+  --color-brand-ink-line: var(--brand-ink-line);
+  --color-brand-muted: var(--brand-muted);
+
+  --color-success-50: oklch(98.2% 0.018 155.826);
+  --color-success-200: oklch(92.5% 0.084 155.995);
+  --color-success-500: oklch(72.3% 0.219 149.579);
+  --color-success-700: oklch(52.7% 0.154 150.069);
+
+  --color-info-50: oklch(97% 0.014 254.604);
+  --color-info-200: oklch(88.2% 0.059 254.128);
+  --color-info-500: oklch(62.3% 0.214 259.815);
+  --color-info-700: oklch(48.8% 0.243 264.376);
+
+  --color-category-50: oklch(97.7% 0.014 308.299);
+  --color-category-200: oklch(90.2% 0.063 306.703);
+  --color-category-500: oklch(62.7% 0.265 303.9);
+  --color-category-700: oklch(49.6% 0.265 301.924);
+
+  --color-danger-50: oklch(97.1% 0.013 17.38);
+  --color-danger-200: oklch(88.5% 0.062 18.334);
+  --color-danger-500: oklch(63.7% 0.237 25.331);
+  --color-danger-700: oklch(50.5% 0.213 27.518);
+  /* Tombol danger: hover dan ditekan menurunkan kecerahan merah selangkah demi selangkah. */
+  --color-danger-hover: oklch(from var(--color-danger-700) calc(l - 0.06) c h);
+  --color-danger-pressed: oklch(from var(--color-danger-700) calc(l - 0.12) c h);
+
+  --color-warning-50: oklch(98.7% 0.022 95.277);
+  --color-warning-200: oklch(92.4% 0.12 95.746);
+  --color-warning-500: oklch(76.9% 0.188 70.08);
+  --color-warning-700: oklch(55.5% 0.163 48.998);
+}
+
+[data-theme='cerberus'] {
+  --typo-base--font-family: var(--font-sans);
+  --color-brand-light: var(--color-brand);
+  --color-brand-dark: var(--color-brand);
+  --color-brand-contrast-light: #fff;
+  --color-brand-contrast-dark: #fff;
+
+  /* Tema Skeleton memberi hijau status kebiruan (rona 178); hijau sukses dikembalikan ke hijau sungguhan. */
+  --color-success-50: oklch(98.2% 0.018 155.826);
+  --color-success-200: oklch(92.5% 0.084 155.995);
+  --color-success-500: oklch(72.3% 0.219 149.579);
+  --color-success-700: oklch(52.7% 0.154 150.069);
+}
+
+:root {
+  --topbar-height: 3.8125rem;
+  --sidebar-width: 14rem;
+  --sidebar-width-collapsed: 4rem;
+}
+
+@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
+
+@layer base {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+  select,
+  textarea {
+    color: #1e293b;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: #94a3b8;
+    opacity: 1;
+  }
+}
+
+table {
+  max-width: 100%;
+}
+
+.table-wrapper,
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+input, select, textarea {
+  max-width: 100%;
+}
+
+@media (pointer: coarse) {
+  input, select, textarea {
+    font-size: max(1rem, 16px);
+  }
+}
+
+/* Target sentuh 44 px hanya di layar sentuh; dengan mouse, ukuran tombol mengikuti kelasnya sendiri. */
+@media (pointer: coarse) {
+  button, .btn, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+[role="switch"] {
+  min-height: 0;
+  min-width: 0;
+}
+
+iframe {
+  max-width: 100%;
+  border: 0;
+}
+
+pre, code {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Hanya min-width; max-width di sini akan menimpa max-w-* pada modal dan kartu. */
+[class*="flex"] > *,
+[class*="grid"] > * {
+  min-width: 0;
+}
+
+@supports (padding: max(0px)) {
+  .safe-top { padding-top: max(1rem, env(safe-area-inset-top)); }
+  .safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+  .safe-left { padding-left: max(1rem, env(safe-area-inset-left)); }
+  .safe-right { padding-right: max(1rem, env(safe-area-inset-right)); }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+*::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 9999px;
+  border: 2px solid #f1f5f9;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Placeholder for content that is loading: a soft light sweeps across it. */
+@keyframes skeleton-sweep {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+.skeleton-shimmer {
+  background-color: #e2e8f0;
+  background-image: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.7) 50%, transparent 100%);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-sweep 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer {
+    animation: none;
+  }
+}

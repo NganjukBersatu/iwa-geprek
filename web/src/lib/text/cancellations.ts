@@ -1,0 +1,25 @@
+/** The sentences of the requests to cancel an order. */
+export const cancellationText = {
+	decisionFailed: 'Gagal menyimpan keputusan.',
+	title: 'Pengajuan pembatalan',
+	description: 'Diajukan dari tablet. Pesanan terkunci sampai diputuskan; persetujuan membatalkan pesanan serta mengembalikan stok dan bahan.',
+	loadFailedTitle: 'Pengajuan gagal dimuat',
+	loading: 'Memuat pengajuan',
+	noRequests: 'Tidak ada pengajuan pembatalan yang menunggu.',
+	reject: 'Tolak',
+	approve: 'Setujui',
+	requestedBy: 'Kasir {cashier} · diajukan {requester}, {time}',
+	requestedAt: '{requester}, {time}',
+	approveCancelNote: 'Pesanan {order} senilai {amount} dibatalkan. Nilainya keluar dari pendapatan, stok dan bahan dikembalikan. Tindakan ini tidak bisa diurungkan.',
+	detailTitle: 'Pengajuan pembatalan {order}',
+	detailDescription: 'Pesanan terkunci sampai diputuskan.',
+	value: 'Nilai',
+	branch: 'Cabang',
+	orderItems: 'Isi pesanan',
+	cashier: 'Kasir',
+	requested: 'Diajukan',
+	reason: 'Alasan',
+	approveConfirm: 'Ya, batalkan pesanan',
+	approveTitleNamed: 'Setujui pembatalan {order}',
+	noReason: 'Tanpa alasan'
+} as const;

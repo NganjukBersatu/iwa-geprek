@@ -1,0 +1,11 @@
+"""Every sentence shown to the admin arranging assignments, in one place."""
+
+NOT_FOUND = "Jadwal tidak ditemukan"
+CODE_REQUIRED = "Pilih kode shift untuk penugasan ini"
+CODE_NOT_IN_BRANCH = "Kode shift tidak ditemukan di cabang ini"
+CODE_IS_DAY_OFF = "Kode '{code}' adalah kode libur; taruh orangnya di kolom Libur"
+DUPLICATE = "Karyawan ini sudah dijadwalkan dengan kode itu pada tanggal yang sama"
+ROLE_NOT_FOUND = "Peran tidak ditemukan"
+SWAP_SAME_SCHEDULE = "Pilih dua jadwal yang berbeda"
+SWAP_SAME_PERSON = "Kedua jadwal milik karyawan yang sama, tidak ada yang ditukar"
+SWAP_NOTE = "Tukar shift: {incoming} menggantikan {outgoing}"

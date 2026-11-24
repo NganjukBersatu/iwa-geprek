@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Ringkasan PWA karyawan di iPhone dan iPad, dibaca PWA lewat generate-strings.mjs. -->
+    <string name="release_employee_permission_gate">Izin lokasi dan kamera di iPhone lebih andal, dengan kode rujukan bila gagal</string>
+    <string name="release_employee_attendance_permission">Absen mandiri menjelaskan bila peran belum diizinkan</string>
+    <string name="release_employee_routine_tasks">Tugas rutin tampil terpisah dari tugas lain, hanya untuk penerimanya pada hari yang dijadwalkan</string>
+    <string name="release_employee_task_sections">Halaman Tugas dikelompokkan per jenis, dengan tab Belum selesai dan Selesai di bawah kolom cari</string>
+    <string name="release_employee_fix_submission">Tugas yang sudah dikirim dapat diperbaiki, dibatalkan, atau dihapus</string>
+    <string name="release_employee_follow_up_source">Tugas tindak lanjut menampilkan pengisian asalnya, lengkap dengan jawaban dan foto</string>
+    <!-- Ringkasan APK versi ini, dibaca app dan halaman Unduhan. -->
+    <string name="release_apk_routine_tasks">Tugas rutin tampil terpisah dari tugas lain, hanya untuk penerimanya pada hari yang dijadwalkan</string>
+    <string name="release_apk_task_sections">Halaman Tugas dikelompokkan per jenis, dengan tab Belum selesai dan Selesai di bawah kolom cari</string>
+    <string name="release_apk_fix_submission">Tugas yang sudah dikirim dapat diperbaiki, dibatalkan, atau dihapus</string>
+    <string name="release_apk_follow_up_source">Tugas tindak lanjut menampilkan pengisian asalnya, lengkap dengan jawaban dan foto</string>
+    <string name="release_apk_photo_retry">Foto yang gagal dimuat diberi keterangan dan dapat dimuat ulang dengan satu ketukan</string>
+    <string name="release_apk_menu_order">Menu di Kasir diurutkan abjad dalam setiap kategori</string>
+</resources>

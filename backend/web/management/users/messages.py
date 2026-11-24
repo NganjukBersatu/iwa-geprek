@@ -1,0 +1,10 @@
+"""Every sentence shown to the admin on the user screen, in one place."""
+
+NOT_FOUND = "Staf tidak ditemukan"
+USERNAME_TAKEN = "Nama pengguna '{username}' sudah dipakai"
+ROLE_NOT_FOUND = "Peran tidak ditemukan"
+BRANCH_REQUIRED = "Kasir harus ditempatkan di satu cabang. Pilih cabangnya (outlet_id)."
+BRANCH_NOT_FOUND = "Cabang tidak ditemukan"
+OTHER_BRANCH = "Akun Anda hanya bisa menempatkan karyawan di cabangnya sendiri."
+CANNOT_LOCK_SELF = "Tidak bisa menonaktifkan atau menurunkan akun yang sedang login."
+CANNOT_DELETE_SELF = "Tidak bisa menghapus akun yang sedang login."

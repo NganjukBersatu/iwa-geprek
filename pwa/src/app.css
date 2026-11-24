@@ -1,0 +1,225 @@
+@import 'tailwindcss';
+@import './brand.css';
+
+/*
+ * Token tampilan, disalin dari tema app Android (ui/theme: AppColors, AppShapes, AppSpacing, AppSizes, AppTypography,
+ * AppEffects). Satuan dp di app sama dengan px di sini. Jangan menulis warna atau ukuran di luar token ini.
+ */
+@theme {
+	--color-*: initial;
+	--color-background: var(--brand-soft);
+	--color-surface: #ffffff;
+	--color-surface-accent: var(--brand-tint);
+	--color-accent: var(--brand-accent);
+	--color-outline: var(--brand-line);
+	--color-primary: var(--brand-primary);
+	--color-on-primary: var(--brand-on-primary);
+	--color-on-primary-muted: rgb(255 255 255 / 0.851);
+	--color-on-primary-subtle: rgb(255 255 255 / 0.141);
+	--color-content: var(--brand-ink);
+	--color-content-muted: var(--brand-muted);
+	--color-divider: var(--brand-line);
+	--color-scrim: rgb(0 0 0 / 0.902);
+	--color-selected: color-mix(in srgb, var(--brand-line) 40%, transparent);
+	--color-danger: #b91c1c;
+	--color-danger-container: #fee2e2;
+	--color-on-danger-container: #7f1d1d;
+	--color-warning: #b45309;
+	--color-warning-container: rgb(180 83 9 / 0.149);
+	--color-info: #1d4ed8;
+	--color-success: #0f766e;
+	--color-violet: #6d28d9;
+	--color-rose: #be185d;
+	/* Redup di balik panel bawah dan dialog; nilai bawaan dialog Android. */
+	--color-dim: rgb(0 0 0 / 0.6);
+
+	--radius-field: 10px;
+	--radius-card: 24px;
+	--radius-sheet: 24px;
+
+	--font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+	--ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+	--ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+	--ease-bounce: cubic-bezier(0.34, 1.45, 0.5, 1);
+	--ease-exit: cubic-bezier(0.7, 0, 0.2, 1);
+	--ease-fast-out-linear-in: cubic-bezier(0.4, 0, 1, 1);
+	--ease-linear-out-slow-in: cubic-bezier(0, 0, 0.2, 1);
+}
+
+:root {
+	--effect-quick: 120ms;
+	--effect-standard: 240ms;
+	--effect-slow: 400ms;
+	--effect-loop: 1400ms;
+	--effect-stagger: 40ms;
+
+	--size-icon-small: 20px;
+	--size-icon: 24px;
+	--size-icon-large: 28px;
+	--size-icon-xlarge: 40px;
+	--size-border-thin: 1px;
+	--size-border-field: 1.5px;
+	--size-border-thick: 2px;
+	--size-control-small: 32px;
+	--size-control: 40px;
+	--size-avatar-large: 64px;
+	--size-content-max: 640px;
+	--size-rail: 224px;
+	--size-rail-collapsed: 72px;
+	--size-card-min: 140px;
+	--size-thumbnail: 88px;
+	--size-banner-baseline: 252px;
+	--size-tile-baseline: 112px;
+	--size-qr-max: 300px;
+
+	--space-touch: 48px;
+	--space-compact: 36px;
+
+	--page-padding: 12px;
+	--disabled-alpha: 0.5;
+
+	--safe-top: env(safe-area-inset-top, 0px);
+	--safe-bottom: env(safe-area-inset-bottom, 0px);
+	--safe-left: env(safe-area-inset-left, 0px);
+	--safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* Layar lebar (Medium ke atas, lebih dari 640): jarak halaman 16 dan bilah bawah berganti rail kiri. */
+@media (min-width: 641px) {
+	:root {
+		--page-padding: 16px;
+	}
+}
+
+@layer base {
+	html,
+	body {
+		height: 100%;
+		margin: 0;
+		background: var(--color-background);
+		color: var(--color-content);
+		font-family: var(--font-sans);
+		font-size: 16px;
+		line-height: 22px;
+		-webkit-text-size-adjust: 100%;
+		-webkit-tap-highlight-color: transparent;
+		overscroll-behavior: none;
+	}
+
+	body {
+		overflow: hidden;
+	}
+
+	button,
+	input,
+	textarea,
+	select {
+		font: inherit;
+		color: inherit;
+	}
+
+	button {
+		cursor: pointer;
+		background: none;
+		border: 0;
+		padding: 0;
+		text-align: inherit;
+	}
+}
+
+@layer components {
+	/* Peran teks (AppTypography): satu-satunya gaya teks yang dipakai halaman. */
+	.text-display {
+		font-size: 35px;
+		line-height: 42px;
+		font-weight: 700;
+	}
+	.text-headline {
+		font-size: 26px;
+		line-height: 32px;
+		font-weight: 700;
+	}
+	.text-title {
+		font-size: 24px;
+		line-height: 30px;
+		font-weight: 700;
+	}
+	.text-body {
+		font-size: 16px;
+		line-height: 22px;
+		font-weight: 400;
+	}
+	.text-label {
+		font-size: 13px;
+		line-height: 18px;
+		font-weight: 600;
+	}
+	.text-button {
+		font-size: 16px;
+		line-height: 22px;
+		font-weight: 700;
+	}
+	.text-caption {
+		font-size: 13px;
+		line-height: 18px;
+		font-weight: 400;
+	}
+}
+
+.disabled-look {
+	opacity: var(--disabled-alpha);
+}
+
+/* Kilau kerangka (SkeletonBlock): 1,2 detik, linear, berulang. */
+@keyframes skeleton-shimmer {
+	from {
+		background-position: 200% 0;
+	}
+	to {
+		background-position: -100% 0;
+	}
+}
+.skeleton {
+	background: linear-gradient(90deg, var(--color-selected) 0%, var(--color-surface) 50%, var(--color-selected) 100%);
+	background-size: 200% 100%;
+	animation: skeleton-shimmer 1200ms linear infinite;
+}
+
+/* Titik berdenyut di tombol (LoadingDots): tiga titik bergantian. */
+@keyframes loading-dot {
+	from {
+		opacity: 0.35;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* Cincin penanda perhatian (pulseRing): memudar keluar dari tepi elemen, berulang. */
+@keyframes pulse-ring {
+	from {
+		transform: scale(0.78);
+		opacity: 0.85;
+	}
+	to {
+		transform: scale(1);
+		opacity: 0;
+	}
+}
+
+/* Kelas animasi yang dipakai LoadingDots dan MonthCalendar; jeda per titik diatur lewat animation-delay di komponennya. */
+.loading-dot {
+	animation: loading-dot calc(var(--effect-loop) / 2) var(--ease-standard) 0s infinite alternate;
+	opacity: 0.35;
+}
+
+.pulse-ring-loop {
+	animation: pulse-ring var(--effect-loop) var(--ease-linear-out-slow-in) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.skeleton {
+		animation: none;
+	}
+}

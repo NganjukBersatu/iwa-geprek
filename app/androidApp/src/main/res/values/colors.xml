@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sama dengan AppColors.background supaya peralihan layar pembuka ke aplikasi tanpa kedip. -->
+    <color name="launcher_background">#EEF6FC</color>
+    <!-- Latar ikon peluncur: warna utama merek, karena logo tidak terbaca di atas warna latar. -->
+    <color name="launcher_icon_background">#015DF7</color>
+    <!-- Sama dengan AppColors.primary: logo terbaca di atas warna utama, tidak di atas warna latar. -->
+    <color name="splash_background">#015DF7</color>
+</resources>

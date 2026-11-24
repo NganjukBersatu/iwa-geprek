@@ -1,0 +1,28 @@
+/** The sentences of the attendance rules of each branch: lateness, deduction, and automatic closing. */
+export const attendanceRulesText = {
+	saveFailed: 'Gagal menyimpan aturan absensi.',
+	saved: 'Aturan absensi tersimpan.',
+	loading: 'Memuat aturan absensi...',
+	lateTolerance: 'Toleransi telat',
+	deductionPerMinute: 'Potongan per menit',
+	autoClose: 'Tutup otomatis',
+	defaultValue: 'Nilai bawaan',
+	savedStatus: 'Tersimpan',
+	deductionInvalid: 'Isi potongan per menit dengan bilangan bulat 0 sampai 1.000.000 rupiah.',
+	allBranchesTitle: 'Aturan semua cabang',
+	allBranchesDescription: 'Klik satu cabang untuk mengatur aturannya. Cabang yang belum punya pengaturan memakai nilai bawaan sistem.',
+	noBranches: 'Belum ada cabang.',
+	latenessRules: 'Aturan keterlambatan',
+	latenessRulesDescription: 'Hadir atau telat dihitung dari jam masuk terhadap jam mulai kode shift pada jadwal. Aturan ini berlaku untuk absen di app karyawan dan di web.',
+	lateToleranceMinutes: 'Toleransi telat (menit)',
+	lateToleranceHint: 'Datang sampai sekian menit setelah jam mulai masih dihitung tepat waktu.',
+	deductionPerMinuteRupiah: 'Potongan per menit (Rp)',
+	deductionHint: 'Dikenakan hanya untuk menit di atas toleransi.',
+	autoCloseHours: 'Tutup otomatis (jam)',
+	autoCloseHint: 'Absen datang yang lupa ditutup dipulangkan otomatis sekian jam setelah shift selesai.',
+	saveRules: 'Simpan aturan',
+	lateToleranceInvalid: 'Isi toleransi telat dengan bilangan bulat 0 sampai {max} menit.',
+	autoCloseInvalid: 'Isi batas tutup otomatis dengan bilangan bulat {min} sampai {max} jam.',
+	deductionExample: 'Misalnya datang {minutes} menit setelah jam mulai: 10 menit melewati toleransi dipotong {amount}.',
+	hoursCount: '{count} jam'
+} as const;

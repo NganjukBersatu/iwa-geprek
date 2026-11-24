@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_place">IWAGEPREK</string>
+    <string name="about_purpose">Aplikasi ini dikembangkan khusus untuk IWAGEPREK oleh NganjukBersatu sebagai sarana pendukung kegiatan operasional harian. Di tablet operasional, aplikasi ini melayani kasir, papan stasiun, sesi kas, dan pengeluaran; di perangkat karyawan, aplikasi ini mencatat absensi, jadwal kerja, lembur, dan penugasan. Semuanya disusun berdasarkan kebutuhan kerja yang sebenarnya di lapangan, agar setiap pekerjaan tercatat rapi, mudah dipantau, dan dapat dipertanggungjawabkan.</string>
+    <string name="about_thanks">Terima kasih kepada seluruh karyawan IWAGEPREK yang telah menggunakan aplikasi ini dan memberikan masukan selama proses pengembangan. Setiap masukan menjadi bahan pertimbangan untuk penyempurnaan berikutnya, sehingga aplikasi ini dapat terus disesuaikan dengan kebutuhan kerja IWAGEPREK di masa mendatang.</string>
+    <string name="shell_logo_description">Logo IWAGEPREK</string>
+    <string name="login_title">Masuk ke IWAGEPREK</string>
+    <string name="login_brand_image">Tampak depan toko IWAGEPREK</string>
+    <string name="shell_rail_subtitle">IWAGEPREK</string>
+    <string name="splash_app_name">IWAGEPREK</string>
+    <string name="about_developer_line">Pengembang: NganjukBersatu</string>
+</resources>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Teks khusus PWA; nama diawali web_ agar tidak bertabrakan dengan teks app Android. -->
+    <string name="web_failure_unreachable">Perangkat tidak terhubung ke internet. Periksa sambungan Anda, lalu coba lagi.</string>
+    <string name="web_failure_timeout">Permintaan memakan waktu terlalu lama. Periksa sambungan internet Anda, lalu coba lagi.</string>
+    <string name="web_failure_upload_timeout">Pengiriman berkas terlalu lama. Pindah ke sambungan yang lebih stabil, lalu coba lagi.</string>
+    <string name="web_failure_secure">Sambungan aman gagal dibuat. Pastikan tanggal dan jam perangkat sudah benar, lalu coba lagi.</string>
+    <string name="web_failure_unexpected">Terjadi gangguan pada aplikasi. Muat ulang halaman, lalu coba lagi. Jika berlanjut, hubungi admin.</string>
+    <string name="web_failure_server">Layanan sedang mengalami gangguan. Coba lagi beberapa saat lagi. Jika berlanjut, hubungi admin.</string>
+    <string name="web_failure_not_found">Data yang diminta tidak ditemukan. Muat ulang halaman, lalu coba lagi.</string>
+    <string name="web_failure_forbidden">Anda tidak memiliki akses untuk tindakan ini. Hubungi admin jika Anda memerlukannya.</string>
+    <string name="web_failure_too_large">Berkas tidak dapat dikirim karena melebihi batas kiriman sistem. Kurangi jumlah atau ukuran lampiran, lalu coba lagi. Jika berlanjut, hubungi admin.</string>
+    <string name="web_failure_too_many">Terlalu banyak permintaan dalam waktu singkat. Tunggu sebentar, lalu coba lagi.</string>
+    <string name="web_failure_invalid">Isian belum lengkap atau belum benar. Periksa kembali isian Anda, lalu kirim ulang.</string>
+    <string name="web_photo_unreadable">Foto tidak dapat dibaca. Pilih foto lain, atau ambil ulang dengan kamera.</string>
+    <string name="web_video_too_large">Ukuran video melebihi batas %1$d MB. Pilih video yang lebih pendek atau rekam ulang dengan durasi lebih singkat.</string>
+    <string name="web_location_denied">Izin Lokasi belum diberikan. Buka pengaturan browser atau perangkat, izinkan Lokasi untuk aplikasi ini, lalu coba lagi.</string>
+    <string name="web_location_timeout">Pembacaan lokasi memakan waktu terlalu lama. Pindah ke tempat yang lebih terbuka, pastikan GPS menyala, lalu coba lagi.</string>
+    <string name="web_location_unavailable">Lokasi tidak dapat dibaca. Pastikan GPS menyala dan perangkat tidak dalam mode pesawat, lalu coba lagi.</string>
+    <string name="web_permission_location_blocked">Lokasi belum bisa dipakai. Buka pengaturan perangkat, pastikan Layanan Lokasi menyala dan izinkan Lokasi untuk browser atau aplikasi ini, lalu kembali ke sini.</string>
+    <string name="web_permission_camera_blocked">Izin Kamera ditolak. Buka pengaturan browser atau perangkat, izinkan Kamera untuk aplikasi ini, lalu kembali ke sini.</string>
+    <string name="web_permission_gps_blocked">Layanan lokasi perangkat belum menyala. Nyalakan GPS di pengaturan perangkat, lalu kembali ke sini.</string>
+    <string name="web_permission_timeout">Lokasi belum terbaca karena sinyal GPS lemah. Pindah ke tempat yang lebih terbuka, lalu tekan Izinkan lagi.</string>
+    <string name="web_permission_unanswered">Kotak izin belum dijawab. Tekan Izinkan lagi, atau buka pengaturan perangkat dan izinkan secara manual, lalu kembali ke sini.</string>
+    <string name="web_permission_help">Jika tetap gagal, hubungi admin dan sebutkan kode %1$s.</string>
+    <string name="web_permission_camera_missing">Kamera tidak ditemukan di perangkat ini. Gunakan perangkat yang memiliki kamera.</string>
+    <string name="web_permission_camera_busy">Kamera sedang dipakai aplikasi lain. Tutup aplikasi itu, lalu tekan Izinkan lagi.</string>
+    <string name="web_permission_camera_failed">Kamera belum bisa dibuka. Tutup lalu buka kembali aplikasi ini, kemudian coba lagi. Jika berlanjut, hubungi admin.</string>
+    <string name="web_permission_unsupported">Browser ini belum mendukung fitur yang diperlukan. Buka aplikasi lewat Safari atau Chrome versi terbaru.</string>
+    <string name="web_error_not_found">Halaman yang Anda tuju tidak ditemukan. Kembali ke beranda, lalu pilih menu yang diperlukan.</string>
+    <string name="web_error_generic">Terjadi gangguan pada aplikasi. Kembali ke beranda, lalu coba lagi. Jika berlanjut, hubungi admin.</string>
+    <string name="web_error_home">Kembali ke beranda</string>
+    <string name="web_update_title">Versi baru tersedia</string>
+    <string name="web_update_message">Perbarui sekarang agar absen dan fitur lain berjalan dengan benar. Jika ditunda, pembaruan dimuat saat Anda berpindah halaman.</string>
+    <string name="web_update_applying_message">Memperbarui ke versi terbaru. Mohon tunggu sebentar.</string>
+    <string name="web_update_action">Perbarui sekarang</string>
+    <string name="web_update_applying">Memperbarui…</string>
+    <string name="web_update_later">Nanti</string>
+    <string name="web_update_required_title">Pembaruan wajib</string>
+    <string name="web_update_required_message">Versi aplikasi ini sudah tidak didukung. Perbarui untuk melanjutkan absen dan fitur lainnya.</string>
+    <string name="web_update_installed">Versi terpasang</string>
+    <string name="web_update_minimum">Versi minimum</string>
+    <string name="web_update_required_hint">Memuat ulang aplikasi ke versi terbaru; tidak perlu mengunduh.</string>
+    <string name="web_failure_outdated">Versi aplikasi ini sudah tidak didukung. Perbarui ke versi terbaru untuk melanjutkan.</string>
+    <string name="web_failure_rejected">Permintaan tidak dapat diproses. Muat ulang halaman, lalu ulangi dari awal. Jika tetap gagal, hubungi admin.</string>
+    <string name="web_login_title">Masuk</string>
+    <string name="web_login_subtitle">Gunakan akun karyawan Anda untuk melanjutkan.</string>
+    <string name="web_login_forgot_password">Lupa kata sandi? Hubungi admin atau pemilik untuk mengatur ulang.</string>
+    <string name="web_blocked_title">Hanya tersedia untuk iPhone dan iPad</string>
+    <string name="web_navigation_main">Menu utama</string>
+</resources>

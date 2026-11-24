@@ -1,0 +1,15 @@
+-- Hasil baca terakhir yang berhasil per kunci, dipakai saat server tidak terjangkau.
+CREATE TABLE CacheEntry (
+    cache_key TEXT NOT NULL PRIMARY KEY,
+    body TEXT NOT NULL,
+    saved_epoch INTEGER NOT NULL
+);
+
+select:
+SELECT * FROM CacheEntry WHERE cache_key = ?;
+
+upsert:
+INSERT OR REPLACE INTO CacheEntry (cache_key, body, saved_epoch) VALUES (?, ?, ?);
+
+delete:
+DELETE FROM CacheEntry WHERE cache_key = ?;

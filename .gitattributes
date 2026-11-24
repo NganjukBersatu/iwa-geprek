@@ -1,1 +1,7 @@
+# One line ending in the repository whatever the machine, so a diff shows real changes only.
 * text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary

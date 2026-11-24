@@ -1,0 +1,30 @@
+package id.kongstudio.cafe.feature.access
+
+/** Satu-satunya tempat kunci izin di app; nilainya salinan beku dari registry backend app/core/permissions dan hanya menentukan tampilan. */
+enum class Permission(val key: String) {
+    OrderCreate("order.buat"),
+    OrderStatus("order.status"),
+    OrderCancelDecide("order.void.setujui"),
+    SessionOpen("shift.buka"),
+    OverpaymentView("kelebihan.lihat"),
+    MenuManage("menu.kelola"),
+    MenuAvailability("menu.tersedia"),
+    ExtraManage("ekstra.kelola"),
+    VariantManage("varian.kelola"),
+    RecipeDetail("resep.detail"),
+    RecipeManage("resep.kelola"),
+    PromoManage("promo.kelola"),
+    VisitorManage("pengunjung.kelola"),
+    ExpenseRecord("pengeluaran.catat"),
+    ExpenseViewAll("pengeluaran.lihat_semua"),
+    ExpenseEditOwn("pengeluaran.ubah_sendiri"),
+    ExpenseEditAll("pengeluaran.ubah_semua"),
+    OvertimeSelf("lembur.mandiri"),
+    StockView("stok.lihat"),
+    StockReceive("stok.masuk"),
+    StockAdjust("stok.penyesuaian"),
+    StockCount("stok.opname"),
+    StockClosePeriod("stok.tutup_periode"),
+    StockCorrect("stok.koreksi"),
+    ReferenceManage("referensi.kelola"),
+}

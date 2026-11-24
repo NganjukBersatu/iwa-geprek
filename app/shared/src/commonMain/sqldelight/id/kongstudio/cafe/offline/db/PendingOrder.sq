@@ -1,0 +1,44 @@
+-- Antrean pesanan yang dibuat saat jaringan putus; tidak pernah dihapus sebelum server menerimanya.
+-- status: 'queued' menunggu kirim, 'rejected' ditolak server, 'needs_login' tertahan sampai karyawan itu memindai QR lagi.
+CREATE TABLE PendingOrder (
+    client_id TEXT NOT NULL PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    payload TEXT NOT NULL,
+    created_epoch INTEGER NOT NULL,
+    total INTEGER NOT NULL,
+    item_count INTEGER NOT NULL,
+    status TEXT NOT NULL DEFAULT 'queued',
+    attempts INTEGER NOT NULL DEFAULT 0,
+    message TEXT
+);
+
+selectAll:
+SELECT * FROM PendingOrder ORDER BY created_epoch ASC;
+
+selectQueuedForUser:
+SELECT * FROM PendingOrder WHERE status = 'queued' AND user_id = ? ORDER BY created_epoch ASC;
+
+selectRejected:
+SELECT * FROM PendingOrder WHERE status = 'rejected' ORDER BY created_epoch ASC;
+
+countByStatus:
+SELECT status, COUNT(*) AS total FROM PendingOrder GROUP BY status;
+
+countByStatusForUser:
+SELECT status, COUNT(*) AS total FROM PendingOrder WHERE user_id = ? GROUP BY status;
+
+insert:
+INSERT OR REPLACE INTO PendingOrder (client_id, user_id, payload, created_epoch, total, item_count, status, attempts, message)
+VALUES (?, ?, ?, ?, ?, ?, 'queued', 0, NULL);
+
+markStatus:
+UPDATE PendingOrder SET status = ?, message = ?, attempts = attempts + 1 WHERE client_id = ?;
+
+requeue:
+UPDATE PendingOrder SET status = 'queued', message = NULL WHERE client_id = ?;
+
+requeueNeedsLogin:
+UPDATE PendingOrder SET status = 'queued', message = NULL WHERE status = 'needs_login' AND user_id = ?;
+
+delete:
+DELETE FROM PendingOrder WHERE client_id = ?;

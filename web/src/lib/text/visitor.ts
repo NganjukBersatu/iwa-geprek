@@ -1,0 +1,28 @@
+/** The sentences of the report of visitors: by category, by gender, and the trend per date. */
+export const visitorText = {
+	notRecorded: 'Tidak dicatat',
+	group: 'Kelompok',
+	today: 'Hari ini',
+	yesterday: 'Kemarin',
+	validTransactions: 'Transaksi sah',
+	periodTotal: 'Total periode',
+	categoryRecorded: 'Kategori tercatat',
+	genderRecorded: 'Jenis kelamin tercatat',
+	perGender: 'Per jenis kelamin',
+	genderNote: 'Jenis kelamin pemesan, bukan jumlah orang dalam rombongan',
+	noData: 'Belum ada data.',
+	perCategory: 'Per kategori pengunjung',
+	categoryNote: 'Kategori dicatat sekali per pesanan',
+	trendTitle: 'Tren per tanggal',
+	dailyRevenue: 'Omzet harian',
+	chartSummary: 'Grafik batang per tanggal. Menampilkan jumlah transaksi ditumpuk menurut jenis kelamin atau kategori pengunjung, atau omzet harian. Angka lengkapnya ada pada tabel di bawah.',
+	perDate: 'Per tanggal',
+	newestFirst: 'Terbaru di atas',
+	footnote: 'Transaksi batal tidak dihitung. "Tidak dicatat" berarti kasir tidak mengisi kategori atau jenis kelamin pada transaksi itu. Mengikuti cabang yang dipilih; tanpa pilihan cabang, angkanya gabungan semua cabang.',
+	chartSize: 'Ukuran grafik',
+	chartGroup: 'Kelompok grafik',
+	gender: 'Jenis kelamin',
+	stackedBy: 'Transaksi ditumpuk menurut {dimension}',
+	ofTransactions: '{count} dari {total} transaksi',
+	transactionCount: '{count} transaksi'
+} as const;

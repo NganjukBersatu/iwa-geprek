@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Hanya build debug: server lokal untuk uji berjalan tanpa TLS. Build rilis tetap menolak http. -->
+    <application android:usesCleartextTraffic="true" />
+</manifest>
