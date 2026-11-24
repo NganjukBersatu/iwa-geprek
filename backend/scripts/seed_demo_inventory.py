@@ -29,9 +29,7 @@ from app.models.category import Category, Unit  # noqa: E402
 from app.models.ingredient import (  # noqa: E402
     INGREDIENT_ADJUSTMENT,
     INGREDIENT_IN,
-    INGREDIENT_OUT,
     INGREDIENT_RND,
-    INGREDIENT_WASTE,
     CatalogIngredient,
     Ingredient,
     IngredientCard,
@@ -40,6 +38,7 @@ from app.models.ingredient import (  # noqa: E402
 from app.models.menu_item import MenuItem  # noqa: E402
 from app.models.outlet import Outlet  # noqa: E402
 from app.models.user import User  # noqa: E402
+from scripts import demo_catalog  # noqa: E402
 
 PREFIX = "demo-"
 CONFIRMATION = "ya"
@@ -47,88 +46,8 @@ CATEGORY_KIND = "bahan"
 UNIT_PRICE_PLACES = Decimal("0.0001")
 CREATED_DAYS_AGO = 90
 
-# Satuan yang dicari menurut nama; yang belum ada dibuat sebagai satuan demo.
-UNIT_NAMES = ("gram", "ml", "pcs")
-CATEGORY_NAMES = ("Susu dan Olahan", "Kopi dan Teh", "Bahan Kering", "Kemasan")
-
-# (hari lalu, jenis, jumlah bertanda, sebab). Saldo dihitung trigger database dari jumlah semua mutasi.
-Move = tuple[int, str, str, str | None]
-
-# (nama, kategori, satuan, harga kemasan, isi kemasan, minimum, toleransi minus %, aktif, mutasi)
-SPECS: tuple[tuple[str, str, str, int, int, int, int, bool, tuple[Move, ...]], ...] = (
-    ("Susu Segar", "Susu dan Olahan", "ml", 18000, 1000, 5000, 3, True, (
-        (40, INGREDIENT_IN, "30000", None), (30, INGREDIENT_OUT, "-9000", None), (21, INGREDIENT_IN, "20000", None),
-        (12, INGREDIENT_OUT, "-14000", None), (4, INGREDIENT_OUT, "-6000", None), (3, INGREDIENT_WASTE, "-1500", "kedaluwarsa"),
-    )),
-    ("Krimer Kental Manis", "Susu dan Olahan", "gram", 14000, 500, 2000, 3, True, (
-        (35, INGREDIENT_IN, "10000", None), (20, INGREDIENT_OUT, "-3500", None), (6, INGREDIENT_OUT, "-2800", None),
-    )),
-    ("Mentega", "Susu dan Olahan", "gram", 95000, 2000, 1000, 2, True, (
-        (28, INGREDIENT_IN, "6000", None), (14, INGREDIENT_OUT, "-1800", None), (2, INGREDIENT_OUT, "-900", None),
-    )),
-    ("Keju Krim", "Susu dan Olahan", "gram", 78000, 1000, 1500, 2, True, (
-        (25, INGREDIENT_IN, "4000", None), (9, INGREDIENT_OUT, "-1700", None), (1, INGREDIENT_OUT, "-1200", None),
-    )),
-    ("Biji Kopi Arabika", "Kopi dan Teh", "gram", 160000, 1000, 3000, 2, True, (
-        (45, INGREDIENT_IN, "20000", None), (30, INGREDIENT_OUT, "-6000", None), (15, INGREDIENT_OUT, "-5500", None),
-        (8, INGREDIENT_IN, "10000", None), (2, INGREDIENT_OUT, "-3000", None),
-    )),
-    ("Bubuk Matcha", "Kopi dan Teh", "gram", 210000, 500, 400, 3, True, (
-        (30, INGREDIENT_IN, "1500", None), (10, INGREDIENT_OUT, "-600", None), (1, INGREDIENT_OUT, "-450", None),
-    )),
-    ("Teh Hitam", "Kopi dan Teh", "gram", 45000, 500, 300, 3, True, (
-        (50, INGREDIENT_IN, "1200", None),
-    )),
-    ("Sirup Karamel", "Kopi dan Teh", "ml", 85000, 750, 1500, 3, True, (
-        (22, INGREDIENT_IN, "3000", None), (7, INGREDIENT_OUT, "-1800", None), (1, INGREDIENT_OUT, "-900", None),
-        (1, INGREDIENT_WASTE, "-350", "tumpah"),
-    )),
-    ("Tepung Terigu", "Bahan Kering", "gram", 13000, 1000, 5000, 3, True, (
-        (33, INGREDIENT_IN, "25000", None), (18, INGREDIENT_OUT, "-8000", None), (5, INGREDIENT_OUT, "-6000", None),
-    )),
-    ("Gula Pasir", "Bahan Kering", "gram", 16000, 1000, 4000, 3, True, (
-        (26, INGREDIENT_IN, "15000", None), (13, INGREDIENT_OUT, "-7000", None), (2, INGREDIENT_OUT, "-4200", None),
-    )),
-    ("Cokelat Bubuk", "Bahan Kering", "gram", 62000, 1000, 800, 3, True, (
-        (20, INGREDIENT_IN, "2500", None), (11, INGREDIENT_OUT, "-900", None), (3, INGREDIENT_RND, "-250", None),
-    )),
-    ("Kayu Manis Bubuk", "Bahan Kering", "gram", 38000, 250, 0, 3, True, (
-        (16, INGREDIENT_IN, "500", None), (4, INGREDIENT_OUT, "-120", None),
-    )),
-    ("Ragi Instan", "Bahan Kering", "gram", 48000, 500, 100, 3, True, (
-        (24, INGREDIENT_IN, "500", None), (8, INGREDIENT_OUT, "-380", None), (1, INGREDIENT_OUT, "-100", None),
-    )),
-    ("Gelas Plastik 16 oz", "Kemasan", "pcs", 95000, 1000, 300, 0, True, (
-        (30, INGREDIENT_IN, "2000", None), (17, INGREDIENT_OUT, "-900", None), (5, INGREDIENT_OUT, "-760", None),
-    )),
-    ("Sedotan Kertas", "Kemasan", "pcs", 30000, 500, 200, 0, True, (
-        (19, INGREDIENT_IN, "1000", None), (6, INGREDIENT_OUT, "-1000", None),
-    )),
-    ("Kotak Roti", "Kemasan", "pcs", 120000, 200, 100, 0, True, (
-        (14, INGREDIENT_IN, "300", None), (3, INGREDIENT_OUT, "-200", None), (1, INGREDIENT_ADJUSTMENT, "-10", None),
-    )),
-    ("Es Batu Kristal", "Bahan Kering", "gram", 12000, 5000, 5000, 5, False, (
-        (60, INGREDIENT_IN, "10000", None), (55, INGREDIENT_OUT, "-10000", None),
-    )),
-)
-
-
-# Resep menu contoh dari seed_demo_sales; tanpa resep, kasir menolak menjual menunya karena modalnya tidak diketahui.
-RECIPES: dict[str, tuple[tuple[str, str], ...]] = {
-    "Kopi Susu": (("Biji Kopi Arabika", "18"), ("Susu Segar", "150"), ("Krimer Kental Manis", "25"), ("Gelas Plastik 16 oz", "1"), ("Sedotan Kertas", "1")),
-    "Americano": (("Biji Kopi Arabika", "18"), ("Gelas Plastik 16 oz", "1"), ("Sedotan Kertas", "1")),
-    "Latte": (("Biji Kopi Arabika", "18"), ("Susu Segar", "200"), ("Gelas Plastik 16 oz", "1"), ("Sedotan Kertas", "1")),
-    "Cappuccino": (("Biji Kopi Arabika", "18"), ("Susu Segar", "150"), ("Gelas Plastik 16 oz", "1")),
-    "Matcha Latte": (("Bubuk Matcha", "8"), ("Susu Segar", "200"), ("Gula Pasir", "15"), ("Gelas Plastik 16 oz", "1"), ("Sedotan Kertas", "1")),
-    "Cokelat Panas": (("Cokelat Bubuk", "25"), ("Susu Segar", "200"), ("Gula Pasir", "10")),
-    "Teh Lemon": (("Teh Hitam", "5"), ("Gula Pasir", "20"), ("Gelas Plastik 16 oz", "1"), ("Sedotan Kertas", "1")),
-    "Croissant": (("Tepung Terigu", "60"), ("Mentega", "30"), ("Ragi Instan", "2"), ("Kotak Roti", "1")),
-    "Cinnamon Roll": (("Tepung Terigu", "70"), ("Mentega", "20"), ("Kayu Manis Bubuk", "3"), ("Gula Pasir", "15"), ("Ragi Instan", "2"), ("Kotak Roti", "1")),
-    "Roti Bakar Cokelat": (("Tepung Terigu", "80"), ("Mentega", "15"), ("Cokelat Bubuk", "15"), ("Kotak Roti", "1")),
-    "Cheesecake": (("Keju Krim", "80"), ("Gula Pasir", "20"), ("Mentega", "15"), ("Kotak Roti", "1")),
-    "Brownies": (("Cokelat Bubuk", "30"), ("Tepung Terigu", "40"), ("Mentega", "25"), ("Gula Pasir", "30"), ("Kotak Roti", "1")),
-    "Pudding Karamel": (("Susu Segar", "120"), ("Sirup Karamel", "20"), ("Gula Pasir", "15")),
-}
+# Bahan, kategori, mutasi stok, dan resep contoh dibaca dari demo_catalog.json milik klien; satuan yang belum ada dibuat sebagai satuan demo.
+CATALOG = demo_catalog.load()
 
 
 def new_id() -> str:
@@ -151,7 +70,7 @@ def delete_demo(db: Session) -> None:
 
 def name_clashes(db: Session, outlet: Outlet) -> list[str]:
     """Nama bahan demo yang sudah dipakai bahan asli, supaya katalog dan cabang tidak bentrok."""
-    wanted = {spec[0].lower() for spec in SPECS}
+    wanted = {item.name.lower() for item in CATALOG.ingredients}
     in_catalog = set(db.scalars(select(func.lower(CatalogIngredient.name)).where(func.lower(CatalogIngredient.name).in_(wanted))))
     in_branch = set(db.scalars(select(func.lower(Ingredient.name)).where(Ingredient.outlet_id == outlet.id, func.lower(Ingredient.name).in_(wanted))))
     return sorted(in_catalog | in_branch)
@@ -161,7 +80,7 @@ def ensure_units(db: Session) -> dict[str, str]:
     """Memakai satuan yang sudah ada menurut namanya; yang belum ada dibuat sebagai satuan demo."""
     existing = {unit.name.lower(): unit.id for unit in db.scalars(select(Unit))}
     ids: dict[str, str] = {}
-    for name in UNIT_NAMES:
+    for name in sorted({item.unit for item in CATALOG.ingredients}):
         if name in existing:
             ids[name] = existing[name]
             continue
@@ -175,7 +94,7 @@ def ensure_units(db: Session) -> dict[str, str]:
 def ensure_categories(db: Session) -> dict[str, str]:
     existing = {category.name.lower(): category.id for category in db.scalars(select(Category).where(Category.kind == CATEGORY_KIND))}
     ids: dict[str, str] = {}
-    for name in CATEGORY_NAMES:
+    for name in CATALOG.ingredient_categories:
         if name.lower() in existing:
             ids[name] = existing[name.lower()]
             continue
@@ -188,15 +107,16 @@ def ensure_categories(db: Session) -> dict[str, str]:
 
 def write_recipes(db: Session, outlet: Outlet, ingredients: dict[str, Ingredient]) -> int:
     """Hanya menu contoh di cabang ini yang belum punya resep; menu asli dan resep yang sudah ada tidak disentuh."""
-    menus = db.scalars(select(MenuItem).where(MenuItem.id.like(f"{PREFIX}%"), MenuItem.name.in_(RECIPES))).all()
+    recipes = {menu.name: menu.recipe for menu in CATALOG.menus()}
+    menus = db.scalars(select(MenuItem).where(MenuItem.id.like(f"{PREFIX}%"), MenuItem.name.in_(recipes))).all()
     with_recipe = set(db.scalars(select(RecipeIngredient.menu_item_id).where(RecipeIngredient.outlet_id == outlet.id, RecipeIngredient.menu_item_id.in_([menu.id for menu in menus]))))
     lines = 0
     for menu in menus:
         if menu.id in with_recipe or outlet.id not in (menu.outlet_ids or [outlet.id]):
             continue
-        for name, qty in RECIPES[menu.name]:
+        for name, qty in recipes[menu.name]:
             ingredient = ingredients[name]
-            db.add(RecipeIngredient(id=new_id(), outlet_id=outlet.id, menu_item_id=menu.id, ingredient_id=ingredient.id, catalog_id=ingredient.catalog_id, qty=Decimal(qty)))
+            db.add(RecipeIngredient(id=new_id(), outlet_id=outlet.id, menu_item_id=menu.id, ingredient_id=ingredient.id, catalog_id=ingredient.catalog_id, qty=qty))
             lines += 1
     return lines
 
@@ -207,8 +127,11 @@ def write_all(db: Session, outlet: Outlet, owner: User) -> tuple[int, int, int]:
     categories = ensure_categories(db)
     ingredients = movements = 0
     written: dict[str, Ingredient] = {}
-    for name, category, unit, price, size, minimum, tolerance, active, moves in SPECS:
-        entry = CatalogIngredient(id=new_id(), name=name, unit_id=units[unit], created_at=stamp - timedelta(days=CREATED_DAYS_AGO))
+    for spec in CATALOG.ingredients:
+        name = spec.name
+        price = spec.package_price
+        size = spec.package_size
+        entry = CatalogIngredient(id=new_id(), name=name, unit_id=units[spec.unit], created_at=stamp - timedelta(days=CREATED_DAYS_AGO))
         db.add(entry)
         db.flush()
         row = Ingredient(
@@ -216,16 +139,17 @@ def write_all(db: Session, outlet: Outlet, owner: User) -> tuple[int, int, int]:
             outlet_id=outlet.id,
             catalog_id=entry.id,
             name=name,
-            category_id=categories[category],
-            unit_id=units[unit],
+            category_id=categories[spec.category],
+            unit_id=units[spec.unit],
             photo_path=None,
-            package_price=Decimal(price),
-            package_size=Decimal(size),
-            unit_price=(Decimal(price) / Decimal(size)).quantize(UNIT_PRICE_PLACES),
-            shrink_tolerance=Decimal(tolerance),
-            minimum=Decimal(minimum),
-            is_active=active,
-            is_available=active,
+            package_price=price,
+            package_size=size,
+            unit_price=(price / size).quantize(UNIT_PRICE_PLACES),
+            shrink_tolerance=spec.shrink_tolerance,
+            minimum=spec.minimum,
+            is_active=spec.active,
+            is_available=spec.active,
+            is_indirect=spec.indirect,
             created_at=stamp - timedelta(days=CREATED_DAYS_AGO),
             updated_at=stamp,
         )
@@ -233,20 +157,20 @@ def write_all(db: Session, outlet: Outlet, owner: User) -> tuple[int, int, int]:
         db.flush()
         written[name] = row
         ingredients += 1
-        for days_ago, kind, qty, cause in moves:
+        for move in spec.moves:
             db.add(
                 IngredientCard(
                     id=new_id(),
                     outlet_id=outlet.id,
                     ingredient_id=row.id,
                     ingredient_name=name,
-                    kind=kind,
-                    qty=Decimal(qty),
-                    unit_price=Decimal(price) / Decimal(size) if kind == INGREDIENT_IN else None,
-                    cause=cause,
+                    kind=move.kind,
+                    qty=move.qty,
+                    unit_price=price / size if move.kind == INGREDIENT_IN else None,
+                    cause=move.cause,
                     user_id=owner.id,
-                    note="Data demo" if kind in (INGREDIENT_RND, INGREDIENT_ADJUSTMENT) else None,
-                    created_at=stamp - timedelta(days=days_ago),
+                    note="Data demo" if move.kind in (INGREDIENT_RND, INGREDIENT_ADJUSTMENT) else None,
+                    created_at=stamp - timedelta(days=move.days_ago),
                 )
             )
             movements += 1
@@ -295,9 +219,9 @@ def main() -> int:
             print(f"Nama berikut sudah dipakai bahan asli: {', '.join(clashes)}. Tidak ada yang diubah.")
             return 1
 
-        movement_total = sum(len(spec[-1]) for spec in SPECS)
+        movement_total = sum(len(spec.moves) for spec in CATALOG.ingredients)
         print(f"Cabang tujuan: {outlet.name}")
-        print(f"Rencana: {len(SPECS)} bahan dalam {len(CATEGORY_NAMES)} kategori dengan {movement_total} mutasi stok (masuk, keluar, rusak, uji coba, penyesuaian).")
+        print(f"Rencana: {len(CATALOG.ingredients)} bahan dalam {len(CATALOG.ingredient_categories)} kategori dengan {movement_total} mutasi stok (masuk, keluar, rusak, uji coba, penyesuaian).")
         if "--tulis" not in args:
             print("Belum ada yang ditulis. Jalankan dengan --tulis untuk membuatnya.")
             return 0

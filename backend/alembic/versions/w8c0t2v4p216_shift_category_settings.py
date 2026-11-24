@@ -38,7 +38,7 @@ CHECKS = (
 def _add_check(name: str, condition: str) -> str:
     return f"""
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{name}') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{name}') THEN
             ALTER TABLE categories ADD CONSTRAINT {name} CHECK ({condition}) NOT VALID;
         END IF;
     END $$;

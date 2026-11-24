@@ -76,7 +76,7 @@ DROP = (
 def _foreign_key(table: str, name: str, column: str, target: str, action: str) -> str:
     return f"""
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{name}') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{name}') THEN
             ALTER TABLE {table} ADD CONSTRAINT {name} FOREIGN KEY ({column}) REFERENCES {target}(id) ON DELETE {action} NOT VALID;
         END IF;
     END $$;

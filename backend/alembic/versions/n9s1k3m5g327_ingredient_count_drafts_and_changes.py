@@ -77,7 +77,7 @@ SOURCE = (
     "ALTER TABLE ingredient_counts ADD COLUMN IF NOT EXISTS source TEXT NOT NULL DEFAULT 'web'",
     """
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'check_ingredient_counts_source_enum') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'check_ingredient_counts_source_enum') THEN
             ALTER TABLE ingredient_counts ADD CONSTRAINT check_ingredient_counts_source_enum CHECK (source IN ('web', 'tablet')) NOT VALID;
         END IF;
     END $$;
@@ -94,7 +94,7 @@ DROP_SOURCE = (
 def _foreign_key(table: str, name: str, column: str, target: str, action: str) -> str:
     return f"""
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{name}') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{name}') THEN
             ALTER TABLE {table} ADD CONSTRAINT {name} FOREIGN KEY ({column}) REFERENCES {target}(id) ON DELETE {action} NOT VALID;
         END IF;
     END $$;

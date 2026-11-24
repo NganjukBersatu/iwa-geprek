@@ -900,13 +900,13 @@ STATION_FOREIGN_KEYS = (
 STATION_BACKFILL = """
 DO $$
 BEGIN
-    IF to_regclass('public.stasiun') IS NOT NULL THEN
+    IF to_regclass(quote_ident(current_schema()) || '.stasiun') IS NOT NULL THEN
         INSERT INTO stations (id, name, kind, position, created_at)
         SELECT id, left(nama, 40), CASE jenis WHEN 'antar' THEN 'deliver' ELSE 'make' END, urutan, created_at
         FROM stasiun
         ON CONFLICT DO NOTHING;
     END IF;
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'kategori' AND column_name = 'stasiun_id') THEN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'kategori' AND column_name = 'stasiun_id') THEN
         INSERT INTO category_stations (category_id, station_id)
         SELECT k.id, k.stasiun_id FROM kategori k JOIN stations s ON s.id = k.stasiun_id AND s.kind = 'make'
         ON CONFLICT DO NOTHING;
@@ -918,7 +918,7 @@ END $$;
 def _station_foreign_key(table: str, name: str, column: str, target: str, action: str) -> str:
     return f"""
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{name}') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{name}') THEN
             ALTER TABLE {table} ADD CONSTRAINT {name} FOREIGN KEY ({column}) REFERENCES {target}(id) ON DELETE {action} NOT VALID;
         END IF;
     END $$;
@@ -969,7 +969,7 @@ CREATE TABLE IF NOT EXISTS release_reads (
 # CASCADE karena penanda ini bagian dari akunnya, dan backend lama masih menghapus staff secara permanen; kunci utama sudah diawali staff_id.
 RELEASE_READS_FOREIGN_KEY = """
 DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_release_reads_staff_id_staff') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_release_reads_staff_id_staff') THEN
         ALTER TABLE release_reads ADD CONSTRAINT fk_release_reads_staff_id_staff FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE NOT VALID;
     END IF;
 END $$;
@@ -991,7 +991,7 @@ ROLE_STATION_COLUMN = "ALTER TABLE roles ADD COLUMN IF NOT EXISTS station_id TEX
 ROLE_STATION_INDEX = "CREATE INDEX IF NOT EXISTS index_roles_on_station_id ON roles (station_id)"
 ROLE_STATION_FOREIGN_KEY = """
 DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_roles_station_id_stations') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_roles_station_id_stations') THEN
         ALTER TABLE roles ADD CONSTRAINT fk_roles_station_id_stations FOREIGN KEY (station_id) REFERENCES stations(id) ON DELETE SET NULL NOT VALID;
     END IF;
 END $$;

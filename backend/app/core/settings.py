@@ -36,6 +36,8 @@ class Settings(BaseSettings):
     min_version_pwa: str = ""
     # Where an outdated app is offered the current version, as a button the person taps; empty means no button is offered.
     download_url: str = ""
+    # Mode demo: proses ini hanya membaca dan menulis skema "demo" di database yang sama, tidak pernah tabel asli; isi lewat scripts/demo_data.py.
+    demo_mode: bool = False
 
     # The web server that runs beside this one in the same container; every page request is handed to it.
     web_upstream: str = "http://127.0.0.1:3000"

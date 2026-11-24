@@ -56,7 +56,7 @@ HOLD_FOREIGN_KEY = ('station_tasks', 'fk_station_tasks_held_by_staff', 'held_by'
 def _foreign_key(table: str, name: str, column: str, target: str, action: str) -> str:
     return f"""
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{name}') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{name}') THEN
             ALTER TABLE {table} ADD CONSTRAINT {name} FOREIGN KEY ({column}) REFERENCES {target}(id) ON DELETE {action} NOT VALID;
         END IF;
     END $$;
@@ -66,7 +66,7 @@ def _foreign_key(table: str, name: str, column: str, target: str, action: str) -
 def _check(table: str, name: str, expression: str) -> str:
     return f"""
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{name}') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{name}') THEN
             ALTER TABLE {table} ADD CONSTRAINT {name} CHECK ({expression}) NOT VALID;
         END IF;
     END $$;

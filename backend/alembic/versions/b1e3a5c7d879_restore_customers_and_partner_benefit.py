@@ -13,6 +13,8 @@ Down tidak melakukan apa pun: membuangnya akan menghapus data pelanggan dan bene
 from typing import Sequence, Union
 
 from alembic import op
+
+from app.core.search import trigram_opclass
 from sqlalchemy import text
 
 revision: str = 'b1e3a5c7d879'
@@ -134,7 +136,7 @@ ORDER_COLUMNS = (
 # Setiap kunci asing punya indeks dengan kolomnya di depan; kunci utama dan indeks unik yang sudah di depan tidak diulang.
 INDEXES = (
     'CREATE INDEX IF NOT EXISTS index_customers_on_contact_digits ON customers (regexp_replace(contact, \'[^0-9]\', \'\', \'g\'))',
-    'CREATE INDEX IF NOT EXISTS index_customers_on_name ON customers USING gin (name gin_trgm_ops)',
+    'CREATE INDEX IF NOT EXISTS index_customers_on_name ON customers USING gin (name {trigram})',
     'CREATE INDEX IF NOT EXISTS index_visits_on_customer_id_and_visited_at ON visits (customer_id, visited_at)',
     'CREATE INDEX IF NOT EXISTS index_visits_on_outlet_id_and_visited_at ON visits (outlet_id, visited_at)',
     'CREATE INDEX IF NOT EXISTS index_visits_on_visited_at ON visits (visited_at)',
@@ -177,7 +179,7 @@ FOREIGN_KEYS = (
 def _foreign_key(table: str, name: str, column: str, target: str, action: str) -> str:
     return f"""
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{name}') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{name}') THEN
             ALTER TABLE {table} ADD CONSTRAINT {name} FOREIGN KEY ({column}) REFERENCES {target}(id) ON DELETE {action} NOT VALID;
         END IF;
     END $$;
@@ -211,7 +213,7 @@ def _repair_earlier_run() -> None:
         ).scalar() == 'uuid'
     ]
     for table, name, _column, target, action in FOREIGN_KEYS:
-        current = bind.execute(text('SELECT confdeltype FROM pg_constraint WHERE conname = :name'), {'name': name}).scalar()
+        current = bind.execute(text('SELECT confdeltype FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = :name'), {'name': name}).scalar()
         if current is None:
             continue
         if current != ACTION_CODES[action] or (uuid_columns and (table in PARTNER_TABLES or target in PARTNER_TABLES)):
@@ -228,7 +230,8 @@ def upgrade() -> None:
     _repair_earlier_run()
     for statement in ORDER_COLUMNS:
         op.execute(statement)
-    for statement in INDEXES:
+    trigram = trigram_opclass(op.get_bind())
+    for statement in (index.replace('{trigram}', trigram) for index in INDEXES):
         op.execute(statement)
     for table, name, column, target, action in FOREIGN_KEYS:
         op.execute(_foreign_key(table, name, column, target, action))

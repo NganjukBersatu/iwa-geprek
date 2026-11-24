@@ -26,7 +26,7 @@ def upgrade() -> None:
     op.execute(
         f"""
         DO $$ BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{CONSTRAINT}') THEN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{CONSTRAINT}') THEN
                 ALTER TABLE station_branch_settings ADD CONSTRAINT {CONSTRAINT}
                     CHECK (reminder_seconds = 0 OR reminder_seconds BETWEEN 15 AND 600) NOT VALID;
             END IF;

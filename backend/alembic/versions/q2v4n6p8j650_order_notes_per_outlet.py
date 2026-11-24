@@ -24,10 +24,10 @@ STRUCTURE = (
     'ALTER TABLE categories ADD COLUMN IF NOT EXISTS outlet_id TEXT',
     """
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_categories_outlet_id_outlets') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_categories_outlet_id_outlets') THEN
             ALTER TABLE categories ADD CONSTRAINT fk_categories_outlet_id_outlets FOREIGN KEY (outlet_id) REFERENCES outlets(id) ON DELETE RESTRICT NOT VALID;
         END IF;
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'check_categories_outlet_id_notes_only') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'check_categories_outlet_id_notes_only') THEN
             ALTER TABLE categories ADD CONSTRAINT check_categories_outlet_id_notes_only CHECK (outlet_id IS NULL OR kind = 'catatan_order') NOT VALID;
         END IF;
     END $$;

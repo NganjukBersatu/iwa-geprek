@@ -32,7 +32,7 @@ CHECK_KEY = 'check_orders_settle_key_length'
 def _check(name: str, condition: str) -> str:
     return f"""
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{name}') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{name}') THEN
             ALTER TABLE orders ADD CONSTRAINT {name} CHECK ({condition}) NOT VALID;
         END IF;
     END $$;

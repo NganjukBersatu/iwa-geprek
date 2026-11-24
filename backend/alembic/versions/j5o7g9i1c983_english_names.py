@@ -813,18 +813,18 @@ def _quote(name: str) -> str:
 
 
 def _table_exists(bind, name: str) -> bool:
-    return bind.scalar(sa.text("SELECT to_regclass(:n) IS NOT NULL"), {'n': f'public.{_quote(name)}'})
+    return bind.scalar(sa.text("SELECT to_regclass(quote_ident(current_schema()) || '.' || :n) IS NOT NULL"), {'n': _quote(name)})
 
 
 def _columns_of(bind, table: str) -> set[str]:
-    rows = bind.execute(sa.text("SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = :t"), {'t': table})
+    rows = bind.execute(sa.text("SELECT column_name FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = :t"), {'t': table})
     return {row[0] for row in rows}
 
 
 def _rename_enums(bind) -> None:
     for old, new in ENUMS.items():
-        has_old = bind.scalar(sa.text("SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = :n AND typnamespace = 'public'::regnamespace)"), {'n': old})
-        has_new = bind.scalar(sa.text("SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = :n AND typnamespace = 'public'::regnamespace)"), {'n': new})
+        has_old = bind.scalar(sa.text("SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = :n AND typnamespace = current_schema()::regnamespace)"), {'n': old})
+        has_new = bind.scalar(sa.text("SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = :n AND typnamespace = current_schema()::regnamespace)"), {'n': new})
         if has_old and not has_new:
             op.execute(f'ALTER TYPE {_quote(old)} RENAME TO {_quote(new)}')
 
@@ -890,7 +890,7 @@ SELECT c.conname::text, c.contype::text, t.relname::text, r.relname::text,
 FROM pg_constraint c
 JOIN pg_class t ON t.oid = c.conrelid
 LEFT JOIN pg_class r ON r.oid = c.confrelid
-WHERE t.relnamespace = 'public'::regnamespace AND c.contype IN ('p', 'f', 'u', 'c')
+WHERE t.relnamespace = current_schema()::regnamespace AND c.contype IN ('p', 'f', 'u', 'c')
 """
 
 INDEXES_SQL = """
@@ -900,7 +900,7 @@ SELECT ic.relname::text, t.relname::text,
 FROM pg_index i
 JOIN pg_class ic ON ic.oid = i.indexrelid
 JOIN pg_class t ON t.oid = i.indrelid
-WHERE t.relnamespace = 'public'::regnamespace
+WHERE t.relnamespace = current_schema()::regnamespace
   AND NOT EXISTS (SELECT 1 FROM pg_constraint c WHERE c.conindid = i.indexrelid)
 """
 
@@ -912,8 +912,8 @@ def _old_columns(table: str, columns: list[str]) -> list[str]:
 
 def _rename_constraints_and_indexes(bind) -> list[str]:
     skipped: list[str] = []
-    taken = {row[0] for row in bind.execute(sa.text("SELECT relname::text FROM pg_class WHERE relnamespace = 'public'::regnamespace"))}
-    taken |= {row[0] for row in bind.execute(sa.text("SELECT conname::text FROM pg_constraint c JOIN pg_class t ON t.oid = c.conrelid WHERE t.relnamespace = 'public'::regnamespace"))}
+    taken = {row[0] for row in bind.execute(sa.text("SELECT relname::text FROM pg_class WHERE relnamespace = current_schema()::regnamespace"))}
+    taken |= {row[0] for row in bind.execute(sa.text("SELECT conname::text FROM pg_constraint c JOIN pg_class t ON t.oid = c.conrelid WHERE t.relnamespace = current_schema()::regnamespace"))}
 
     for name, kind, table, target, columns in bind.execute(sa.text(CONSTRAINTS_SQL)).all():
         old_table = OLD_TABLE_OF.get(table, table)
@@ -960,7 +960,7 @@ def _verify(bind) -> None:
     if absent:
         raise RuntimeError(f'columns that should exist are missing: {", ".join(sorted(absent))}')
     pattern = r'\m(' + '|'.join(re.escape(word) for word in STALE_WORDS) + r')\M'
-    stale = [row[0] for row in bind.execute(sa.text("SELECT proname::text FROM pg_proc WHERE pronamespace = 'public'::regnamespace AND prosrc ~ :p ORDER BY 1"), {'p': pattern})]
+    stale = [row[0] for row in bind.execute(sa.text("SELECT proname::text FROM pg_proc WHERE pronamespace = current_schema()::regnamespace AND prosrc ~ :p ORDER BY 1"), {'p': pattern})]
     if stale:
         raise RuntimeError(f'functions that still mention an old name: {", ".join(stale)}')
 

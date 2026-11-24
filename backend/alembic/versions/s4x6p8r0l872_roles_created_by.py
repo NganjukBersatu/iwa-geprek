@@ -24,7 +24,7 @@ STEPS = (
     'CREATE INDEX IF NOT EXISTS index_roles_on_created_by ON roles (created_by)',
     """
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_roles_created_by_staff') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_roles_created_by_staff') THEN
             ALTER TABLE roles ADD CONSTRAINT fk_roles_created_by_staff FOREIGN KEY (created_by) REFERENCES staff(id) ON DELETE SET NULL NOT VALID;
         END IF;
     END $$;

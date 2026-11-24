@@ -21,28 +21,28 @@ depends_on: Union[str, Sequence[str], None] = None
 
 STATEMENTS = (
     """
-    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'shift_status') THEN CREATE TYPE shift_status AS ENUM ('OPEN', 'CLOSED'); END IF; END $$
+    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typnamespace = current_schema()::regnamespace AND typname = 'shift_status') THEN CREATE TYPE shift_status AS ENUM ('OPEN', 'CLOSED'); END IF; END $$
     """,
     """
-    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'status_pengajuan_pembatalan') THEN CREATE TYPE status_pengajuan_pembatalan AS ENUM ('menunggu', 'disetujui', 'ditolak'); END IF; END $$
+    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typnamespace = current_schema()::regnamespace AND typname = 'status_pengajuan_pembatalan') THEN CREATE TYPE status_pengajuan_pembatalan AS ENUM ('menunggu', 'disetujui', 'ditolak'); END IF; END $$
     """,
     """
-    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'sumber_dana') THEN CREATE TYPE sumber_dana AS ENUM ('kas_laci', 'dana_lain', 'uang_belanja'); END IF; END $$
+    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typnamespace = current_schema()::regnamespace AND typname = 'sumber_dana') THEN CREATE TYPE sumber_dana AS ENUM ('kas_laci', 'dana_lain', 'uang_belanja'); END IF; END $$
     """,
     """
-    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'status_kehadiran') THEN CREATE TYPE status_kehadiran AS ENUM ('hadir', 'telat', 'izin', 'sakit', 'alfa'); END IF; END $$
+    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typnamespace = current_schema()::regnamespace AND typname = 'status_kehadiran') THEN CREATE TYPE status_kehadiran AS ENUM ('hadir', 'telat', 'izin', 'sakit', 'alfa'); END IF; END $$
     """,
     """
-    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'jenis_pengajuan') THEN CREATE TYPE jenis_pengajuan AS ENUM ('izin', 'sakit'); END IF; END $$
+    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typnamespace = current_schema()::regnamespace AND typname = 'jenis_pengajuan') THEN CREATE TYPE jenis_pengajuan AS ENUM ('izin', 'sakit'); END IF; END $$
     """,
     """
-    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'status_pengajuan') THEN CREATE TYPE status_pengajuan AS ENUM ('menunggu', 'disetujui', 'ditolak'); END IF; END $$
+    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typnamespace = current_schema()::regnamespace AND typname = 'status_pengajuan') THEN CREATE TYPE status_pengajuan AS ENUM ('menunggu', 'disetujui', 'ditolak'); END IF; END $$
     """,
     """
-    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'jenis_tugas') THEN CREATE TYPE jenis_tugas AS ENUM ('penugasan', 'laporan'); END IF; END $$
+    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typnamespace = current_schema()::regnamespace AND typname = 'jenis_tugas') THEN CREATE TYPE jenis_tugas AS ENUM ('penugasan', 'laporan'); END IF; END $$
     """,
     """
-    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'status_tugas') THEN CREATE TYPE status_tugas AS ENUM ('belum', 'selesai'); END IF; END $$
+    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typnamespace = current_schema()::regnamespace AND typname = 'status_tugas') THEN CREATE TYPE status_tugas AS ENUM ('belum', 'selesai'); END IF; END $$
     """,
     """
     CREATE TABLE IF NOT EXISTS outlets (

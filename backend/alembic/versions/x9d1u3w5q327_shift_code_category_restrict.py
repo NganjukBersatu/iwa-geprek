@@ -18,7 +18,7 @@ TIMEOUTS = ("SET LOCAL lock_timeout = '1s'", "SET LOCAL statement_timeout = '180
 # Nama lama diganti nama saat kolom dan tabel berganti nama, jadi FK lama dicari lewat apa yang dirujuknya.
 ADD_RESTRICT = """
 DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_shift_codes_category_id_categories') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_shift_codes_category_id_categories') THEN
         ALTER TABLE shift_codes ADD CONSTRAINT fk_shift_codes_category_id_categories
             FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT NOT VALID;
     END IF;

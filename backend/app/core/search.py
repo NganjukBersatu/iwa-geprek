@@ -5,10 +5,18 @@ index with gin_trgm_ops answers without reading the table. The threshold is set 
 """
 from typing import Any
 
-from sqlalchemy import Boolean, ColumnElement, bindparam, event, or_
-from sqlalchemy.engine import Engine
+from sqlalchemy import Boolean, ColumnElement, bindparam, event, or_, text
+from sqlalchemy.engine import Connection, Engine
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql.expression import FunctionElement
+
+def trigram_opclass(bind: Connection) -> str:
+    """gin_trgm_ops dengan skema pemilik ekstensinya, supaya indeks trigram bisa dibuat dari skema mana pun, termasuk skema demo yang hanya melihat dirinya."""
+    schema = bind.scalar(text("SELECT quote_ident(n.nspname) FROM pg_extension e JOIN pg_namespace n ON n.oid = e.extnamespace WHERE e.extname = 'pg_trgm'"))
+    if schema is None:
+        raise RuntimeError("Ekstensi pg_trgm belum terpasang; migrasi d4f6a8c0e215 memasangnya.")
+    return f"{schema}.gin_trgm_ops"
+
 
 # How much of what was typed must be found in one stretch of the text: low enough for "ppuc" to find "Cappuccino" and for a typo to pass.
 WORD_SIMILARITY_THRESHOLD = 0.3

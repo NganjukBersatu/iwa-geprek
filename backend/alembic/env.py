@@ -9,7 +9,7 @@ from alembic import context
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from app.core.settings import settings
-from app.core.database import Base
+from app.core.database import DEMO_SCHEMA, Base
 import importlib
 import pkgutil
 
@@ -23,6 +23,8 @@ for _name in MODELS_OUTSIDE_PACKAGE:
     importlib.import_module(_name)
 
 VERSION_TABLE = "alembic_version_v2"
+# Dalam mode demo posisi migrasi disimpan di skema demo, supaya tidak pernah terbaca dari tabel versi data asli.
+VERSION_TABLE_SCHEMA = DEMO_SCHEMA if settings.demo_mode else None
 
 config = context.config
 
@@ -43,6 +45,7 @@ def run_migrations_offline() -> None:
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
         version_table=VERSION_TABLE,
+        version_table_schema=VERSION_TABLE_SCHEMA,
     )
     with context.begin_transaction():
         context.run_migrations()
@@ -53,7 +56,7 @@ def run_migrations_online() -> None:
     # the caller's transaction, which decides commit or rollback after checking the result. Alembic does not commit a transaction it does not own.
     borrowed = config.attributes.get("connection")
     if borrowed is not None:
-        context.configure(connection=borrowed, target_metadata=target_metadata, version_table=VERSION_TABLE)
+        context.configure(connection=borrowed, target_metadata=target_metadata, version_table=VERSION_TABLE, version_table_schema=VERSION_TABLE_SCHEMA)
         with context.begin_transaction():
             context.run_migrations()
         return
@@ -64,7 +67,7 @@ def run_migrations_online() -> None:
         poolclass=pool.NullPool,
     )
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata, version_table=VERSION_TABLE)
+        context.configure(connection=connection, target_metadata=target_metadata, version_table=VERSION_TABLE, version_table_schema=VERSION_TABLE_SCHEMA)
         with context.begin_transaction():
             context.run_migrations()
 

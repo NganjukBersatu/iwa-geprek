@@ -49,7 +49,7 @@ def _tables(conn: Connection) -> list[str]:
     rows = conn.execute(
         text(
             "SELECT table_name FROM information_schema.tables "
-            "WHERE table_schema = 'public' AND table_type = 'BASE TABLE' "
+            "WHERE table_schema = current_schema() AND table_type = 'BASE TABLE' "
             "AND table_name NOT IN ('alembic_version', 'alembic_version_v2') ORDER BY table_name"
         )
     )
@@ -61,7 +61,7 @@ def _has_column(conn: Connection, table: str, column: str) -> bool:
         conn.scalar(
             text(
                 "SELECT 1 FROM information_schema.columns "
-                "WHERE table_schema = 'public' AND table_name = :t AND column_name = :k"
+                "WHERE table_schema = current_schema() AND table_name = :t AND column_name = :k"
             ),
             {"t": table, "k": column},
         )

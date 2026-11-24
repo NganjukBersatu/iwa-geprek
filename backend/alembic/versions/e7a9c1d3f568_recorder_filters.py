@@ -38,7 +38,7 @@ def upgrade() -> None:
     op.execute(
         f"""
         DO $$ BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{FOREIGN_KEY}') THEN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{FOREIGN_KEY}') THEN
                 ALTER TABLE categories ADD CONSTRAINT {FOREIGN_KEY} FOREIGN KEY (created_by_id) REFERENCES staff(id) ON DELETE SET NULL NOT VALID;
             END IF;
         END $$;

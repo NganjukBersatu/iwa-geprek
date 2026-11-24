@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS branch_periods (
 
 PERIODS_FOREIGN_KEY = """
 DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_branch_periods_outlet_id_outlets') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_branch_periods_outlet_id_outlets') THEN
         ALTER TABLE branch_periods ADD CONSTRAINT fk_branch_periods_outlet_id_outlets FOREIGN KEY (outlet_id) REFERENCES outlets(id) ON DELETE RESTRICT;
     END IF;
 END $$;
@@ -69,16 +69,16 @@ INDEXES = (
 
 FOREIGN_KEYS = """
 DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_device_station_prints_device_id_devices') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_device_station_prints_device_id_devices') THEN
         ALTER TABLE device_station_prints ADD CONSTRAINT fk_device_station_prints_device_id_devices FOREIGN KEY (device_id) REFERENCES devices(id) ON DELETE CASCADE;
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_device_station_prints_station_id_stations') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_device_station_prints_station_id_stations') THEN
         ALTER TABLE device_station_prints ADD CONSTRAINT fk_device_station_prints_station_id_stations FOREIGN KEY (station_id) REFERENCES stations(id) ON DELETE CASCADE;
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_station_roles_station_id_stations') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_station_roles_station_id_stations') THEN
         ALTER TABLE station_roles ADD CONSTRAINT fk_station_roles_station_id_stations FOREIGN KEY (station_id) REFERENCES stations(id) ON DELETE CASCADE;
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_station_roles_role_id_roles') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_station_roles_role_id_roles') THEN
         ALTER TABLE station_roles ADD CONSTRAINT fk_station_roles_role_id_roles FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE RESTRICT;
     END IF;
 END $$;
@@ -87,15 +87,15 @@ END $$;
 # Printer kini milik stasiun: slot station membawa station_id, jadi kunci (device_id, printer_slot) diganti id sendiri dan dua indeks unik parsial.
 PRINTER_STATIONS = """
 DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'device_printers' AND column_name = 'id') THEN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'device_printers' AND column_name = 'id') THEN
         ALTER TABLE device_printers ADD COLUMN id TEXT NOT NULL DEFAULT gen_random_uuid()::text;
         ALTER TABLE device_printers DROP CONSTRAINT pk_device_printers;
         ALTER TABLE device_printers ADD CONSTRAINT pk_device_printers PRIMARY KEY (id);
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'device_printers' AND column_name = 'station_id') THEN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'device_printers' AND column_name = 'station_id') THEN
         ALTER TABLE device_printers ADD COLUMN station_id TEXT;
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'check_device_printers_station_id_slot') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'check_device_printers_station_id_slot') THEN
         ALTER TABLE device_printers ADD CONSTRAINT check_device_printers_station_id_slot CHECK (station_id IS NULL OR printer_slot = 'station');
     END IF;
 END $$;
@@ -109,7 +109,7 @@ PRINTER_INDEXES = (
 
 PRINTER_FOREIGN_KEY = """
 DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_device_printers_station_id_stations') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_device_printers_station_id_stations') THEN
         ALTER TABLE device_printers ADD CONSTRAINT fk_device_printers_station_id_stations FOREIGN KEY (station_id) REFERENCES stations(id) ON DELETE CASCADE;
     END IF;
 END $$;

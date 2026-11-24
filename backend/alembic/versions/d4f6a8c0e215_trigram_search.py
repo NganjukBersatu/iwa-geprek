@@ -11,6 +11,8 @@ from typing import Sequence, Union
 
 from alembic import op
 
+from app.core.search import trigram_opclass
+
 revision: str = 'd4f6a8c0e215'
 down_revision: Union[str, Sequence[str], None] = 'c2e4a6b8d103'
 branch_labels: Union[str, Sequence[str], None] = None
@@ -47,8 +49,9 @@ def index_name(table: str, column: str) -> str:
 
 def upgrade() -> None:
     op.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')
+    opclass = trigram_opclass(op.get_bind())
     for table, column in SEARCHED:
-        op.execute(f'CREATE INDEX IF NOT EXISTS {index_name(table, column)} ON {table} USING gin ({column} gin_trgm_ops)')
+        op.execute(f'CREATE INDEX IF NOT EXISTS {index_name(table, column)} ON {table} USING gin ({column} {opclass})')
 
 
 def downgrade() -> None:

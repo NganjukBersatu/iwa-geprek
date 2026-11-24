@@ -26,7 +26,7 @@ CLIENT_COLUMN = 'ALTER TABLE ingredient_cards ADD COLUMN IF NOT EXISTS client_id
 CHECK_NAME = 'check_ingredient_cards_client_id_length'
 CHECK = f"""
 DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{CHECK_NAME}') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{CHECK_NAME}') THEN
         ALTER TABLE ingredient_cards ADD CONSTRAINT {CHECK_NAME} CHECK (client_id IS NULL OR char_length(client_id) BETWEEN 8 AND 64) NOT VALID;
     END IF;
 END $$;

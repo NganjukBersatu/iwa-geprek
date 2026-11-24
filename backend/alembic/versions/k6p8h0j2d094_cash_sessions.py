@@ -124,12 +124,12 @@ WORD = re.compile(r'(?<![A-Za-z0-9])shifts(?![A-Za-z0-9])')
 
 
 def _exists(bind, name: str) -> bool:
-    return bool(bind.scalar(sa.text("SELECT to_regclass(:n) IS NOT NULL"), {'n': f'public."{name}"'}))
+    return bool(bind.scalar(sa.text("SELECT to_regclass(quote_ident(current_schema()) || '.' || :n) IS NOT NULL"), {'n': f'"{name}"'}))
 
 
 def _rename_type(bind) -> None:
     for old, new in ENUMS.items():
-        query = "SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = :n AND typnamespace = 'public'::regnamespace)"
+        query = "SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = :n AND typnamespace = current_schema()::regnamespace)"
         if bind.scalar(sa.text(query), {'n': old}) and not bind.scalar(sa.text(query), {'n': new}):
             op.execute(f'ALTER TYPE "{old}" RENAME TO "{new}"')
 
@@ -137,12 +137,12 @@ def _rename_type(bind) -> None:
 def _rename_names(bind) -> list[str]:
     """Constraint and index names that carry the old word, rebuilt with the new one; a name that is too long or already taken is left as it is."""
     skipped: list[str] = []
-    taken = {row[0] for row in bind.execute(sa.text("SELECT relname::text FROM pg_class WHERE relnamespace = 'public'::regnamespace"))}
-    taken |= {row[0] for row in bind.execute(sa.text("SELECT conname::text FROM pg_constraint c JOIN pg_class t ON t.oid = c.conrelid WHERE t.relnamespace = 'public'::regnamespace"))}
+    taken = {row[0] for row in bind.execute(sa.text("SELECT relname::text FROM pg_class WHERE relnamespace = current_schema()::regnamespace"))}
+    taken |= {row[0] for row in bind.execute(sa.text("SELECT conname::text FROM pg_constraint c JOIN pg_class t ON t.oid = c.conrelid WHERE t.relnamespace = current_schema()::regnamespace"))}
 
     constraints = bind.execute(sa.text(
         "SELECT c.conname::text, t.relname::text FROM pg_constraint c JOIN pg_class t ON t.oid = c.conrelid "
-        "WHERE t.relnamespace = 'public'::regnamespace AND c.conname ~ '(^|[^A-Za-z0-9])shifts([^A-Za-z0-9]|$)'")).all()
+        "WHERE t.relnamespace = current_schema()::regnamespace AND c.conname ~ '(^|[^A-Za-z0-9])shifts([^A-Za-z0-9]|$)'")).all()
     for name, table in constraints:
         new = WORD.sub(NEW, name)
         if new == name or len(new) > MAX_NAME_LENGTH or new in taken:
@@ -154,7 +154,7 @@ def _rename_names(bind) -> list[str]:
 
     indexes = bind.execute(sa.text(
         "SELECT ic.relname::text FROM pg_index i JOIN pg_class ic ON ic.oid = i.indexrelid JOIN pg_class t ON t.oid = i.indrelid "
-        "WHERE t.relnamespace = 'public'::regnamespace AND ic.relname ~ '(^|[^A-Za-z0-9])shifts([^A-Za-z0-9]|$)' "
+        "WHERE t.relnamespace = current_schema()::regnamespace AND ic.relname ~ '(^|[^A-Za-z0-9])shifts([^A-Za-z0-9]|$)' "
         "AND NOT EXISTS (SELECT 1 FROM pg_constraint c WHERE c.conindid = i.indexrelid)")).all()
     for (name,) in indexes:
         new = WORD.sub(NEW, name)
@@ -173,7 +173,7 @@ def _verify(bind) -> None:
     if _exists(bind, OLD):
         raise RuntimeError(f'table {OLD} still exists')
     stale = [row[0] for row in bind.execute(sa.text(
-        "SELECT proname::text FROM pg_proc WHERE pronamespace = 'public'::regnamespace AND prosrc ~ '\\mshifts\\M' ORDER BY 1"))]
+        "SELECT proname::text FROM pg_proc WHERE pronamespace = current_schema()::regnamespace AND prosrc ~ '\\mshifts\\M' ORDER BY 1"))]
     if stale:
         raise RuntimeError(f'functions that still mention {OLD}: {", ".join(stale)}')
 

@@ -24,7 +24,7 @@ COLUMNS = (
 
 FOREIGN_KEY = """
 DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_ingredient_count_requests_seen_by_staff') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_ingredient_count_requests_seen_by_staff') THEN
         ALTER TABLE ingredient_count_requests ADD CONSTRAINT fk_ingredient_count_requests_seen_by_staff FOREIGN KEY (seen_by) REFERENCES staff(id) ON DELETE SET NULL NOT VALID;
     END IF;
 END $$;

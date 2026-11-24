@@ -54,6 +54,14 @@ Logo, ikon, splash, foto layar masuk, dan logo struk juga milik klien; daftar le
 
 Setelah mengubah versi APK atau PWA, jalankan `npm run generate` di `web/` supaya halaman Unduhan ikut berubah.
 
+## Data demo untuk presentasi
+Data demo tinggal di skema `demo` pada database yang sama dan terpisah penuh dari data asli. Isinya (cabang, menu beserta foto, bahan, resep, pengeluaran, jam sesi kas) diambil dari `backend/scripts/demo_catalog.json` milik klien, lalu dilengkapi penjualan, stok, absensi, jadwal, dan tugas contoh.
+
+1. Data asli harus sudah di migrasi terbaru (`python scripts/pra_deploy.py`).
+2. `python scripts/demo_data.py isi` membuat skema demo sekali dan menampilkan kata sandi akun `demo` satu kali.
+3. Jalankan backend dengan `DEMO_MODE=true`: proses itu hanya membaca dan menulis skema demo, tidak memakai Redis atau bucket, dan menolak jalan bila skema demo belum ada atau tertinggal migrasi. Perangkat kasir dipasangkan lagi dari web admin demo.
+4. Setelah presentasi, matikan `DEMO_MODE` dan jalankan `python scripts/demo_data.py hapus` untuk menghapus seluruh data demo. Setelah migrasi baru, hapus lalu isi lagi.
+
 ## Keamanan
 - Jangan pernah menyimpan `.env` atau kredensial di repositori; hanya `backend/.env.example` yang boleh.
 - Kata sandi hanya disimpan sebagai hash bcrypt.

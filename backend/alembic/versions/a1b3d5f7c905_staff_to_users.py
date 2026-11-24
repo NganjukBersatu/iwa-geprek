@@ -52,32 +52,32 @@ def _rename_all(pairs: tuple[tuple[str, str], ...], marker: str) -> str:
         item record;
     BEGIN
         FOR item IN SELECT table_name FROM information_schema.columns
-                    WHERE table_schema = 'public' AND column_name = '{old_column}' ORDER BY table_name LOOP
+                    WHERE table_schema = current_schema() AND column_name = '{old_column}' ORDER BY table_name LOOP
             EXECUTE format('ALTER TABLE %I RENAME COLUMN {old_column} TO {new_column}', item.table_name);
         END LOOP;
         FOR item IN SELECT tablename AS name FROM pg_tables
-                    WHERE schemaname = 'public' AND tablename IN ({", ".join(f"'{old}'" for old, _ in pairs if old != old_column)}) ORDER BY tablename LOOP
+                    WHERE schemaname = current_schema() AND tablename IN ({", ".join(f"'{old}'" for old, _ in pairs if old != old_column)}) ORDER BY tablename LOOP
             IF {_renamed('item.name', pairs)} <> item.name THEN
                 EXECUTE format('ALTER TABLE %I RENAME TO %I', item.name, {_renamed('item.name', pairs)});
             END IF;
         END LOOP;
         FOR item IN SELECT c.conname AS name, t.relname AS owner FROM pg_constraint c
                     JOIN pg_class t ON t.oid = c.conrelid JOIN pg_namespace n ON n.oid = t.relnamespace
-                    WHERE n.nspname = 'public' AND c.conname LIKE '%{marker}%' ORDER BY c.conname LOOP
+                    WHERE n.nspname = current_schema() AND c.conname LIKE '%{marker}%' ORDER BY c.conname LOOP
             -- Nama yang hanya kebetulan memuat penanda (misalnya username) tidak berubah dan dilewati.
             IF {_renamed('item.name', pairs)} <> item.name THEN
                 EXECUTE format('ALTER TABLE %I RENAME CONSTRAINT %I TO %I', item.owner, item.name, {_renamed('item.name', pairs)});
             END IF;
         END LOOP;
         FOR item IN SELECT indexname AS name FROM pg_indexes i
-                    WHERE schemaname = 'public' AND indexname LIKE '%{marker}%'
-                      AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = i.indexname) ORDER BY indexname LOOP
+                    WHERE schemaname = current_schema() AND indexname LIKE '%{marker}%'
+                      AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = i.indexname) ORDER BY indexname LOOP
             IF {_renamed('item.name', pairs)} <> item.name THEN
                 EXECUTE format('ALTER INDEX %I RENAME TO %I', item.name, {_renamed('item.name', pairs)});
             END IF;
         END LOOP;
         FOR item IN SELECT p.oid FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-                    WHERE n.nspname = 'public' AND p.prosrc LIKE '%{old_column}%' LOOP
+                    WHERE n.nspname = current_schema() AND p.prosrc LIKE '%{old_column}%' LOOP
             EXECUTE replace(pg_get_functiondef(item.oid), '{old_column}', '{new_column}');
         END LOOP;
     END $$;

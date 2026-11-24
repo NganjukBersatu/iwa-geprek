@@ -75,7 +75,7 @@ PRINT_MODE = (
     "ALTER TABLE outlets ADD COLUMN IF NOT EXISTS print_mode TEXT NOT NULL DEFAULT 'cashier'",
     """
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'check_outlets_print_mode_enum') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'check_outlets_print_mode_enum') THEN
             ALTER TABLE outlets ADD CONSTRAINT check_outlets_print_mode_enum CHECK (print_mode IN ('cashier', 'station')) NOT VALID;
         END IF;
     END $$;
@@ -92,7 +92,7 @@ DROP_PRINT_MODE = (
 def _foreign_key(table: str, name: str, column: str, target: str, action: str) -> str:
     return f"""
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{name}') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = '{name}') THEN
             ALTER TABLE {table} ADD CONSTRAINT {name} FOREIGN KEY ({column}) REFERENCES {target}(id) ON DELETE {action} NOT VALID;
         END IF;
     END $$;

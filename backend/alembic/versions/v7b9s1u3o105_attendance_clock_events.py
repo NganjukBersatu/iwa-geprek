@@ -44,7 +44,7 @@ INDEXES = (
 FOREIGN_KEYS = (
     """
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_attendance_clock_events_staff_id_staff') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_attendance_clock_events_staff_id_staff') THEN
             ALTER TABLE attendance_clock_events ADD CONSTRAINT fk_attendance_clock_events_staff_id_staff FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE RESTRICT NOT VALID;
         END IF;
     END $$;
@@ -52,7 +52,7 @@ FOREIGN_KEYS = (
     'ALTER TABLE attendance_clock_events VALIDATE CONSTRAINT fk_attendance_clock_events_staff_id_staff',
     """
     DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_attendance_clock_events_attendance_id_attendance_records') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE connamespace = current_schema()::regnamespace AND conname = 'fk_attendance_clock_events_attendance_id_attendance_records') THEN
             ALTER TABLE attendance_clock_events ADD CONSTRAINT fk_attendance_clock_events_attendance_id_attendance_records FOREIGN KEY (attendance_id) REFERENCES attendance_records(id) ON DELETE RESTRICT NOT VALID;
         END IF;
     END $$;

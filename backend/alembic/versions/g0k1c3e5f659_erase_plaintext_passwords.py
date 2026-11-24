@@ -25,7 +25,7 @@ depends_on: Union[str, Sequence[str], None] = None
 ERASE_PASSWORDS = """
 DO $$
 BEGIN
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'staff' AND column_name = 'password_teks') THEN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'staff' AND column_name = 'password_teks') THEN
         UPDATE staff SET password_teks = NULL WHERE password_teks IS NOT NULL;
     END IF;
 END $$
@@ -34,7 +34,7 @@ END $$
 PARTNER_DEFAULT = """
 DO $$
 BEGIN
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'orders' AND column_name = 'ditanggung_mitra') THEN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'orders' AND column_name = 'ditanggung_mitra') THEN
         ALTER TABLE orders ALTER COLUMN ditanggung_mitra SET DEFAULT 0;
     END IF;
 END $$

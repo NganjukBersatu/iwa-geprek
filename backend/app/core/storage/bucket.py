@@ -11,7 +11,8 @@ NOT_FOUND_CODES = ("404", "NoSuchKey", "NotFound")
 
 
 def is_active() -> bool:
-    return settings.bucket_active
+    # Berkas demo disimpan di tabel skema demo, sehingga ikut hilang bersih saat skema itu dihapus dan tidak pernah masuk bucket asli.
+    return settings.bucket_active and not settings.demo_mode
 
 
 @lru_cache(maxsize=1)

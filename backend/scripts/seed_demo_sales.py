@@ -43,11 +43,13 @@ from app.models.payment_method import PaymentMethod  # noqa: E402
 from app.models.role import Role  # noqa: E402
 from app.models.user import User  # noqa: E402
 from app.models.visitor import VisitorCategory, VisitorGender  # noqa: E402
+from app.core.catalog.menu import PHOTO_FOLDER  # noqa: E402
+from app.core.storage import files  # noqa: E402
+from scripts import demo_catalog  # noqa: E402
 
 PREFIX = "demo-"
 CONFIRMATION = "ya"
 DAYS = 240
-OPENING_CASH = Decimal("500000")
 COST_RATIO = Decimal("0.35")
 VOID_CHANCE = 0.02
 DISCOUNT_CHANCE = 0.08
@@ -58,24 +60,9 @@ SERVED_AFTER_MINUTES = 8
 DEMO_ROLE_ID = f"{PREFIX}kasir"
 CASHIER_NAMES = (("demo.kasir1", "Kasir Demo Satu"), ("demo.kasir2", "Kasir Demo Dua"), ("demo.kasir3", "Kasir Demo Tiga"))
 
-# (nama kategori, [(nama menu, harga, bobot popularitas)]); nama kategori berakhiran "Demo" supaya tidak bentrok dengan kategori asli.
-CATALOG = (
-    ("Kopi Demo", (("Kopi Susu", 22000, 10), ("Americano", 18000, 5), ("Latte", 25000, 6), ("Cappuccino", 25000, 5))),
-    ("Non-Kopi Demo", (("Matcha Latte", 27000, 5), ("Cokelat Panas", 24000, 3), ("Teh Lemon", 16000, 4))),
-    ("Roti Demo", (("Croissant", 20000, 7), ("Cinnamon Roll", 24000, 6), ("Roti Bakar Cokelat", 18000, 4))),
-    ("Dessert Demo", (("Cheesecake", 32000, 4), ("Brownies", 22000, 5), ("Pudding Karamel", 20000, 3))),
-)
+# Menu, harga, bobot, jam sesi, modal awal, dan pengeluaran contoh dibaca dari demo_catalog.json milik klien.
+CATALOG = demo_catalog.load()
 PAYMENT_WEIGHTS = {"tunai": 45, "qris": 40, "debit": 10, "transfer": 5}
-SHIFT_WINDOWS = ((time(8, 0), time(15, 0)), (time(15, 0), time(22, 0)))
-EXPENSE_POOL = (
-    ("Susu segar", 60000, 180000),
-    ("Biji kopi", 150000, 400000),
-    ("Es batu", 20000, 50000),
-    ("Gas elpiji", 90000, 120000),
-    ("Kemasan gelas", 80000, 200000),
-    ("Gula dan sirup", 50000, 150000),
-    ("Tepung dan mentega", 100000, 300000),
-)
 DEMO_TABLES = (Expense, OrderItem, Order, CashSession, MenuItem, Category, User, Role)
 
 
@@ -131,14 +118,19 @@ def create_base(db: Session, plan: Plan) -> None:
         )
         db.add(cashier)
         plan.cashiers.append(cashier)
-    for category_name, items in CATALOG:
-        category = Category(id=new_id(), kind="menu", name=category_name, station=None, station_id=None)
+    for menu_category in CATALOG.menu_categories:
+        category = Category(id=new_id(), kind="menu", name=menu_category.name, station=None, station_id=None)
         db.add(category)
         db.flush()
-        for name, price, weight in items:
-            menu_item = MenuItem(id=new_id(), name=name, description=None, price=Decimal(price), category_id=category.id, image_path=None, is_available=True, has_temperature_variant=False, outlet_ids=[plan.outlet.id])
+        for menu in menu_category.menus:
+            menu_id = new_id()
+            image_path = None
+            if menu.image is not None:
+                image_path = f"{PHOTO_FOLDER}/{menu_id}/{uuid.uuid4()}{menu.image.suffix.lower()}"
+                files.save(db, image_path, menu.image.read_bytes(), menu.image.suffix.lower())
+            menu_item = MenuItem(id=menu_id, name=menu.name, description=None, price=menu.price, category_id=category.id, image_path=image_path, is_available=True, has_temperature_variant=False, outlet_ids=[plan.outlet.id])
             db.add(menu_item)
-            plan.menu.append((menu_item, weight))
+            plan.menu.append((menu_item, menu.weight))
     if not plan.methods:
         seed_payment_methods(db, plan.outlet.id)
         plan.methods = {method.code: method for method in db.scalars(select(PaymentMethod).where(PaymentMethod.outlet_id == plan.outlet.id))}
@@ -213,15 +205,15 @@ def build_order(rng: random.Random, plan: Plan, shift: CashSession, created_at: 
 
 
 def build_expense(rng: random.Random, plan: Plan, shift: CashSession, created_at: datetime) -> Expense:
-    name, low, high = rng.choice(EXPENSE_POOL)
+    item = rng.choice(CATALOG.expenses)
     return Expense(
         id=new_id(),
         outlet_id=plan.outlet.id,
         cash_session_id=shift.id,
         cashier_id=shift.cashier_id,
         routine_item_id=None,
-        item_name=name,
-        amount=Decimal(rng.randrange(low, high + 1, 5000)),
+        item_name=item.name,
+        amount=Decimal(rng.randrange(item.low, item.high + 1, 5000)),
         fund_source=FundSource.DRAWER_CASH if rng.random() < 0.7 else FundSource.OTHER_FUNDS,
         note=None,
         buyer=None,
@@ -239,7 +231,7 @@ def seed_day(db: Session, rng: random.Random, plan: Plan, day: date, day_index: 
     busy = 1.4 if day.weekday() >= 4 else 1.0
     growth = 0.7 + 0.3 * (day_index / DAYS)
     sessions = orders = expenses = 0
-    for start_clock, end_clock in SHIFT_WINDOWS:
+    for start_clock, end_clock in CATALOG.shifts:
         opened = at_wib(day, start_clock)
         window_end = min(at_wib(day, end_clock), current)
         if window_end - opened < timedelta(minutes=MIN_SHIFT_MINUTES):
@@ -255,7 +247,7 @@ def seed_day(db: Session, rng: random.Random, plan: Plan, day: date, day_index: 
             shift_code_color=None,
             opened_at=opened,
             closed_at=at_wib(day, end_clock) if ended else None,
-            opening_cash=OPENING_CASH,
+            opening_cash=CATALOG.opening_cash,
             system_revenue=Decimal("0"),
             cash_revenue=Decimal("0"),
             drawer_expenses=Decimal("0"),
@@ -264,7 +256,7 @@ def seed_day(db: Session, rng: random.Random, plan: Plan, day: date, day_index: 
         span = int((window_end - opened).total_seconds() // 60)
         moments = sorted(opened + timedelta(minutes=rng.randint(2, max(3, span - 2))) for _ in range(round(rng.randint(7, 13) * busy * growth)))
         built = [build_order(rng, plan, session, moment, f"DEMO-{day:%Y%m%d}-{sessions + 1}{index:03d}") for index, moment in enumerate(moments, start=1)]
-        spent = [build_expense(rng, plan, session, opened + timedelta(minutes=rng.randint(10, max(11, span - 5)))) for _ in range(rng.randint(0, 2))]
+        spent = [build_expense(rng, plan, session, opened + timedelta(minutes=rng.randint(10, max(11, span - 5)))) for _ in range(rng.randint(0, 2) if CATALOG.expenses else 0)]
 
         valid = [order for order, _ in built if order.voided_at is None]
         session.system_revenue = sum((order.total for order in valid), Decimal("0"))
@@ -272,7 +264,7 @@ def seed_day(db: Session, rng: random.Random, plan: Plan, day: date, day_index: 
         session.drawer_expenses = sum((expense.amount for expense in spent if expense.fund_source == FundSource.DRAWER_CASH), Decimal("0"))
         if ended:
             difference = Decimal(rng.choice((0, 0, 0, 0, -5000, 5000, -10000)))
-            session.actual_cash = OPENING_CASH + session.cash_revenue - session.drawer_expenses + difference
+            session.actual_cash = CATALOG.opening_cash + session.cash_revenue - session.drawer_expenses + difference
             session.difference = difference
 
         money_trail.act_as(db, plan.owner.id)
@@ -325,7 +317,7 @@ def main() -> int:
             return 1
 
         print(f"Cabang tujuan: {outlet.name}")
-        print(f"Rencana: {DAYS} hari terakhir, dua sesi kas per hari, sekitar 10 sampai 20 pesanan per sesi, {len(CASHIER_NAMES)} kasir demo, {sum(len(items) for _, items in CATALOG)} menu demo.")
+        print(f"Rencana: {DAYS} hari terakhir, {len(CATALOG.shifts)} sesi kas per hari, sekitar 10 sampai 20 pesanan per sesi, {len(CASHIER_NAMES)} kasir demo, {len(CATALOG.menus())} menu demo.")
         if "--tulis" not in args:
             print("Belum ada yang ditulis. Jalankan dengan --tulis untuk membuatnya.")
             return 0
