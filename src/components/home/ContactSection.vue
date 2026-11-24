@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ArrowRight, Clock, Mail, MapPin, Phone } from 'lucide-vue-next'
-import logo from '@/assets/images/logo-iwageprek.png'
+import logo from '@/assets/images/logo.jpeg'
 import { business } from '@/data/site'
 
 // ===== Data Kontak =====
