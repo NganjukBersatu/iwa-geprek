@@ -50,6 +50,8 @@ Versi dan ringkasan "Yang baru" milik klien ini; `copier update` tidak menimpany
 | PWA karyawan | `pwa/version.json` | `strings_release.xml` dan `pwa/src/lib/features/release/release-notes.ts` |
 | Web admin | `web/version.json` | `web/src/lib/text/admin-release.ts` dan `web/src/lib/features/release/release-notes.ts` |
 
+Logo, ikon, splash, foto layar masuk, dan logo struk juga milik klien; daftar lengkapnya di `_skip_if_exists` template.
+
 Setelah mengubah versi APK atau PWA, jalankan `npm run generate` di `web/` supaya halaman Unduhan ikut berubah.
 
 ## Keamanan
