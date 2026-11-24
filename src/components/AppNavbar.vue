@@ -3,7 +3,7 @@ import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Utensils } from 'lucide-vue-next'
 import AnchorLink from '@/components/AnchorLink.vue'
-import logo from '@/assets/images/logo-iwageprek.png'
+import logo from '@/assets/images/logo.jpeg'
 import { business, navLinks, type NavKey } from '@/data/site'
 
 const route = useRoute()
