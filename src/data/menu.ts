@@ -117,7 +117,7 @@ export const menuItems: MenuItem[] = [
   },
   {
     id: 'kepiting',
-    name: "Kepiting Lada Hitam",
+    name: "Kepiting Lada Hitam Spesial",
     description: "Kepiting dengan bumbu lada hitam.",
     price: 50000,
     category: 'Seafood',
