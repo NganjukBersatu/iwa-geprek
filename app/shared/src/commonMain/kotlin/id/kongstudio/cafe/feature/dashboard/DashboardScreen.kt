@@ -188,7 +188,7 @@ internal fun DashboardScreen(
                     IconPill(
                         icon = AppIcons.UsersGroup,
                         text = stringResource(Res.string.dashboard_task_outlet, outletCount.toString()),
-                        containerColor = colors.accent,
+                        containerColor = colors.accentSurface,
                     )
                 }
             }

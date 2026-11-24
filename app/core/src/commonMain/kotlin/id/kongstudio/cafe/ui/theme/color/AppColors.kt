@@ -8,7 +8,10 @@ class AppColors(
     val background: Color,
     val surface: Color,
     val surfaceAccent: Color,
+    /** Aksen pekat untuk penanda: garis tepi, indikator, seri grafik, dan bintang; tidak pernah menjadi latar teks. */
     val accent: Color,
+    /** Latar aksen muda untuk wadah yang memuat teks atau ikon [content], supaya kontrasnya terjaga berapa pun warna aksen merek. */
+    val accentSurface: Color,
     val outline: Color,
     val primary: Color,
     val onPrimary: Color,
@@ -44,6 +47,7 @@ val LightAppColors = AppColors(
     surface = Color(0xFFFFFFFF),
     surfaceAccent = BrandColors.tint,
     accent = BrandColors.accent,
+    accentSurface = BrandColors.accentSoft,
     outline = BrandColors.line,
     primary = BrandColors.primary,
     onPrimary = BrandColors.onPrimary,

@@ -55,7 +55,7 @@ fun FeatureCard(
     val dark = tone == CardTone.Primary || tone == CardTone.Deep
     val container = when (tone) {
         CardTone.Primary -> colors.primary
-        CardTone.Accent -> colors.accent
+        CardTone.Accent -> colors.accentSurface
         CardTone.Soft -> colors.surfaceAccent
         CardTone.Deep -> colors.content
     }

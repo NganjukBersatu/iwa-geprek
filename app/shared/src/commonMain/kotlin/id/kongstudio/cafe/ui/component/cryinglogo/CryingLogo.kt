@@ -119,7 +119,7 @@ fun CryingLogo(
                 .align(Alignment.BottomEnd)
                 .size(size * BadgeScale)
                 .clip(AppTheme.shapes.pill)
-                .background(colors.accent),
+                .background(colors.accentSurface),
             contentAlignment = Alignment.Center,
         ) {
             AppIcon(icon = badgeIcon, tint = colors.content, size = size * BadgeIconScale)

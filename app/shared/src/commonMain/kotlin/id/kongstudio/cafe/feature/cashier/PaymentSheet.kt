@@ -327,7 +327,7 @@ private fun ShowCustomerButton(onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .background(colors.selected, shape)
-            .border(AppTheme.sizes.borderThin, colors.accent, shape)
+            .border(AppTheme.sizes.borderThin, colors.primary, shape)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = spacing.md, vertical = spacing.sm),
         verticalAlignment = Alignment.CenterVertically,

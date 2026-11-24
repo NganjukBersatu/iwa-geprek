@@ -2,6 +2,8 @@ package id.kongstudio.cafe.feature.devicesetup
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -10,6 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import id.kongstudio.cafe.feature.permission.DevicePermissions
 import id.kongstudio.cafe.feature.permission.PermissionKind
 import id.kongstudio.cafe.feature.permission.PermissionStatus
@@ -104,12 +108,16 @@ internal fun DeviceCodeSheet(
             Spacer(Modifier.height(spacing.lg))
         }
 
+        val submit: () -> Unit = { onSubmit(code.trim()) }
         AppTextField(
             value = code,
             onValueChange = { code = it },
             label = stringResource(Res.string.device_setup_code_label),
             placeholder = stringResource(Res.string.device_setup_code_placeholder),
             isError = errorText != null,
+            // Kode diketik huruf besar dan tombol Selesai di papan ketik langsung mengirimnya, sama seperti tombol di bawah.
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Characters, autoCorrectEnabled = false, imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { if (enabled && code.isNotBlank()) submit() }),
         )
 
         if (errorText != null) {
@@ -118,7 +126,6 @@ internal fun DeviceCodeSheet(
         }
 
         Spacer(Modifier.height(spacing.lg))
-        val submit: () -> Unit = { onSubmit(code.trim()) }
         if (permissions != null) {
             SecondaryButton(text = actionLabel, onClick = submit, enabled = enabled && code.isNotBlank())
         } else {

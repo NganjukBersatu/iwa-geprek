@@ -138,11 +138,11 @@ private fun OrderControl(quantity: Int, stepper: Boolean, onAdd: () -> Unit, onD
     }
 }
 
-/** Pengganti foto untuk menu tanpa gambar: huruf awal nama di atas latar warna aksen, di bagian atas supaya pengatur jumlah di sudut bawah tidak menutupinya. */
+/** Pengganti foto untuk menu tanpa gambar: huruf awal nama di atas latar aksen muda, di bagian atas supaya pengatur jumlah di sudut bawah tidak menutupinya. */
 @Composable
 private fun InitialTile(name: String) {
     val colors = AppTheme.colors
-    Box(modifier = Modifier.fillMaxSize().background(colors.accent).padding(top = AppTheme.spacing.sm), contentAlignment = Alignment.TopCenter) {
+    Box(modifier = Modifier.fillMaxSize().background(colors.accentSurface).padding(top = AppTheme.spacing.sm), contentAlignment = Alignment.TopCenter) {
         BasicText(
             text = name.trim().take(1).uppercase(),
             style = AppTheme.typography.headline.copy(color = colors.content),

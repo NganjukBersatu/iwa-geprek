@@ -7,6 +7,7 @@ internal object BrandColors {
     val soft = Color(0xFFEEF6FC)
     val tint = Color(0xFFDCEEF8)
     val accent = Color(0xFFCC0B14)
+    val accentSoft = Color(0xFFFDECEE)
     val line = Color(0xFFC9D8F0)
     val primary = Color(0xFF015DF7)
     val onPrimary = Color(0xFFFDFDFD)

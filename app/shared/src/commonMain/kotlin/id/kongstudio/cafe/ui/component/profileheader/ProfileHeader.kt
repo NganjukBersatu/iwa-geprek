@@ -192,7 +192,7 @@ private fun Avatar(
                     .align(Alignment.BottomEnd)
                     .size(CameraBadgeSize)
                     .clip(AppTheme.shapes.pill)
-                    .background(colors.accent)
+                    .background(colors.accentSurface)
                     .border(CameraBadgeBorder, colors.surfaceAccent, AppTheme.shapes.pill)
                     .clickable(onClickLabel = changePhotoLabel, role = Role.Button, onClick = onChangePhoto),
                 contentAlignment = Alignment.Center,

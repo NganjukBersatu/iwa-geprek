@@ -41,7 +41,7 @@ fun SidebarItem(
         else -> colors.background
     }
     val containerColor = when {
-        selected && child -> colors.accent
+        selected && child -> colors.accentSurface
         selected -> colors.surfaceAccent
         else -> Color.Transparent
     }

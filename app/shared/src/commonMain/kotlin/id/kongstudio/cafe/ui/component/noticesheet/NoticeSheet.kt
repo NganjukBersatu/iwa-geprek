@@ -70,7 +70,7 @@ private fun NoticeIcon(icon: ImageVector) {
         modifier = Modifier
             .size(AppTheme.sizes.control)
             .clip(AppTheme.shapes.field)
-            .background(colors.accent),
+            .background(colors.accentSurface),
         contentAlignment = Alignment.Center,
     ) {
         AppIcon(icon = icon, tint = colors.content, size = AppTheme.sizes.iconSmall)

@@ -38,7 +38,7 @@ private fun toneColors(tone: TaskCardTone): ToneColors {
     return when (tone) {
         TaskCardTone.Light -> ToneColors(colors.selected, colors.primary, colors.contentMuted, colors.primary, BadgeTone.Positive)
         TaskCardTone.Green -> ToneColors(colors.primary, colors.onPrimary, colors.onPrimaryMuted, colors.onPrimarySubtle, BadgeTone.Strong)
-        TaskCardTone.Tan -> ToneColors(colors.accent, colors.content, colors.content, colors.primary, BadgeTone.Accent)
+        TaskCardTone.Tan -> ToneColors(colors.accentSurface, colors.content, colors.content, colors.primary, BadgeTone.Accent)
     }
 }
 

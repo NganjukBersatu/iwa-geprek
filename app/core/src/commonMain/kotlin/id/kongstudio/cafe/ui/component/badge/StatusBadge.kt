@@ -30,7 +30,7 @@ fun StatusBadge(
         BadgeTone.Warning -> colors.warningContainer to colors.warning
         BadgeTone.Danger -> colors.dangerContainer to colors.onDangerContainer
         BadgeTone.Neutral -> colors.divider to colors.contentMuted
-        BadgeTone.Accent -> colors.accent to colors.content
+        BadgeTone.Accent -> colors.accentSurface to colors.content
         // warna teks pekat, untuk penanda yang harus berbeda jelas dari Positive dan Accent tanpa keluar dari palet.
         BadgeTone.Strong -> colors.primary to colors.onPrimary
     }

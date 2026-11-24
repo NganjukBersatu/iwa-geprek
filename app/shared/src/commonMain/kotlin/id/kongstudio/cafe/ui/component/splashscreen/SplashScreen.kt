@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -41,6 +42,7 @@ import org.jetbrains.compose.resources.stringResource
 
 private const val LogoWidthFraction = 0.4f
 private const val LogoHeightFraction = 0.35f
+private const val LogoPlateFill = 0.68f
 private const val LogoRotateFromDegrees = -25f
 private const val StartDelayMillis = 250L
 private const val LogoMillis = 750
@@ -126,17 +128,25 @@ private fun SplashPage(logo: Float, name: Float, exit: Float) {
             verticalArrangement = Arrangement.spacedBy(spacing.lg),
             modifier = Modifier.fillMaxWidth().padding(horizontal = spacing.xl),
         ) {
-            Image(
-                painter = painterResource(Res.drawable.brand_logo),
-                contentDescription = null,
+            // Logo duduk di pelat permukaan, sama seperti ikon peluncur, supaya logo berwarna dekat warna utama tetap terbaca.
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(logoSize)
                     .graphicsLayer {
                         scaleX = logo
                         scaleY = logo
                         rotationZ = LogoRotateFromDegrees * (1f - logo)
-                    },
-            )
+                    }
+                    .clip(CircleShape)
+                    .background(colors.surface),
+            ) {
+                Image(
+                    painter = painterResource(Res.drawable.brand_logo),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(LogoPlateFill),
+                )
+            }
             BasicText(
                 text = stringResource(Res.string.splash_app_name),
                 style = AppTheme.typography.headline.copy(color = colors.onPrimary, textAlign = TextAlign.Center),

@@ -212,7 +212,7 @@ internal fun TaskScreen(
                             tint = colors.onPrimary,
                             badge = state.activeFilterCount.takeIf { it > 0 }?.toString(),
                             containerColor = colors.primary,
-                            badgeColor = colors.accent,
+                            badgeColor = colors.accentSurface,
                             onBadgeColor = colors.content,
                         )
                     }

@@ -25,7 +25,7 @@ internal fun ClockCelebrationOverlay(celebration: ClockCelebration, onDone: () -
         countTo = celebration.minutes,
         countLabel = { minutes -> if (isIn) DateTimeFormat.clockOf(minutes) else durationLabel(minutes) },
         actionLabel = stringResource(Res.string.attendance_done_action),
-        containerColor = if (isIn) colors.primary else colors.accent,
+        containerColor = if (isIn) colors.primary else colors.accentSurface,
         contentColor = if (isIn) colors.onPrimary else colors.content,
         onDone = onDone,
     )

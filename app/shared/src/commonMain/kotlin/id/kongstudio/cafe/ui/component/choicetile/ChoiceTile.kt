@@ -44,7 +44,7 @@ fun ChoiceTile(
     val shape = AppTheme.shapes.field
     val (border, background) = when {
         !available -> colors.danger to colors.dangerContainer
-        selected -> colors.accent to colors.selected
+        selected -> colors.primary to colors.selected
         else -> colors.outline to colors.surface
     }
     val iconTint = when {
