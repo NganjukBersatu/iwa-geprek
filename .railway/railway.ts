@@ -40,7 +40,7 @@ export default defineRailway(() => {
       // Aplikasi di bawah versi ini diminta memperbarui lewat halaman unduhan web admin; naikkan bersama versi rilis.
       MIN_VERSION_APK: "1.0.0",
       MIN_VERSION_PWA: "1.0.0",
-      DOWNLOAD_URL: "https://${{site.RAILWAY_PUBLIC_DOMAIN}}/#unduh",
+      DOWNLOAD_URL: "https://${{iwa-geprek.RAILWAY_PUBLIC_DOMAIN}}/#unduh",
     },
   });
 
@@ -63,8 +63,8 @@ export default defineRailway(() => {
     env: { ...NODE_SERVER, BACKEND_URL, BODY_SIZE_LIMIT: "100M" },
   });
 
-  // Situs publik Vue: Railpack mengenali Vite, membangun ke dist, lalu menyajikannya dengan Caddy sebagai SPA; tidak butuh perintah start.
-  const site = service("site", {
+  // Situs publik Vue, layanan iwa-geprek yang sudah ada di proyek Railway: Railpack mengenali Vite, membangun ke dist, lalu menyajikannya dengan Caddy sebagai SPA; tidak butuh perintah start.
+  const site = service("iwa-geprek", {
     source: github(REPOSITORY, { rootDirectory: "site" }),
     build: "npm run build",
     deploy: RESTART,
