@@ -10,7 +10,11 @@ The password is asked with hidden input and stored only as a bcrypt hash; it is 
 Run it against the database you mean: DATABASE_URL decides, and the host and name are shown before anything is written.
 It is safe to run again: when an active owner account already exists it stops without changing anything.
 """
+import base64
+import binascii
 import getpass
+import os
+import re
 import sys
 import unicodedata
 import uuid
@@ -85,7 +89,26 @@ def ask_password(username: str) -> str:
             return first
 
 
-def write_owner(db, branch_name: str | None, full_name: str, username: str, password: str) -> None:
+# Hash dari scripts/create_owner_remote.py: kata sandinya diketik dan diperiksa di komputer pemilik, jadi di sini hanya bentuknya yang diperiksa.
+HASH_VARIABLE = "OWNER_PASSWORD_HASH_B64"
+BCRYPT_HASH = re.compile(r"\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}")
+
+
+def hash_from_environment() -> str | None:
+    encoded = os.environ.get(HASH_VARIABLE, "").strip()
+    if not encoded:
+        return None
+    try:
+        decoded = base64.b64decode(encoded, validate=True).decode("ascii")
+    except (binascii.Error, UnicodeDecodeError) as error:
+        raise SystemExit(f"{HASH_VARIABLE} bukan base64 yang sah.") from error
+    if not BCRYPT_HASH.fullmatch(decoded):
+        raise SystemExit(f"{HASH_VARIABLE} bukan hash bcrypt.")
+    print("Kata sandi diterima dari komputer Anda dalam bentuk hash.")
+    return decoded
+
+
+def write_owner(db, branch_name: str | None, full_name: str, username: str, password: str, password_hash: str | None = None) -> None:
     """Menulis cabang pertama (bila diminta), peran pemilik (bila belum ada), dan akun pemiliknya; pemanggil yang melakukan commit."""
     role = db.get(Role, OWNER_ROLE_ID)
     if branch_name:
@@ -116,7 +139,7 @@ def write_owner(db, branch_name: str | None, full_name: str, username: str, pass
             id=str(uuid.uuid4()),
             name=full_name,
             username=username,
-            password_hash=hash_password(password),
+            password_hash=password_hash or hash_password(password),
             role_id=OWNER_ROLE_ID,
             outlet_id=None,
             is_active=True,
@@ -160,7 +183,8 @@ def main() -> int:
         if db.scalar(select(User.id).where(func.lower(User.username) == username.lower())) is not None:
             print(f"Username '{username}' sudah dipakai akun lain. Tidak ada yang diubah.")
             return 1
-        password = ask_password(username)
+        sent_hash = hash_from_environment()
+        password = "" if sent_hash else ask_password(username)
 
         print()
         print(f"Akan menulis ke database {target}:")
@@ -174,7 +198,7 @@ def main() -> int:
             return 1
 
         try:
-            write_owner(db, branch_name, full_name, username, password)
+            write_owner(db, branch_name, full_name, username, password, sent_hash)
             db.commit()
         except IntegrityError as error:
             db.rollback()
