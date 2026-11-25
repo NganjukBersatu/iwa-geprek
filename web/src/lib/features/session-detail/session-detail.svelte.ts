@@ -2,6 +2,7 @@ import { userMessage } from '$lib/api/user-message';
 import { api } from '$lib/api';
 import type { Expense, SessionHistoryRow, SessionOrder } from '$lib/api/types';
 import { Filters } from '$lib/components/filter/filters.svelte';
+import { page } from '$app/state';
 import { rememberedSearch, rememberSearch } from '$lib/components/filter/search';
 import { ListSort, sortKeys } from '$lib/components/table/list-sort.svelte';
 import { FUND_SOURCES } from '../finance/fund-sources';
@@ -27,7 +28,9 @@ export class SessionDetailState {
 	ordersError = $state('');
 	expensesError = $state('');
 	tab = $state('orders');
-	search = $state(rememberedSearch());
+	// Layar tempat daftar ini dibuat; pencariannya diingat untuk layar itu saja.
+	readonly #searchPath = page.url.pathname;
+	search = $state(rememberedSearch(this.#searchPath));
 	readonly orderSort = new ListSort('sesi-transaksi', sortKeys(sessionOrderColumns), () => void this.refresh());
 	readonly expenseSort = new ListSort('sesi-pengeluaran', sortKeys(sessionExpenseColumns), () => void this.refresh());
 
@@ -69,7 +72,7 @@ export class SessionDetailState {
 
 	setSearch(query: string): void {
 		this.search = query;
-		rememberSearch(query);
+		rememberSearch(this.#searchPath, query);
 	}
 
 	/** Reloads without dimming or clearing: what the screen shows stays until the fresh data arrives. */

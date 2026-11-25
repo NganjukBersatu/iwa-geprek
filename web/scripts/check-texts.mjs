@@ -10,7 +10,7 @@ const ROOT = fileURLToPath(new URL('../src', import.meta.url));
 // and the layers that hold no sentences for a person: the API client, the chart colours, the export, and the number formats.
 const EXEMPT = ['lib/text/', 'lib/nav/', 'lib/date/', 'lib/api/', 'lib/charts/', 'lib/export/', 'lib/format/', 'hooks.server.ts'];
 
-const TEXT_ATTRIBUTES = new Set(['label', 'title', 'placeholder', 'aria-label', 'alt', 'description', 'caption', 'hint', 'text', 'empty', 'subtitle', 'message', 'tooltip', 'heading', 'loadingText', 'value']);
+const TEXT_ATTRIBUTES = new Set(['label', 'title', 'placeholder', 'aria-label', 'alt', 'description', 'caption', 'hint', 'text', 'empty', 'subtitle', 'message', 'tooltip', 'heading', 'loadingText', 'value', 'emptyText']);
 // Pada elemen HTML bawaan (option, input, button) value adalah kunci formulir, bukan teks yang dibaca pengguna.
 const NATIVE_KEY_ATTRIBUTES = new Set(['value']);
 const LETTER = /\p{L}/u;

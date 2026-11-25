@@ -6,15 +6,21 @@ import { whenChanged } from '$lib/stores/when-changed.svelte';
 /**
  * Begitu satu cabang dipilih, filter Rentang langsung diisi periode cabang yang sedang berjalan,
  * atau rentang dari `pick` bila halaman itu butuh periode lain (misalnya periode yang harus ditutup).
+ * Saat halaman baru dibuka, Rentang yang sudah ada (dari tautan atau pilihan terakhir akun) dipertahankan; pengisian hanya untuk Rentang yang masih kosong.
  * Daftar periode per bulan sengaja tidak ditambahkan ke pilihan; rentang lain dipilih sendiri lewat pilihan rentang biasa.
  */
 export function syncBranchPeriod(getFilters: () => Filters | undefined, pick?: (branchId: string) => Promise<DateRange | null>): void {
+	let opening = true;
 	whenChanged(
 		() => getFilters()?.get('cabang') ?? null,
 		(branchId) => {
 			const filters = getFilters();
-			const rentang = filters?.defs.find((def) => def.key === 'rentang');
-			if (!filters || !branchId || rentang?.kind !== 'date') return;
+			if (!filters) return;
+			const keepChosen = opening;
+			opening = false;
+			const rentang = filters.defs.find((def) => def.key === 'rentang');
+			if (!branchId || rentang?.kind !== 'date') return;
+			if (keepChosen && filters.chosen('rentang')) return;
 			void Promise.all([api.outlets.periods(branchId), choose(pick, branchId)]).then(([periods, chosen]) => {
 				// Jawaban untuk cabang yang sudah tidak dipilih lagi dibuang supaya tidak menimpa pilihan terbaru.
 				if (filters.get('cabang') !== branchId) return;

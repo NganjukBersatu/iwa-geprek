@@ -82,6 +82,11 @@ export class Filters {
 		return 'preset' in value ? presetRange(value.preset) : value;
 	}
 
+	/** Whether this filter holds a value that applies here, picked by the account or brought by a link; an empty filter only has its page default. */
+	chosen(key: string): boolean {
+		return this.picked(this.def(key)) !== null;
+	}
+
 	/** Whether a picked option's label is still unknown: a remembered choice is in place before its options load, and its raw id is never shown. */
 	labelPending(key: string): boolean {
 		const def = this.def(key);
@@ -125,8 +130,12 @@ export class Filters {
 		if (typeof value === 'string') return null;
 		if ('preset' in value) return (def.presets ?? DATE_PRESETS).some((preset) => preset.value === value.preset) ? value : null;
 		const last = lastPickable(def.reach);
-		if (last !== null && value.to > last) return null;
-		if (def.maxDays && parseDate(value.from).add({ days: def.maxDays }).compare(parseDate(value.to)) <= 0) return null;
+		// Rentang yang melewati hari terakhir yang boleh dipangkas ke hari itu, sehingga tanggal dari tautan tetap terlihat di chip, tidak hilang ke rentang bawaan.
+		if (last !== null && value.to > last) return { from: value.from > last ? last : value.from, to: last };
+		// Rentang yang lebih panjang dari batas halaman dipangkas di ujungnya, dengan alasan yang sama seperti hari terakhir di atas.
+		if (def.maxDays && parseDate(value.from).add({ days: def.maxDays }).compare(parseDate(value.to)) <= 0) {
+			return { from: value.from, to: parseDate(value.from).add({ days: def.maxDays - 1 }).toString() };
+		}
 		return value;
 	}
 }

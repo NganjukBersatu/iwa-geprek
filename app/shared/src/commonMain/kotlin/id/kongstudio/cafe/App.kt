@@ -37,6 +37,7 @@ import id.kongstudio.cafe.feature.permission.PermissionPurpose
 import id.kongstudio.cafe.feature.printer.ThermalPrinters
 import id.kongstudio.cafe.feature.update.AppUpdate
 import id.kongstudio.cafe.feature.update.UpdateGate
+import id.kongstudio.cafe.feature.demo.DemoMode
 import id.kongstudio.cafe.offline.OfflineStore
 import id.kongstudio.cafe.ui.component.splashscreen.SplashScreen
 import id.kongstudio.cafe.ui.theme.AppTheme
@@ -62,7 +63,8 @@ fun App(
         val current = session
         val installed = appVersionName()
         val update = remember { AppUpdate(installed) }
-        val client = remember { createApiClient(installed, update::refused) }
+        val demo = remember { DemoMode() }
+        val client = remember { createApiClient(installed, update::refused, demo::observe) }
         val pairing = remember { KtorDevicePairingRepository(client, ApiConfig.V2_BASE_URL) }
         val revoker = remember { SessionRevoker(client, ApiConfig.V2_BASE_URL, sessionStore) }
         val revoke: (String) -> Unit = { token -> scope.launch { revoker.revoke(token) } }
@@ -127,6 +129,7 @@ fun App(
                             scope.launch { device = deviceModeStore.load() }
                         },
                         onSessionOpen = update::sessionOpen,
+                        demo = demo,
                     )
                 }
             } else if (current == null) {

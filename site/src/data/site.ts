@@ -29,6 +29,7 @@ export const business = {
   footerText:
     'Ikan segar pilihan dengan sambal geprek khas yang menggugah selera. Nikmati hidangan lezat bersama keluarga.',
   copyright: '© 2026 IWAGEPREK. Seluruh hak cipta dilindungi.',
+  developerCredit: 'Dikembangkan oleh Nganjuk Young Preneur',
 }
 
 export const socialLinks = [

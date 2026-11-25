@@ -3,6 +3,7 @@ import { userMessage } from '$lib/api/user-message';
 import type { BulkResult } from '$lib/api/types';
 import type { DateRange } from '$lib/date/range';
 import { tick } from 'svelte';
+import { page } from '$app/state';
 import { rememberedSearch, rememberSearch } from '$lib/components/filter/search';
 import { Selection } from '$lib/components/table/selection.svelte';
 import { listText } from '$lib/text/lists';
@@ -44,11 +45,13 @@ export abstract class ManageState<T extends { id: string }> {
 	}
 
 	/** Free-text search of the list, kept apart from `filters` so it never shows as a filter. */
-	search = $state(rememberedSearch());
+	// Layar tempat daftar ini dibuat; pencariannya diingat untuk layar itu saja.
+	readonly #searchPath = page.url.pathname;
+	search = $state(rememberedSearch(this.#searchPath));
 
 	setSearch(query: string): void {
 		this.search = query;
-		rememberSearch(query);
+		rememberSearch(this.#searchPath, query);
 		this.page = 1;
 	}
 

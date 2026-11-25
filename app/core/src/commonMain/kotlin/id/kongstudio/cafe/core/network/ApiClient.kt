@@ -14,9 +14,10 @@ private const val ClientHeader = "X-App-Client"
 private const val VersionHeader = "X-App-Version"
 private const val ClientName = "apk"
 private const val UpgradeRequired = 426
+private const val DemoHeader = "X-Demo-Mode"
 
-/** Setiap permintaan menyebut nama dan [appVersion] aplikasi; jawaban 426 (versi sudah tidak didukung) diteruskan ke [onUpgradeRequired]. */
-fun createApiClient(appVersion: String, onUpgradeRequired: () -> Unit): HttpClient = HttpClient {
+/** Setiap permintaan menyebut nama dan [appVersion] aplikasi; jawaban 426 diteruskan ke [onUpgradeRequired], dan ada tidaknya header mode demo ke [onDemoMode]. */
+fun createApiClient(appVersion: String, onUpgradeRequired: () -> Unit, onDemoMode: (Boolean) -> Unit): HttpClient = HttpClient {
     install(ContentNegotiation) {
         json(Json { ignoreUnknownKeys = true })
     }
@@ -30,6 +31,9 @@ fun createApiClient(appVersion: String, onUpgradeRequired: () -> Unit): HttpClie
         header(VersionHeader, appVersion)
     }
     HttpResponseValidator {
-        validateResponse { response -> if (response.status.value == UpgradeRequired) onUpgradeRequired() }
+        validateResponse { response ->
+            if (response.status.value == UpgradeRequired) onUpgradeRequired()
+            onDemoMode(response.headers[DemoHeader] == "1")
+        }
     }
 }

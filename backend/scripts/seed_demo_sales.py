@@ -35,7 +35,11 @@ from app.core.visitors import seed_defaults as seed_visitor_lists  # noqa: E402
 from app.models.cash_session import CashSession, CashSessionStatus  # noqa: E402
 from app.models.category import Category  # noqa: E402
 from app.models.expense import Expense, FundSource  # noqa: E402
+from app.models.extra import Extra, MenuExtra  # noqa: E402
 from app.models.menu_item import MenuItem  # noqa: E402
+from app.models.order_item_option import OrderItemOption  # noqa: E402
+from app.models.promo import Promo  # noqa: E402
+from app.models.variant import MenuVariantGroup, VariantChoice, VariantGroup  # noqa: E402
 from app.models.order import Order  # noqa: E402
 from app.models.order_item import OrderItem  # noqa: E402
 from app.models.outlet import Outlet  # noqa: E402
@@ -64,8 +68,15 @@ CASHIER_NAMES = (("demo.kasir1", "Kasir Demo Satu"), ("demo.kasir2", "Kasir Demo
 
 # Menu, harga, bobot, jam sesi, modal awal, dan pengeluaran contoh dibaca dari demo_catalog.json milik klien.
 CATALOG = demo_catalog.load()
+# Jenis opsi baris pesanan, sama dengan app.core.orders.options.
+OPTION_VARIANT = "varian"
+OPTION_EXTRA = "ekstra"
+PROMO_KIND_TOTAL = "total"
+PROMO_ACTIVATION_AUTO = "otomatis"
+PROMO_RUNS_DAYS_AHEAD = 60
+PERCENT = Decimal(100)
 PAYMENT_WEIGHTS = {"tunai": 45, "qris": 40, "debit": 10, "transfer": 5}
-DEMO_TABLES = (Expense, OrderItem, Order, CashSession, MenuItem, Category, User, Role)
+DEMO_TABLES = (Expense, OrderItemOption, OrderItem, Order, CashSession, MenuVariantGroup, MenuExtra, VariantChoice, VariantGroup, Extra, Promo, MenuItem, Category, User, Role)
 
 
 def new_id() -> str:
@@ -99,6 +110,89 @@ class Plan:
         self.methods = {method.code: method for method in db.scalars(select(PaymentMethod).where(PaymentMethod.outlet_id == outlet.id))}
         self.categories = list(db.scalars(select(VisitorCategory).where(VisitorCategory.outlet_id == outlet.id, VisitorCategory.is_active)))
         self.genders = list(db.scalars(select(VisitorGender).where(VisitorGender.outlet_id == outlet.id, VisitorGender.is_active)))
+        # Per menu: kelompok varian beserta pilihan dan bobotnya, serta ekstra beserta peluangnya; dari katalog klien.
+        self.variants: dict[str, list[tuple[VariantGroup, list[tuple[VariantChoice, int]]]]] = {}
+        self.extras: dict[str, list[tuple[Extra, Decimal]]] = {}
+        self.promos: list[tuple[Promo, demo_catalog.Promotion]] = []
+
+
+def create_options(db: Session, plan: Plan, first_day: date) -> None:
+    """Kelompok varian, ekstra, tautannya ke menu, dan promo dari katalog klien; semuanya berawalan demo- supaya bisa dihapus lagi."""
+    groups: dict[str, tuple[VariantGroup, list[tuple[VariantChoice, int]]]] = {}
+    for position, spec in enumerate(CATALOG.variant_groups):
+        group = VariantGroup(id=new_id(), name=spec.name, required=spec.required, position=position, is_active=True, outlet_id=None)
+        db.add(group)
+        # Model ini tidak punya relasi ORM, jadi kelompok disimpan dulu supaya kunci asing pilihannya terpenuhi.
+        db.flush()
+        choices = []
+        for order, choice_spec in enumerate(spec.choices):
+            choice = VariantChoice(id=new_id(), group_id=group.id, name=choice_spec.name, color=None, position=order, is_active=True)
+            db.add(choice)
+            choices.append((choice, choice_spec.weight))
+        groups[spec.name] = (group, choices)
+    extras: dict[str, tuple[Extra, Decimal]] = {}
+    for position, spec in enumerate(CATALOG.extras):
+        extra = Extra(id=new_id(), name=spec.name, price=spec.price, outlet_ids=[plan.outlet.id], is_active=True, category_id=None, position=position)
+        db.add(extra)
+        extras[spec.name] = (extra, spec.rate)
+    db.flush()
+    by_name = {item.name: item for item, _ in plan.menu}
+    for menu in CATALOG.menus():
+        menu_item = by_name[menu.name]
+        for name in menu.variant_groups:
+            db.add(MenuVariantGroup(id=new_id(), menu_item_id=menu_item.id, group_id=groups[name][0].id))
+            plan.variants.setdefault(menu_item.id, []).append(groups[name])
+        for name in menu.extras:
+            db.add(MenuExtra(id=new_id(), menu_item_id=menu_item.id, extra_id=extras[name][0].id))
+            plan.extras.setdefault(menu_item.id, []).append(extras[name])
+    stamp = now()
+    for spec in CATALOG.promotions:
+        promo = Promo(
+            id=new_id(),
+            name=spec.name,
+            description=spec.description,
+            kind=PROMO_KIND_TOTAL,
+            discount_type=spec.discount_type,
+            value=spec.value,
+            applies_to=None,
+            product_ids=None,
+            minimum_spend=spec.minimum_spend,
+            activation=PROMO_ACTIVATION_AUTO,
+            starts_on=first_day,
+            ends_on=stamp.astimezone(WIB).date() + timedelta(days=PROMO_RUNS_DAYS_AHEAD),
+            is_active=True,
+            outlet_id=None,
+            created_at=stamp,
+            updated_at=stamp,
+        )
+        db.add(promo)
+        plan.promos.append((promo, spec))
+    db.flush()
+
+
+def options_for(rng: random.Random, plan: Plan, menu_item: MenuItem, item_id: str, qty: int) -> list[OrderItemOption]:
+    """Satu pilihan per kelompok varian (wajib selalu, opsional setengahnya) dan ekstra sesuai peluangnya."""
+    chosen: list[OrderItemOption] = []
+    for group, choices in plan.variants.get(menu_item.id, []):
+        if not group.required and rng.random() < 0.5:
+            continue
+        choice = rng.choices([choice for choice, _ in choices], weights=[weight for _, weight in choices])[0]
+        chosen.append(OrderItemOption(id=new_id(), order_item_id=item_id, kind=OPTION_VARIANT, ref_id=choice.id, group_name=group.name, name=choice.name, color=None, price=Decimal(0), qty=1, unit_cost=None))
+    for extra, rate in plan.extras.get(menu_item.id, []):
+        if Decimal(str(rng.random())) < rate:
+            chosen.append(OrderItemOption(id=new_id(), order_item_id=item_id, kind=OPTION_EXTRA, ref_id=extra.id, group_name=None, name=extra.name, color=None, price=extra.price, qty=qty, unit_cost=None))
+    return chosen
+
+
+def promo_for(rng: random.Random, plan: Plan, subtotal: Decimal) -> tuple[Promo | None, Decimal]:
+    for promo, spec in plan.promos:
+        if spec.minimum_spend is not None and subtotal < spec.minimum_spend:
+            continue
+        if Decimal(str(rng.random())) >= spec.rate:
+            continue
+        discount = (subtotal * spec.value / PERCENT).quantize(Decimal("1")) if spec.discount_type == "persen" else min(spec.value, subtotal)
+        return promo, discount
+    return None, Decimal(0)
 
 
 def create_base(db: Session, plan: Plan) -> None:
@@ -147,26 +241,33 @@ def create_base(db: Session, plan: Plan) -> None:
     db.flush()
 
 
-def build_order(rng: random.Random, plan: Plan, shift: CashSession, created_at: datetime, number: str) -> tuple[Order, list[OrderItem]]:
+def build_order(rng: random.Random, plan: Plan, shift: CashSession, created_at: datetime, number: str) -> tuple[Order, list[OrderItem], list[OrderItemOption]]:
     order_id = new_id()
     items: list[OrderItem] = []
+    options: list[OrderItemOption] = []
     for menu_item, _ in rng.choices(plan.menu, weights=[weight for _, weight in plan.menu], k=rng.randint(1, 4)):
         qty = rng.randint(1, 3)
+        item_id = new_id()
+        chosen = options_for(rng, plan, menu_item, item_id, qty)
+        extras_total = sum((option.price * option.qty for option in chosen), Decimal("0"))
+        options.extend(chosen)
         items.append(
             OrderItem(
-                id=new_id(),
+                id=item_id,
                 order_id=order_id,
                 menu_item_id=menu_item.id,
                 menu_item_name=menu_item.name,
                 unit_price=menu_item.price,
                 unit_cost=(menu_item.price * COST_RATIO).quantize(Decimal("1")),
                 qty=qty,
-                subtotal=menu_item.price * qty,
+                subtotal=menu_item.price * qty + extras_total,
                 note=None,
             )
         )
     subtotal = sum((item.subtotal for item in items), Decimal("0"))
-    discount = DISCOUNT_AMOUNT if rng.random() < DISCOUNT_CHANCE and subtotal > DISCOUNT_AMOUNT else Decimal("0")
+    promo, discount = promo_for(rng, plan, subtotal) if plan.promos else (None, Decimal("0"))
+    if promo is None and not plan.promos and rng.random() < DISCOUNT_CHANCE and subtotal > DISCOUNT_AMOUNT:
+        discount = DISCOUNT_AMOUNT
     total = subtotal - discount
 
     codes = [code for code in PAYMENT_WEIGHTS if code in plan.methods] or list(plan.methods)
@@ -197,7 +298,7 @@ def build_order(rng: random.Random, plan: Plan, shift: CashSession, created_at: 
         payment_method_label=method.label,
         payment_method_id=method.id,
         cash_received=received,
-        promo_id=None,
+        promo_id=promo.id if promo is not None else None,
         discount=discount,
         total=total,
         created_at=created_at,
@@ -207,7 +308,7 @@ def build_order(rng: random.Random, plan: Plan, shift: CashSession, created_at: 
         serving_status="selesai",
         served_at=created_at + timedelta(minutes=SERVED_AFTER_MINUTES),
     )
-    return order, items
+    return order, items, options
 
 
 def build_expense(rng: random.Random, plan: Plan, shift: CashSession, created_at: datetime) -> Expense:
@@ -264,7 +365,7 @@ def seed_day(db: Session, rng: random.Random, plan: Plan, day: date, day_index: 
         built = [build_order(rng, plan, session, moment, f"DEMO-{day:%Y%m%d}-{sessions + 1}{index:03d}") for index, moment in enumerate(moments, start=1)]
         spent = [build_expense(rng, plan, session, opened + timedelta(minutes=rng.randint(10, max(11, span - 5)))) for _ in range(rng.randint(0, 2) if CATALOG.expenses else 0)]
 
-        valid = [order for order, _ in built if order.voided_at is None]
+        valid = [order for order, _, _ in built if order.voided_at is None]
         session.system_revenue = sum((order.total for order in valid), Decimal("0"))
         session.cash_revenue = sum((order.total for order in valid if order.payment_method == "tunai"), Decimal("0"))
         session.drawer_expenses = sum((expense.amount for expense in spent if expense.fund_source == FundSource.DRAWER_CASH), Decimal("0"))
@@ -276,9 +377,11 @@ def seed_day(db: Session, rng: random.Random, plan: Plan, day: date, day_index: 
         money_trail.act_as(db, plan.owner.id)
         db.add(session)
         db.flush()
-        db.add_all(order for order, _ in built)
+        db.add_all(order for order, _, _ in built)
         db.flush()
-        db.add_all(item for _, items in built for item in items)
+        db.add_all(item for _, items, _ in built for item in items)
+        db.flush()
+        db.add_all(option for _, _, options in built for option in options)
         db.add_all(spent)
         db.flush()
         sessions += 1
@@ -339,6 +442,7 @@ def main() -> int:
         try:
             money_trail.act_as(db, owner.id)
             create_base(db, plan)
+            create_options(db, plan, first_day)
             for index in range(DAYS):
                 for position, count in enumerate(seed_day(db, rng, plan, first_day + timedelta(days=index), index, current)):
                     totals[position] += count

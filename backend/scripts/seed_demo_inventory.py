@@ -35,7 +35,9 @@ from app.models.ingredient import (  # noqa: E402
     IngredientCard,
     RecipeIngredient,
 )
+from app.models.extra import Extra, ExtraRecipe  # noqa: E402
 from app.models.menu_item import MenuItem  # noqa: E402
+from app.models.variant import VariantChoice, VariantChoiceRecipe, VariantGroup  # noqa: E402
 from app.models.outlet import Outlet  # noqa: E402
 from app.models.user import User  # noqa: E402
 from scripts import demo_catalog  # noqa: E402
@@ -60,6 +62,8 @@ def demo_count(db: Session) -> int:
 
 def delete_demo(db: Session) -> None:
     db.execute(delete(RecipeIngredient).where(RecipeIngredient.id.like(f"{PREFIX}%")))
+    db.execute(delete(VariantChoiceRecipe).where(VariantChoiceRecipe.id.like(f"{PREFIX}%")))
+    db.execute(delete(ExtraRecipe).where(ExtraRecipe.id.like(f"{PREFIX}%")))
     db.execute(delete(IngredientCard).where(IngredientCard.id.like(f"{PREFIX}%")))
     db.execute(delete(Ingredient).where(Ingredient.id.like(f"{PREFIX}%")))
     db.execute(delete(CatalogIngredient).where(CatalogIngredient.id.like(f"{PREFIX}%")))
@@ -121,6 +125,36 @@ def write_recipes(db: Session, outlet: Outlet, ingredients: dict[str, Ingredient
     return lines
 
 
+def write_option_recipes(db: Session, outlet: Outlet, ingredients: dict[str, Ingredient]) -> int:
+    """Resep pilihan varian dan ekstra contoh yang dibuat seed_demo_sales, supaya stok juga berkurang mengikuti pilihannya."""
+    lines = 0
+    choices = {
+        (group_name, choice.name): choice
+        for choice, group_name in db.execute(
+            select(VariantChoice, VariantGroup.name).join(VariantGroup, VariantGroup.id == VariantChoice.group_id).where(VariantChoice.id.like(f"{PREFIX}%"))
+        ).all()
+    }
+    for group in CATALOG.variant_groups:
+        for spec in group.choices:
+            choice = choices.get((group.name, spec.name))
+            if choice is None:
+                continue
+            for name, qty in spec.recipe:
+                ingredient = ingredients[name]
+                db.add(VariantChoiceRecipe(id=new_id(), choice_id=choice.id, outlet_id=outlet.id, ingredient_id=ingredient.id, catalog_id=ingredient.catalog_id, qty=qty))
+                lines += 1
+    extras = {extra.name: extra for extra in db.scalars(select(Extra).where(Extra.id.like(f"{PREFIX}%")))}
+    for spec in CATALOG.extras:
+        extra = extras.get(spec.name)
+        if extra is None:
+            continue
+        for name, qty in spec.recipe:
+            ingredient = ingredients[name]
+            db.add(ExtraRecipe(id=new_id(), extra_id=extra.id, outlet_id=outlet.id, ingredient_id=ingredient.id, catalog_id=ingredient.catalog_id, qty=qty))
+            lines += 1
+    return lines
+
+
 def write_all(db: Session, outlet: Outlet, owner: User) -> tuple[int, int, int]:
     stamp = now()
     units = ensure_units(db)
@@ -175,7 +209,7 @@ def write_all(db: Session, outlet: Outlet, owner: User) -> tuple[int, int, int]:
             )
             movements += 1
     db.flush()
-    recipe_lines = write_recipes(db, outlet, written)
+    recipe_lines = write_recipes(db, outlet, written) + write_option_recipes(db, outlet, written)
     db.commit()
     return ingredients, movements, recipe_lines
 

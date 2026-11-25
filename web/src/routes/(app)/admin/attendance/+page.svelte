@@ -10,16 +10,18 @@
 	import { live } from '$lib/live/live';
 	import { enter } from '$lib/motion/transitions';
 	import { pageText } from '$lib/text/pages';
+	import { page } from '$app/state';
+	import { LEAVE_TAB } from '$lib/nav/pages';
 
 	const attendance = new AttendanceListState();
 	const leave = new LeaveRequestsState();
 	leave.onchanged = () => void attendance.refresh();
 
-	let tab = $state('absensi');
+	let tab = $state(page.url.searchParams.get('tab') === LEAVE_TAB ? LEAVE_TAB : 'absensi');
 
 	const tabs = $derived([
 		{ key: 'absensi', label: pageText.attendance, count: attendance.loaded ? attendance.total : undefined },
-		{ key: 'izin', label: pageText.leaveRequests, count: leave.loaded ? leave.pending : undefined }
+		{ key: LEAVE_TAB, label: pageText.leaveRequests, count: leave.loaded ? leave.pending : undefined }
 	]);
 
 	whenChanged(() => leave.query, () => void leave.queryChanged());
@@ -28,7 +30,7 @@
 
 <ManageShell
 	manage={attendance}
-	filters={tab === 'izin' ? leave.filters : attendance.filters}
+	filters={tab === LEAVE_TAB ? leave.filters : attendance.filters}
 	title={pageText.attendanceListTitle}
 	description={pageText.attendanceListDescription}
 	loadingText={pageText.loadingAttendance}
@@ -37,7 +39,7 @@
 		<Tabs {tabs} label={pageText.pageContents} bind:value={tab} class="-mt-2" />
 		{#key tab}
 			<div in:enter>
-				{#if tab === 'izin'}
+				{#if tab === LEAVE_TAB}
 					<LeaveRequestsPanel {leave} />
 				{:else}
 					<AttendanceView {attendance} />

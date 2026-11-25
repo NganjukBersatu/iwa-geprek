@@ -11,10 +11,13 @@
 	let {
 		items,
 		onLogout,
+		banner,
 		children
 	}: {
 		items: readonly BottomBarItem[];
 		onLogout: () => void;
+		/** Pita keadaan sistem di atas isi halaman, misalnya mode demo; disusun oleh halaman. */
+		banner?: Snippet;
 		children: Snippet;
 	} = $props();
 
@@ -41,11 +44,17 @@
 				{onLogout}
 			/>
 		</aside>
-		<main class="relative h-full min-w-0 flex-1">{@render children()}</main>
+		<main class="flex h-full min-w-0 flex-1 flex-col">
+			{@render banner?.()}
+			<div class="relative min-h-0 flex-1">{@render children()}</div>
+		</main>
 	</div>
 {:else}
 	<div class="flex h-dvh w-full flex-col bg-background">
-		<main class="relative min-h-0 w-full flex-1" use:dynamicStyle={{ 'padding-top': 'var(--safe-top)' }}>{@render children()}</main>
+		<main class="flex min-h-0 w-full flex-1 flex-col" use:dynamicStyle={{ 'padding-top': 'var(--safe-top)' }}>
+			{@render banner?.()}
+			<div class="relative min-h-0 flex-1">{@render children()}</div>
+		</main>
 		{#if !viewport.keyboardOpen}<BottomBar {items} />{/if}
 	</div>
 {/if}

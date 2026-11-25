@@ -1,5 +1,7 @@
 package id.kongstudio.cafe.feature.operational
 
+import id.kongstudio.cafe.feature.demo.DemoBanner
+import id.kongstudio.cafe.feature.demo.DemoMode
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,6 +50,7 @@ internal fun OperationalRoute(
     onReleased: () -> Unit,
     onUserExpired: () -> Unit,
     onSessionOpen: (Boolean) -> Unit,
+    demo: DemoMode,
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
@@ -130,6 +133,7 @@ internal fun OperationalRoute(
         OperationalRelink(onRelink = unlink, modifier = modifier)
     } else if (state.connected) {
         Column(modifier = modifier) {
+            DemoBanner(demo)
             SessionExpiryBanner(userToken.orEmpty())
             OperationalDashboard(
                 deviceName = credential.name,

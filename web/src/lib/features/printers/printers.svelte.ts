@@ -35,7 +35,7 @@ export function shownOn(route: StationRoute): string {
 /** Halaman ini tidak berbaris; isinya keadaan stasiun satu cabang di `routes`. */
 type NoRow = { id: string };
 
-/** Tab Stasiun & Printer di halaman detail cabang: semuanya dihitung dari tablet dan printer yang dilaporkan, tanpa setelan. */
+/** Tab Stasiun dan Printer di halaman detail cabang: semuanya dihitung dari tablet dan printer yang dilaporkan, tanpa setelan. */
 export class PrintersState extends ManageState<NoRow> {
 	override readonly tables = ['device_printers', 'device_stations', 'device_station_prints', 'devices', 'stations', 'category_stations', 'category_branch_stations', 'categories'];
 

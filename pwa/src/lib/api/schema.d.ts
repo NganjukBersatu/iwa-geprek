@@ -92,6 +92,51 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v2/demo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Status */
+        get: operations["read_status_v2_demo_get"];
+        put?: never;
+        /**
+         * Start
+         * @description Starts preparing in the background and answers at once; the page asks GET /v2/demo until the stage is ready.
+         */
+        post: operations["start_v2_demo_post"];
+        /**
+         * Leave
+         * @description Removes every demo row at once; every app reads the real data again on its next request.
+         */
+        delete: operations["leave_v2_demo_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v2/demo/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Enter
+         * @description Signs the browser in as the demo owner; the database already answers from the demo schema once the switch is on.
+         */
+        post: operations["enter_v2_demo_session_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v2/attendance/state": {
         parameters: {
             query?: never;
@@ -10066,6 +10111,22 @@ export interface components {
             /** Note */
             note?: string | null;
         };
+        /** DemoStatusOut */
+        DemoStatusOut: {
+            /** Available */
+            available: boolean;
+            /** Active */
+            active: boolean;
+            /**
+             * Stage
+             * @enum {string}
+             */
+            stage: "idle" | "preparing" | "loading" | "linking" | "ready" | "failed";
+            /** Percent */
+            percent: number;
+            /** Error Code */
+            error_code: string | null;
+        };
         /** DepositDayShareOut */
         DepositDayShareOut: {
             /**
@@ -17721,6 +17782,84 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AuthUserOut"];
+                };
+            };
+        };
+    };
+    read_status_v2_demo_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DemoStatusOut"];
+                };
+            };
+        };
+    };
+    start_v2_demo_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DemoStatusOut"];
+                };
+            };
+        };
+    };
+    leave_v2_demo_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    enter_v2_demo_session_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BrowserSessionOut"];
                 };
             };
         };

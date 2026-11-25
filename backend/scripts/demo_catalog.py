@@ -19,6 +19,8 @@ IMAGE_SUFFIXES = (".jpg", ".jpeg", ".png", ".webp")
 STATIONS = ("bar", "kitchen")
 # Bawaan jumlah pesanan per sesi kas bila katalog tidak menyebutnya.
 DEFAULT_ORDERS_PER_SESSION = (7, 13)
+PROMO_DISCOUNT_TYPES = ("persen", "nominal")
+PAYMENT_CODES = ("qris", "debit", "transfer")
 MOVE_KINDS = (INGREDIENT_IN, INGREDIENT_OUT, INGREDIENT_WASTE, INGREDIENT_RND, INGREDIENT_ADJUSTMENT)
 
 
@@ -33,6 +35,57 @@ class Menu:
     weight: int
     image: Path | None
     recipe: tuple[tuple[str, Decimal], ...]
+    # Nama kelompok varian dan ekstra (dari bagian variant_groups dan extras) yang ditawarkan menu ini.
+    variant_groups: tuple[str, ...] = ()
+    extras: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class Choice:
+    name: str
+    weight: int
+    recipe: tuple[tuple[str, Decimal], ...]
+
+
+@dataclass(frozen=True)
+class VariantGroup:
+    name: str
+    required: bool
+    choices: tuple[Choice, ...]
+
+
+@dataclass(frozen=True)
+class Extra:
+    name: str
+    price: Decimal
+    # Peluang ekstra ini ikut pada satu baris menu yang menawarkannya, 0 sampai 1.
+    rate: Decimal
+    recipe: tuple[tuple[str, Decimal], ...]
+
+
+@dataclass(frozen=True)
+class Promotion:
+    name: str
+    description: str
+    discount_type: str
+    value: Decimal
+    minimum_spend: Decimal | None
+    # Peluang promo ini dipakai pada pesanan yang memenuhi syaratnya, 0 sampai 1.
+    rate: Decimal
+
+
+@dataclass(frozen=True)
+class Branch:
+    address: str
+    phone: str
+    latitude: float | None
+    longitude: float | None
+    attendance_radius_meters: int | None
+    receipt_greeting: str
+    complaint_number: str
+    social: tuple[tuple[str, str], ...]
+    wifi: tuple[tuple[str, str], ...]
+    wifi_password: str
 
 
 @dataclass(frozen=True)
@@ -83,6 +136,12 @@ class Catalog:
     ingredient_categories: tuple[str, ...]
     ingredients: tuple[Ingredient, ...]
     expenses: tuple[ExpenseItem, ...]
+    variant_groups: tuple[VariantGroup, ...] = ()
+    extras: tuple[Extra, ...] = ()
+    promotions: tuple[Promotion, ...] = ()
+    branch: Branch | None = None
+    # Catatan metode bayar per kode; metode yang dicatat juga diberi gambar contoh, sehingga siap dipakai kasir.
+    payment_notes: tuple[tuple[str, str], ...] = ()
 
     def menus(self) -> tuple[Menu, ...]:
         return tuple(menu for category in self.menu_categories for menu in category.menus)
@@ -159,13 +218,10 @@ def _ingredient(raw: dict, where: str, categories: set[str]) -> Ingredient:
     )
 
 
-def _menu(raw: dict, where: str, ingredients: set[str], indirect: set[str]) -> Menu:
-    weight = raw.get("weight")
-    if not isinstance(weight, int) or isinstance(weight, bool) or weight < 1:
-        raise CatalogError(f"{where}.weight: harus angka bulat minimal 1")
+def _recipe(raw: object, where: str, ingredients: set[str], indirect: set[str], *, required: bool) -> tuple[tuple[str, Decimal], ...]:
     recipe = []
-    for index, line in enumerate(raw.get("recipe", [])):
-        spot = f"{where}.recipe[{index}]"
+    for index, line in enumerate(raw if isinstance(raw, list) else []):
+        spot = f"{where}[{index}]"
         if not isinstance(line, list) or len(line) != 2:
             raise CatalogError(f"{spot}: bentuknya [nama bahan, takaran]")
         name = _text(line[0], spot)
@@ -177,12 +233,108 @@ def _menu(raw: dict, where: str, ingredients: set[str], indirect: set[str]) -> M
         if qty == 0:
             raise CatalogError(f"{spot}: takaran harus lebih dari nol")
         recipe.append((name, qty))
-    if not recipe:
-        raise CatalogError(f"{where}.recipe: menu tanpa resep tidak bisa dijual kasir")
+    if required and not recipe:
+        raise CatalogError(f"{where}: menu tanpa resep tidak bisa dijual kasir")
+    return tuple(recipe)
+
+
+def _weight(value: object, where: str) -> int:
+    if not isinstance(value, int) or isinstance(value, bool) or value < 1:
+        raise CatalogError(f"{where}: harus angka bulat minimal 1")
+    return value
+
+
+def _share(value: object, where: str) -> Decimal:
+    share = _number(value, where)
+    if share > 1:
+        raise CatalogError(f"{where}: peluang antara 0 dan 1")
+    return share
+
+
+def _menu(raw: dict, where: str, ingredients: set[str], indirect: set[str]) -> Menu:
+    weight = _weight(raw.get("weight"), f"{where}.weight")
+    recipe = _recipe(raw.get("recipe", []), f"{where}.recipe", ingredients, indirect, required=True)
     price = _number(raw.get("price"), f"{where}.price")
     if price == 0:
         raise CatalogError(f"{where}.price: harus lebih dari nol")
-    return Menu(_text(raw.get("name"), f"{where}.name"), price, weight, _image(raw.get("image"), f"{where}.image"), tuple(recipe))
+    groups = tuple(_text(name, f"{where}.variant_groups") for name in raw.get("variant_groups", []))
+    extras = tuple(_text(name, f"{where}.extras") for name in raw.get("extras", []))
+    return Menu(_text(raw.get("name"), f"{where}.name"), price, weight, _image(raw.get("image"), f"{where}.image"), recipe, groups, extras)
+
+
+def _variant_group(raw: dict, where: str, ingredients: set[str], indirect: set[str]) -> VariantGroup:
+    choices = tuple(
+        Choice(
+            _text(choice.get("name"), f"{where}.choices[{index}].name"),
+            _weight(choice.get("weight", 1), f"{where}.choices[{index}].weight"),
+            _recipe(choice.get("recipe", []), f"{where}.choices[{index}].recipe", ingredients, indirect, required=False),
+        )
+        for index, choice in enumerate(raw.get("choices", []))
+    )
+    if not choices:
+        raise CatalogError(f"{where}.choices: minimal satu pilihan")
+    _unique([choice.name for choice in choices], f"{where}.choices")
+    return VariantGroup(_text(raw.get("name"), f"{where}.name"), raw.get("required") is True, choices)
+
+
+def _extra(raw: dict, where: str, ingredients: set[str], indirect: set[str]) -> Extra:
+    return Extra(
+        _text(raw.get("name"), f"{where}.name"),
+        _number(raw.get("price"), f"{where}.price"),
+        _share(raw.get("rate", 0), f"{where}.rate"),
+        _recipe(raw.get("recipe", []), f"{where}.recipe", ingredients, indirect, required=False),
+    )
+
+
+def _promotion(raw: dict, where: str) -> Promotion:
+    discount_type = raw.get("discount_type")
+    if discount_type not in PROMO_DISCOUNT_TYPES:
+        raise CatalogError(f"{where}.discount_type: pilih salah satu dari {', '.join(PROMO_DISCOUNT_TYPES)}")
+    value = _number(raw.get("value"), f"{where}.value")
+    if value == 0 or (discount_type == "persen" and value > 100):
+        raise CatalogError(f"{where}.value: lebih dari nol, dan paling banyak 100 untuk persen")
+    minimum = raw.get("minimum_spend")
+    return Promotion(
+        _text(raw.get("name"), f"{where}.name"),
+        _text(raw.get("description"), f"{where}.description"),
+        str(discount_type),
+        value,
+        None if minimum is None else _number(minimum, f"{where}.minimum_spend"),
+        _share(raw.get("rate", 0), f"{where}.rate"),
+    )
+
+
+def _pairs(raw: object, where: str, first: str, second: str) -> tuple[tuple[str, str], ...]:
+    items = raw if isinstance(raw, list) else []
+    return tuple((_text(item.get(first), f"{where}[{index}].{first}"), _text(item.get(second), f"{where}[{index}].{second}")) for index, item in enumerate(items))
+
+
+def _branch(raw: object) -> Branch | None:
+    if raw is None:
+        return None
+    if not isinstance(raw, dict):
+        raise CatalogError("branch: harus berupa objek")
+    latitude, longitude = raw.get("latitude"), raw.get("longitude")
+    if (latitude is None) != (longitude is None):
+        raise CatalogError("branch: latitude dan longitude diisi berdua atau dikosongkan berdua")
+    located = latitude is not None
+    if located and not (isinstance(latitude, (int, float)) and isinstance(longitude, (int, float)) and -90 <= latitude <= 90 and -180 <= longitude <= 180):
+        raise CatalogError("branch: latitude atau longitude di luar batas")
+    radius = raw.get("attendance_radius_meters")
+    if radius is not None and (not isinstance(radius, int) or isinstance(radius, bool) or radius < 1):
+        raise CatalogError("branch.attendance_radius_meters: angka bulat minimal 1")
+    return Branch(
+        address=str(raw.get("address", "")).strip(),
+        phone=str(raw.get("phone", "")).strip(),
+        latitude=float(latitude) if located else None,
+        longitude=float(longitude) if located else None,
+        attendance_radius_meters=radius,
+        receipt_greeting=str(raw.get("receipt_greeting", "")).strip(),
+        complaint_number=str(raw.get("complaint_number", "")).strip(),
+        social=_pairs(raw.get("social"), "branch.social", "icon", "handle"),
+        wifi=_pairs(raw.get("wifi"), "branch.wifi", "area", "ssid"),
+        wifi_password=str(raw.get("wifi_password", "")).strip(),
+    )
 
 
 def _station(value: object, where: str) -> str:
@@ -246,7 +398,27 @@ def load(path: Path = CATALOG_PATH) -> Catalog:
     )
     if any(item.low > item.high for item in expenses):
         raise CatalogError("expenses: min tidak boleh melebihi max")
+    variant_groups = tuple(_variant_group(item, f"variant_groups[{index}]", names, indirect) for index, item in enumerate(raw.get("variant_groups", [])))
+    _unique([group.name for group in variant_groups], "variant_groups")
+    extras = tuple(_extra(item, f"extras[{index}]", names, indirect) for index, item in enumerate(raw.get("extras", [])))
+    _unique([extra.name for extra in extras], "extras")
+    group_names = {group.name for group in variant_groups}
+    extra_names = {extra.name for extra in extras}
+    for category in menu_categories:
+        for menu in category.menus:
+            unknown = [name for name in menu.variant_groups if name not in group_names] + [name for name in menu.extras if name not in extra_names]
+            if unknown:
+                raise CatalogError(f"{menu.name}: varian atau ekstra {', '.join(unknown)} tidak ada di variant_groups atau extras")
+    promotions = tuple(_promotion(item, f"promotions[{index}]") for index, item in enumerate(raw.get("promotions", [])))
+    notes = raw.get("payment_notes", {})
+    if not isinstance(notes, dict) or any(code not in PAYMENT_CODES for code in notes):
+        raise CatalogError(f"payment_notes: objek dengan kunci {', '.join(PAYMENT_CODES)}")
     return Catalog(
+        variant_groups=variant_groups,
+        extras=extras,
+        promotions=promotions,
+        branch=_branch(raw.get("branch")),
+        payment_notes=tuple((code, _text(note, f"payment_notes.{code}")) for code, note in notes.items()),
         branch_name=_text(raw.get("branch_name"), "branch_name"),
         opening_cash=_number(raw.get("opening_cash"), "opening_cash"),
         shifts=shifts,

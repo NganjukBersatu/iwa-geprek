@@ -1,7 +1,7 @@
 import { browser } from '$app/environment';
 import { getUser } from '$lib/auth/session';
 
-/** The one memory of what an account last picked in lists: filters, search, page, rows per page and order, kept per account in this browser. */
+/** The one memory of what an account last picked in lists, kept per account in this browser: filters and rows per page are shared by every list, while the search and the page are kept per screen. */
 const STORAGE_KEY = 'web.memory';
 
 export type MemoryValue = string | number | { preset: string } | { from: string; to: string };
@@ -10,7 +10,7 @@ type Listener = (value: MemoryValue | null) => void;
 
 export const memoryKey = {
 	filter: (id: string): string => `filter.${id}`,
-	search: 'cari',
+	search: (path: string): string => `cari.${path}`,
 	pageSize: 'baris',
 	page: (path: string, list: string): string => `halaman.${path}.${list}`,
 	sort: (list: string): string => `urut.${list}`,

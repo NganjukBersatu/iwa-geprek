@@ -11,6 +11,7 @@ import { ingredientMovementsApi } from './ingredientMovements';
 import { ingredientsApi } from './ingredients';
 import { issuesApi } from './issues';
 import { authApi } from './auth';
+import { demoApi } from './demo';
 import { batchesApi } from './batches';
 import { branchesApi } from './branches';
 import { employeesApi } from './employees';
@@ -59,6 +60,7 @@ export const api = {
 	printers: printersApi,
 	stockItems: stockItemsApi,
 	auth: authApi,
+	demo: demoApi,
 	batches: batchesApi,
 	branches: branchesApi,
 	employees: employeesApi,

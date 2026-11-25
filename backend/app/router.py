@@ -2,6 +2,7 @@
 from fastapi import APIRouter
 
 from app.auth import routes as auth
+from app.demo import routes as demo
 from app.clients import routes as clients
 from app.employee.activity import routes as activity
 from app.employee.attendance import routes as attendance
@@ -27,6 +28,7 @@ from app.operational.router import router as operational
 # A read that has not been decided stays uncached, and a write never reads from the cache.
 router = APIRouter(prefix="/v2")
 router.include_router(auth.router)
+router.include_router(demo.router)
 router.include_router(attendance.router)
 router.include_router(self_schedule.router)
 router.include_router(attendance_summary.router)

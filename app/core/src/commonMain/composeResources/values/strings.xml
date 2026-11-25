@@ -906,4 +906,5 @@
     <string name="openbill_setting_off_hint">Tombol Simpan Bill dan menu Bill Terbuka disembunyikan di tablet ini. Bill yang masih ada tetap bisa dibuka lewat menu ini setelah dinyalakan lagi.</string>
     <string name="openbill_setting_title">Simpan Bill di kasir</string>
     <string name="user_sign_out_close_session_first">Tutup sesi di Sesi Kasir Saya sebelum keluar.</string>
+    <string name="demo_mode_banner">Mode demo</string>
 </resources>

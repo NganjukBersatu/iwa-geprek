@@ -9,7 +9,7 @@ from alembic import context
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from app.core.settings import settings
-from app.core.database import DEMO_SCHEMA, Base
+from app.core.database import Base
 import importlib
 import pkgutil
 
@@ -23,15 +23,16 @@ for _name in MODELS_OUTSIDE_PACKAGE:
     importlib.import_module(_name)
 
 VERSION_TABLE = "alembic_version_v2"
-# Dalam mode demo posisi migrasi disimpan di skema demo, supaya tidak pernah terbaca dari tabel versi data asli.
-VERSION_TABLE_SCHEMA = DEMO_SCHEMA if settings.demo_mode else None
+# Migrasi skema demo menyimpan posisinya di skema itu sendiri (diberikan pemanggil), supaya tidak pernah terbaca dari tabel versi data asli.
+VERSION_TABLE_SCHEMA = context.config.attributes.get("version_table_schema")
 
 config = context.config
 
 # DATABASE_URL is the single source of truth; the url in alembic.ini would go stale.
 config.set_main_option("sqlalchemy.url", settings.database_url)
 
-if config.config_file_name is not None:
+# Pemanggil di dalam server (penyiapan mode demo) mempertahankan logging aplikasinya; fileConfig akan membungkam semua logger yang sudah ada.
+if config.config_file_name is not None and not config.attributes.get("keep_logging"):
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata

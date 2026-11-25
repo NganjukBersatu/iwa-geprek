@@ -1,6 +1,7 @@
 """S3-compatible bucket access for stored files."""
 from functools import lru_cache
 
+from app.core.demo import state as demo_state
 from app.core.settings import settings
 
 CONNECT_TIMEOUT_SECONDS = 5
@@ -12,7 +13,7 @@ NOT_FOUND_CODES = ("404", "NoSuchKey", "NotFound")
 
 def is_active() -> bool:
     # Berkas demo disimpan di tabel skema demo, sehingga ikut hilang bersih saat skema itu dihapus dan tidak pernah masuk bucket asli.
-    return settings.bucket_active and not settings.demo_mode
+    return settings.bucket_active and not demo_state.is_active()
 
 
 @lru_cache(maxsize=1)

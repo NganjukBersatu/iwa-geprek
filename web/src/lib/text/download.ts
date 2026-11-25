@@ -38,7 +38,7 @@ export const downloadText = {
 	copyAddress: 'Salin alamat',
 	copied: 'Tersalin',
 	webAddressSoon: 'Alamat versi web segera tersedia',
-	footer: `© 2026 ${brand.name} · Khusus karyawan`,
+	footer: `© 2026 ${brand.name} · Khusus karyawan · Dikembangkan oleh ${brand.developer}`,
 	phoneDownloading: 'Mengunduh',
 	phoneUnknownApps: 'Instal aplikasi tidak dikenal',
 	phoneBrowser: 'Browser',

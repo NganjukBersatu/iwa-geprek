@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import { dynamicStyle } from '$lib/motion/actions';
 	import logo from '$lib/assets/logo/brand-logo.png';
 	import storefront from '$lib/assets/photo/storefront.webp';
@@ -18,7 +19,8 @@
 
 	const text = authText.login;
 
-	let { login }: { login: LoginState } = $props();
+	/** below: isi tambahan di bawah tombol Masuk yang disusun halaman, misalnya pintu masuk mode demo. */
+	let { login, below }: { login: LoginState; below?: Snippet } = $props();
 
 	let innerWidth = $state(0);
 	let innerHeight = $state(0);
@@ -83,6 +85,8 @@
 			</div>
 
 			<Button type="submit" variant="primary" label={login.submitting ? text.submitting : text.submit} disabled={login.submitting} class="h-12! w-full justify-center rounded-full text-base!" />
+
+			{@render below?.()}
 
 			<p class="border-t border-brand-line pt-4 text-sm font-normal text-brand-muted laptop:whitespace-nowrap">{text.forgotPassword}</p>
 		</form>

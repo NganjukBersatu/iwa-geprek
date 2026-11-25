@@ -7,12 +7,15 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.concurrency import run_in_threadpool
 from sqlalchemy.exc import DBAPIError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.core import cache, live, logs, messages, query_budget, stock_balances
 from app.core.cache_store import RedisStore
-from app.core.database import Base, demo_schema_problem
+from app.core.database import Base
+from app.core.demo import switch as demo_switch
+from app.core.demo.marker import DemoMarker
 from app.core.client_version import ClientVersionGate
 from app.core import brand
 from app.core.orders import open_bills_visibility
@@ -22,7 +25,7 @@ from app.core.stored_files import router as stored_files_router
 from app.core.request_id import RequestId
 from app.core.request_timing import RequestTiming
 from app.core.security_headers import SecurityHeaders
-from app.core.settings import SERVICE_ROOT, settings
+from app.core.settings import settings
 from app.csp_reports.routes import router as csp_reports_router
 from app.health import router as health_router
 from app.router import router as v2_router
@@ -34,31 +37,18 @@ if not settings.public_url:
     raise RuntimeError("PUBLIC_URL belum diatur: isi dengan alamat publik layanan v2 ini, misalnya https://api.contoh.com")
 
 
-def _refuse_stale_demo() -> None:
-    """Proses demo menolak jalan bila skema demo belum ada atau tertinggal migrasi, karena tabel yang hilang di demo akan terbaca dari data asli."""
-    from alembic.config import Config
-    from alembic.script import ScriptDirectory
-
-    heads = ScriptDirectory.from_config(Config(str(SERVICE_ROOT / "alembic.ini"))).get_heads()
-    problem = demo_schema_problem(heads[0]) if len(heads) == 1 else "Migrasi punya lebih dari satu ujung; gabungkan dulu."
-    if problem is not None:
-        raise RuntimeError(f"DEMO_MODE aktif tetapi data demo tidak siap. {problem}")
-
-
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    if settings.demo_mode:
-        _refuse_stale_demo()
+    # Demo yang terputus di tengah penyiapan atau tertinggal migrasi dihapus sebelum melayani permintaan, karena tabelnya bisa tidak lengkap.
+    await run_in_threadpool(demo_switch.clear_stale)
     loop = asyncio.get_running_loop()
     live.hub.bind(loop)
     live.close_on_shutdown_signal(loop)
     open_bills_visibility.watch_open_bills()
     live.watch_commits()
     stock_balances.watch_card_writes()
-    # Proses demo tidak memakai Redis, supaya cache dan sinyal langsungnya tidak pernah bercampur dengan proses asli.
-    redis_url = "" if settings.demo_mode else settings.redis_url
-    live.start_relay(redis_url)
-    cache.start(RedisStore(redis_url) if redis_url else None, Base.metadata.tables, settings.railway_deployment_id)
+    live.start_relay(settings.redis_url)
+    cache.start(RedisStore(settings.redis_url) if settings.redis_url else None, Base.metadata.tables, settings.railway_deployment_id)
     yield
 
 
@@ -94,7 +84,8 @@ app.add_middleware(RequestTiming)
 # Di dalam CORS, supaya penolakan versi lama tetap membawa izin CORS untuk PWA.
 app.add_middleware(ClientVersionGate)
 app.add_middleware(SecurityHeaders)
+app.add_middleware(DemoMarker)
 app.add_middleware(RequestId)
 
 if settings.cors_origins:
-    app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_methods=["*"], allow_headers=["*"], expose_headers=["Content-Disposition"])
+    app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_methods=["*"], allow_headers=["*"], expose_headers=["Content-Disposition", "X-Demo-Mode"])

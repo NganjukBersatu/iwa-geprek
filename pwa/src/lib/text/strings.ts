@@ -792,6 +792,7 @@ export const strings = {
 	openbill_setting_off_hint: "Tombol Simpan Bill dan menu Bill Terbuka disembunyikan di tablet ini. Bill yang masih ada tetap bisa dibuka lewat menu ini setelah dinyalakan lagi.",
 	openbill_setting_title: "Simpan Bill di kasir",
 	user_sign_out_close_session_first: "Tutup sesi di Sesi Kasir Saya sebelum keluar.",
+	demo_mode_banner: "Mode demo",
 	about_place: "IWAGEPREK",
 	about_purpose: "Aplikasi ini dikembangkan khusus untuk IWAGEPREK oleh Nganjuk Young Preneur sebagai sarana pendukung kegiatan operasional harian. Di tablet operasional, aplikasi ini melayani kasir, papan stasiun, sesi kas, dan pengeluaran; di perangkat karyawan, aplikasi ini mencatat absensi, jadwal kerja, lembur, dan penugasan. Semuanya disusun berdasarkan kebutuhan kerja yang sebenarnya di lapangan, agar setiap pekerjaan tercatat rapi, mudah dipantau, dan dapat dipertanggungjawabkan.",
 	about_thanks: "Terima kasih kepada seluruh karyawan IWAGEPREK yang telah menggunakan aplikasi ini dan memberikan masukan selama proses pengembangan. Setiap masukan menjadi bahan pertimbangan untuk penyempurnaan berikutnya, sehingga aplikasi ini dapat terus disesuaikan dengan kebutuhan kerja IWAGEPREK di masa mendatang.",

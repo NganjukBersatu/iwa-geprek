@@ -36,8 +36,10 @@ class Settings(BaseSettings):
     min_version_pwa: str = ""
     # Where an outdated app is offered the current version, as a button the person taps; empty means no button is offered.
     download_url: str = ""
-    # Mode demo: proses ini hanya membaca dan menulis skema "demo" di database yang sama, tidak pernah tabel asli; isi lewat scripts/demo_data.py.
-    demo_mode: bool = False
+    # Tombol "Coba mode demo" di layar masuk web admin; isi demonya dari backend/demo/snapshot.json.gz. Isi false untuk menyembunyikannya.
+    demo_enabled: bool = True
+    # Hanya diisi scripts/demo_snapshot.py untuk proses seed-nya sendiri: semua koneksi proses itu menulis ke skema ini, bukan ke data asli.
+    seed_schema: str = Field("", pattern=r"^([a-z][a-z0-9_]{0,30})?$")
 
     # The web server that runs beside this one in the same container; every page request is handed to it.
     web_upstream: str = "http://127.0.0.1:3000"

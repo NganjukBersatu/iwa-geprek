@@ -11,6 +11,7 @@
 	import WhatsNewDialog from '$lib/features/release/components/WhatsNewDialog.svelte';
 	import ScreenGate from '$lib/components/gate/ScreenGate.svelte';
 	import ConnectionBar from '$lib/components/motion/ConnectionBar.svelte';
+	import DemoBar from '$lib/features/demo/components/DemoBar.svelte';
 	import NavProgress from '$lib/components/motion/NavProgress.svelte';
 	import MobileHeader from '$lib/components/header/MobileHeader.svelte';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
@@ -149,6 +150,7 @@
 		<MobileHeader brand={webBrand} bind:menuOpen={mobileOpen} />
 
 		<main class="flex min-w-0 flex-1 flex-col overflow-hidden">
+			<DemoBar />
 			<ConnectionBar />
 			<!-- relative keeps absolutely placed content, such as sr-only labels, inside this scroll area instead of stretching the document. -->
 			<div use:scrollShadow={'[data-mobile-header]'} class="relative flex-1 overflow-y-auto p-3 hp-besar:p-4 tablet:p-6 laptop:p-8" data-page-scroll>

@@ -11,6 +11,8 @@ import { createDashboardFilters } from './filters';
 import { SessionsState } from './sessions.svelte';
 import { ListSort, sortKeys } from '$lib/components/table/list-sort.svelte';
 import { cashierColumns } from './columns';
+import { pageText } from '$lib/text/pages';
+import { format } from '$lib/text/format';
 
 export type PanelKey = 'income' | 'expense' | 'profit' | null;
 /** Kartu yang membuka panel; dua kartu bisa membuka panel yang sama, tetapi hanya yang ditekan yang tampil terbuka. */
@@ -112,7 +114,15 @@ export class DashboardState {
 	}
 
 	/** Pengunjung adalah jumlah struk yang tidak dibatalkan; pelanggan yang tercatat adalah rincian di dalamnya. */
-	get visitors(): number {
+	/** Keterangan kartu menu: jumlah transaksi, ditambah yang dibatalkan hanya bila ada. */
+	get salesCaption(): string {
+		const sales = this.summary?.sales;
+		if (!sales) return '';
+		const count = String(sales.transaction_count);
+		return sales.voided_count > 0 ? format(pageText.transactionsWithVoided, { count, voided: String(sales.voided_count) }) : format(pageText.transactionsCount, { count });
+	}
+
+		get visitors(): number {
 		return this.summary?.sales.transaction_count ?? this.totalOrderCount;
 	}
 

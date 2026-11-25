@@ -26,6 +26,7 @@
 	import OverviewChart from '$lib/features/finance/components/OverviewChart.svelte';
 	import OverviewTable from '$lib/features/finance/components/OverviewTable.svelte';
 	import QcPanel from '$lib/features/finance/components/QcPanel.svelte';
+	import { QC_ANCHOR } from '$lib/nav/pages';
 	import TransactionList from '$lib/features/finance/components/TransactionList.svelte';
 	import { termText } from '$lib/text/terms';
 	import { actionText } from '$lib/text/actions';
@@ -142,7 +143,9 @@
 				{pageText.financeFootnote}
 			</p>
 
-			<QcPanel {overview} onselectdate={showTransactions} />
+			<div id={QC_ANCHOR}>
+				<QcPanel {overview} onselectdate={showTransactions} />
+			</div>
 
 			<div id="daftar-transaksi">
 				<TransactionList {overview} />

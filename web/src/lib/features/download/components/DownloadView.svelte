@@ -10,7 +10,8 @@
 	import logo from '$lib/assets/logo/brand-logo.png';
 	import PlatformCard from './PlatformCard.svelte';
 	import GuideView from './GuideView.svelte';
-	import WelcomeIntro from './WelcomeIntro.svelte';
+	// Sapaan pembuka dimatikan untuk klien ini atas permintaan Safjar; buka komentar ini dan baris WelcomeIntro di bawah untuk menyalakannya lagi.
+	// import WelcomeIntro from './WelcomeIntro.svelte';
 
 	const LOGO = logo;
 	const TABS = [
@@ -51,7 +52,7 @@
 
 <svelte:head><title>{t.pageTitle}</title></svelte:head>
 
-<WelcomeIntro bind:playing logo={LOGO} />
+<!-- <WelcomeIntro bind:playing logo={LOGO} /> -->
 
 <div class="min-h-dvh bg-brand-page text-slate-800" class:welcome-pending={playing}>
 	<header class="mx-auto flex max-w-6xl items-center gap-3 px-4 py-5 tablet:px-6">
@@ -69,7 +70,7 @@
 
 	<main class="mx-auto flex max-w-6xl flex-col px-4 tablet:px-6">
 		<section class="flex flex-col py-6 tablet:py-10">
-			<h1 class="welcome-rise text-4xl font-extrabold leading-tight tracking-tight text-brand-deep tablet:text-6xl">{t.heading} <span class="download-mark">{t.brand}</span></h1>
+			<h1 class="welcome-rise text-4xl font-extrabold leading-tight tracking-tight text-brand-deep tablet:text-6xl">{t.heading} <span class="headline-mark">{t.brand}</span></h1>
 			<p class="welcome-rise mt-4 text-slate-600 tablet:text-lg">{t.audience}</p>
 			<div bind:this={tabBar} class="welcome-rise mt-6 scroll-mt-4">
 				<Tabs tabs={TABS} bind:value={() => tab, pick} label={t.pickDevice} variant="pill" />
@@ -221,9 +222,3 @@
 	</span>
 	<p class="phone-text">{t.phoneOnHome}</p>
 {/snippet}
-
-<style>
-	.download-mark {
-		background: linear-gradient(transparent 62%, var(--color-brand-accent) 62%, var(--color-brand-accent) 90%, transparent 90%);
-	}
-</style>

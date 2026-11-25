@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import type { Snippet } from 'svelte';
 	import AppShell from '$lib/components/layout/AppShell.svelte';
+	import DemoBar from '$lib/features/demo/DemoBar.svelte';
 	import type { BottomBarItem } from '$lib/components/layout/types';
 	import { current } from '$lib/auth/current.svelte';
 	import NetworkGate from '$lib/features/network/NetworkGate.svelte';
@@ -46,6 +47,7 @@
 	<PermissionGateRoute bind:clear={permissionClear}>
 		<NetworkGate>
 			<AppShell {items} onLogout={signOut}>
+				{#snippet banner()}<DemoBar />{/snippet}
 				{@render children()}
 			</AppShell>
 		</NetworkGate>

@@ -15,25 +15,37 @@
    "22:00"
   ]
  ],
- "menu_categories": [
+ "branch": {
+  "address": "Kertosono, Nganjuk, Jawa Timur",
+  "phone": "0857 3688 2888",
+  "latitude": -7.5888233,
+  "longitude": 112.095582,
+  "attendance_radius_meters": 100,
+  "receipt_greeting": "Terima kasih sudah makan di IWAGEPREK. Sampai jumpa lagi.",
+  "complaint_number": "0857 3688 2888",
+  "social": [
+   {
+    "icon": "ti-brand-instagram",
+    "handle": "@iwageprek"
+   }
+  ],
+  "wifi": [],
+  "wifi_password": ""
+ },
+ "payment_notes": {
+  "qris": "Pindai kode QRIS, lalu tunjukkan bukti bayar kepada kasir.",
+  "debit": "Kartu debit dan kredit semua bank melalui mesin EDC di kasir.",
+  "transfer": "Transfer ke rekening atas nama IWAGEPREK, lalu tunjukkan bukti transfer kepada kasir."
+ },
+ "variant_groups": [
   {
-   "name": "Ikan Geprek",
-   "station": "kitchen",
-   "menus": [
+   "name": "Sambal",
+   "required": true,
+   "choices": [
     {
-     "name": "Kulit Patin Crispy Sambal Geprek",
-     "price": 9000,
-     "weight": 14,
-     "image": "site/src/assets/images/kulit-patin.png",
+     "name": "Sambal Geprek",
+     "weight": 65,
      "recipe": [
-      [
-       "Kulit Patin",
-       "60"
-      ],
-      [
-       "Tepung Bumbu Crispy",
-       "20"
-      ],
       [
        "Cabai Rawit Merah",
        "15"
@@ -49,19 +61,9 @@
      ]
     },
     {
-     "name": "Kulit Patin Crispy Sambal Ijo",
-     "price": 9000,
-     "weight": 7,
-     "image": "site/src/assets/images/kulit-patin.png",
+     "name": "Sambal Ijo",
+     "weight": 35,
      "recipe": [
-      [
-       "Kulit Patin",
-       "60"
-      ],
-      [
-       "Tepung Bumbu Crispy",
-       "20"
-      ],
       [
        "Cabai Hijau",
        "15"
@@ -74,6 +76,98 @@
        "Garam",
        "2"
       ]
+     ]
+    }
+   ]
+  }
+ ],
+ "extras": [
+  {
+   "name": "Paket Nasi Putih",
+   "price": 2000,
+   "rate": "0.6",
+   "recipe": [
+    [
+     "Beras",
+     "100"
+    ]
+   ]
+  },
+  {
+   "name": "Paket Nasi Daun Jeruk",
+   "price": 5000,
+   "rate": "0.25",
+   "recipe": [
+    [
+     "Beras",
+     "100"
+    ],
+    [
+     "Daun Jeruk",
+     "2"
+    ],
+    [
+     "Bawang Putih",
+     "3"
+    ]
+   ]
+  },
+  {
+   "name": "Paket Nasi Putih (Laut Api)",
+   "price": 3000,
+   "rate": "0.75",
+   "recipe": [
+    [
+     "Beras",
+     "100"
+    ]
+   ]
+  }
+ ],
+ "promotions": [
+  {
+   "name": "Hemat Bersama",
+   "description": "Potongan 10% untuk belanja minimal Rp50.000.",
+   "discount_type": "persen",
+   "value": 10,
+   "minimum_spend": 50000,
+   "rate": "0.35"
+  },
+  {
+   "name": "Potongan Rp2.000",
+   "description": "Potongan Rp2.000 untuk belanja minimal Rp25.000.",
+   "discount_type": "nominal",
+   "value": 2000,
+   "minimum_spend": 25000,
+   "rate": "0.1"
+  }
+ ],
+ "menu_categories": [
+  {
+   "name": "Ikan Geprek",
+   "station": "kitchen",
+   "menus": [
+    {
+     "name": "Kulit Patin Crispy Geprek",
+     "price": 9000,
+     "weight": 21,
+     "image": "site/src/assets/images/kulit-patin.png",
+     "recipe": [
+      [
+       "Kulit Patin",
+       "60"
+      ],
+      [
+       "Tepung Bumbu Crispy",
+       "20"
+      ]
+     ],
+     "variant_groups": [
+      "Sambal"
+     ],
+     "extras": [
+      "Paket Nasi Putih",
+      "Paket Nasi Daun Jeruk"
      ]
     },
     {
@@ -98,12 +192,15 @@
        "Cabai Rawit Merah",
        "5"
       ]
+     ],
+     "extras": [
+      "Paket Nasi Putih (Laut Api)"
      ]
     },
     {
-     "name": "Patin Crispy Sambal Geprek",
+     "name": "Patin Crispy Geprek",
      "price": 11000,
-     "weight": 14,
+     "weight": 21,
      "image": "site/src/assets/images/patin.png",
      "recipe": [
       [
@@ -113,47 +210,14 @@
       [
        "Tepung Bumbu Crispy",
        "20"
-      ],
-      [
-       "Cabai Rawit Merah",
-       "15"
-      ],
-      [
-       "Bawang Putih",
-       "5"
-      ],
-      [
-       "Garam",
-       "2"
       ]
-     ]
-    },
-    {
-     "name": "Patin Crispy Sambal Ijo",
-     "price": 11000,
-     "weight": 7,
-     "image": "site/src/assets/images/patin.png",
-     "recipe": [
-      [
-       "Fillet Patin",
-       "70"
-      ],
-      [
-       "Tepung Bumbu Crispy",
-       "20"
-      ],
-      [
-       "Cabai Hijau",
-       "15"
-      ],
-      [
-       "Bawang Putih",
-       "5"
-      ],
-      [
-       "Garam",
-       "2"
-      ]
+     ],
+     "variant_groups": [
+      "Sambal"
+     ],
+     "extras": [
+      "Paket Nasi Putih",
+      "Paket Nasi Daun Jeruk"
      ]
     },
     {
@@ -178,12 +242,15 @@
        "Cabai Rawit Merah",
        "5"
       ]
+     ],
+     "extras": [
+      "Paket Nasi Putih (Laut Api)"
      ]
     },
     {
-     "name": "Kulit Salmon Crispy Sambal Geprek",
+     "name": "Kulit Salmon Crispy Geprek",
      "price": 11000,
-     "weight": 9,
+     "weight": 14,
      "image": "site/src/assets/images/kulit-salmon.png",
      "recipe": [
       [
@@ -193,47 +260,14 @@
       [
        "Tepung Bumbu Crispy",
        "20"
-      ],
-      [
-       "Cabai Rawit Merah",
-       "15"
-      ],
-      [
-       "Bawang Putih",
-       "5"
-      ],
-      [
-       "Garam",
-       "2"
       ]
-     ]
-    },
-    {
-     "name": "Kulit Salmon Crispy Sambal Ijo",
-     "price": 11000,
-     "weight": 5,
-     "image": "site/src/assets/images/kulit-salmon.png",
-     "recipe": [
-      [
-       "Kulit Salmon",
-       "50"
-      ],
-      [
-       "Tepung Bumbu Crispy",
-       "20"
-      ],
-      [
-       "Cabai Hijau",
-       "15"
-      ],
-      [
-       "Bawang Putih",
-       "5"
-      ],
-      [
-       "Garam",
-       "2"
-      ]
+     ],
+     "variant_groups": [
+      "Sambal"
+     ],
+     "extras": [
+      "Paket Nasi Putih",
+      "Paket Nasi Daun Jeruk"
      ]
     },
     {
@@ -258,12 +292,15 @@
        "Cabai Rawit Merah",
        "5"
       ]
+     ],
+     "extras": [
+      "Paket Nasi Putih (Laut Api)"
      ]
     },
     {
-     "name": "Salmon Crispy Sambal Geprek",
+     "name": "Salmon Crispy Geprek",
      "price": 13000,
-     "weight": 9,
+     "weight": 14,
      "image": "site/src/assets/images/salmon.png",
      "recipe": [
       [
@@ -273,47 +310,14 @@
       [
        "Tepung Bumbu Crispy",
        "20"
-      ],
-      [
-       "Cabai Rawit Merah",
-       "15"
-      ],
-      [
-       "Bawang Putih",
-       "5"
-      ],
-      [
-       "Garam",
-       "2"
       ]
-     ]
-    },
-    {
-     "name": "Salmon Crispy Sambal Ijo",
-     "price": 13000,
-     "weight": 5,
-     "image": "site/src/assets/images/salmon.png",
-     "recipe": [
-      [
-       "Fillet Salmon",
-       "45"
-      ],
-      [
-       "Tepung Bumbu Crispy",
-       "20"
-      ],
-      [
-       "Cabai Hijau",
-       "15"
-      ],
-      [
-       "Bawang Putih",
-       "5"
-      ],
-      [
-       "Garam",
-       "2"
-      ]
+     ],
+     "variant_groups": [
+      "Sambal"
+     ],
+     "extras": [
+      "Paket Nasi Putih",
+      "Paket Nasi Daun Jeruk"
      ]
     },
     {
@@ -338,6 +342,9 @@
        "Cabai Rawit Merah",
        "5"
       ]
+     ],
+     "extras": [
+      "Paket Nasi Putih (Laut Api)"
      ]
     }
    ]
@@ -349,7 +356,7 @@
     {
      "name": "Nasi Putih",
      "price": 4000,
-     "weight": 42,
+     "weight": 4,
      "image": "site/src/assets/images/menu-nasi-putih.jpg",
      "recipe": [
       [
@@ -361,7 +368,7 @@
     {
      "name": "Nasi Daun Jeruk",
      "price": 5000,
-     "weight": 12,
+     "weight": 1,
      "image": "site/src/assets/images/menu-nasi-daun-jeruk.jpg",
      "recipe": [
       [

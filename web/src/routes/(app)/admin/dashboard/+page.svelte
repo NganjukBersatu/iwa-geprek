@@ -100,14 +100,15 @@
 			<ProfitLossCard {dashboard} />
 
 			{#if summary}
-				<div class="grid grid-cols-1 gap-4 laptop:grid-cols-2">
+				<!-- Ditumpuk selebar penuh: daftar yang panjangnya berbeda tidak menyisakan ruang kosong di sebelahnya. -->
+				<div class="flex flex-col gap-4">
 					<TopListCard
 						title={pageText.bestSellingMenus}
-						description={format(pageText.transactionsWithVoided, { count: summary.sales.transaction_count, voided: summary.sales.voided_count > 0 ? ` · ${summary.sales.voided_count} dibatalkan` : '' })}
+						description={dashboard.salesCaption}
 						icon="star"
 						tone="accent"
 						ranked
-						emptyText="Belum ada transaksi di periode ini."
+						emptyText={pageText.noTransactionsInPeriod}
 						rows={summary.sales.top_items.map((menu) => ({
 							key: menu.menu_item_id ?? menu.name,
 							label: menu.name,
@@ -117,11 +118,11 @@
 					/>
 					<TopListCard
 						title={pageText.worstSellingMenus}
-						description={format(pageText.transactionsWithVoided, { count: summary.sales.transaction_count, voided: summary.sales.voided_count > 0 ? ` · ${summary.sales.voided_count} dibatalkan` : '' })}
+						description={dashboard.salesCaption}
 						icon="trending-down"
 						tone="info"
 						ranked
-						emptyText="Belum ada transaksi di periode ini."
+						emptyText={pageText.noTransactionsInPeriod}
 						rows={summary.sales.bottom_items.map((menu) => ({
 							key: menu.menu_item_id ?? menu.name,
 							label: menu.name,
@@ -134,7 +135,7 @@
 						description={format(pageText.cashAndOther, { cash: formatRupiah(summary.expenses.drawer_cash_total), other: formatRupiah(summary.expenses.other_funds_total) })}
 						icon="receipt"
 						tone="brand"
-						emptyText="Belum ada pengeluaran tercatat di periode ini."
+						emptyText={pageText.noExpensesInPeriod}
 						rows={summary.expenses.by_item.slice(0, 8).map((item) => ({
 							key: item.item_name,
 							label: item.item_name,

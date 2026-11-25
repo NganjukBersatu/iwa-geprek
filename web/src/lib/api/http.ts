@@ -4,6 +4,7 @@ import { clearSession, isSignedIn } from '$lib/auth/session';
 import { navProgress } from '$lib/motion/progress.svelte';
 import { signInPathFor } from '$lib/nav/return-to';
 import { branchChecked, selectedBranch } from '$lib/stores/branch';
+import { demoMode } from '$lib/stores/demo-mode.svelte';
 import { errorText } from '$lib/text/errors';
 import { ServerClock } from '$lib/time/server-clock';
 
@@ -126,6 +127,7 @@ async function send(path: string, init?: RequestInit, scoped = true): Promise<Re
 			headers: { ...CLIENT_HEADERS, ...(init?.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }), ...init?.headers }
 		});
 		ServerClock.sync(response.headers.get('date'));
+		demoMode.observe(response.headers);
 		return response;
 	} catch (error) {
 		console.warn(`[api] tidak ada balasan yang bisa dibaca dari ${path}`, error);

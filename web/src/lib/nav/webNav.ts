@@ -94,11 +94,11 @@ export const webNav: NavEntry[] = [
 		icon: 'ti-users',
 		items: [
 			leaf(PAGES.user),
-			leaf(PAGES.userPerformance),
 			leaf(PAGES.roles),
 			leaf(PAGES.schedule),
 			leaf(PAGES.shiftCodes),
 			leaf(PAGES.attendance),
+			leaf(PAGES.userPerformance),
 			leaf(PAGES.sop),
 			leaf(PAGES.tasks)
 		]

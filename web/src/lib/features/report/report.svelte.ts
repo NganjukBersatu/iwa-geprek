@@ -1,6 +1,7 @@
 import { userMessage } from '$lib/api/user-message';
 import type { DateParams } from '$lib/api/reports';
 import type { Filters } from '$lib/components/filter/filters.svelte';
+import { page } from '$app/state';
 import { rememberedSearch, rememberSearch } from '$lib/components/filter/search';
 import { formatRange, type DateRange } from '$lib/date/range';
 import { pageOf } from '$lib/components/pager/page-of';
@@ -38,11 +39,13 @@ export abstract class ReportState<Q extends ReportQuery, D extends { start: stri
 	}
 
 	/** Free-text search of the list, kept apart from `filters` so it never shows as a filter. */
-	search = $state(rememberedSearch());
+	// Layar tempat daftar ini dibuat; pencariannya diingat untuk layar itu saja.
+	readonly #searchPath = page.url.pathname;
+	search = $state(rememberedSearch(this.#searchPath));
 
 	setSearch(query: string): void {
 		this.search = query;
-		rememberSearch(query);
+		rememberSearch(this.#searchPath, query);
 		this.page = 1;
 	}
 

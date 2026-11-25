@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from sqlalchemy.orm import Session
 
+from app.core.demo import state as demo_state
 from app.core.errors import DomainError
 from app.core.geo import distance_meters
 from app.employee.attendance import messages
@@ -40,6 +41,9 @@ def validate_location(db: Session, outlet_id: str, location: Location) -> Distan
     if branch.latitude is not None and branch.longitude is not None:
         meters = distance_meters(location.latitude, location.longitude, branch.latitude, branch.longitude)
     radius = branch.attendance_radius_meters
+    # Mode demo dicoba di tempat presentasi mana pun, jadi jarak ke titik absen cabang demo tidak membatasi absen.
+    if demo_state.is_active():
+        radius = None
     beyond_radius = meters is not None and radius is not None and meters > radius
     if location.mode != LOCATION_OUTSIDE and beyond_radius:
         raise DomainError(messages.OUTSIDE_RADIUS.format(distance=round(meters), radius=radius))

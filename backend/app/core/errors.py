@@ -7,6 +7,8 @@ from fastapi import HTTPException
 from app.core.request_id import current_request_id
 
 BAD_REQUEST = 400
+NOT_FOUND = 404
+CONFLICT = 409
 SERVER_ERROR = 500
 SERVICE_UNAVAILABLE = 503
 

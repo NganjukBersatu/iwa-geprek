@@ -28,6 +28,7 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 
 from app.core import request_timing
+from app.core.demo import state as demo_state
 from app.core.cache_store import Store, StoreError
 from app.core.clock import today
 
@@ -117,7 +118,8 @@ def tables_changed(tables: Iterable[str]) -> None:
 def read(name: str, parts: tuple[Part, ...], compute: Callable[[], T], shape: TypeAdapter[T], seconds: int) -> T:
     """`name` is unique per route; `parts` must hold everything the answer depends on: filters, page, branch scope, permission variant."""
     store = _door.store
-    if store is None or not _usable():
+    # Selama mode demo tidak ada hasil yang disimpan atau dibaca, supaya data demo dan data asli tidak pernah tertukar di cache bersama.
+    if store is None or not _usable() or demo_state.is_active():
         request_timing.cache_outcome(SKIP)
         return compute()
     key = _key(name, parts)

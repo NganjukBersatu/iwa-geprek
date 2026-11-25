@@ -76,7 +76,10 @@ import { business, navLinks, socialLinks } from '@/data/site'
         </ul>
       </div>
     </div>
-    <div class="wrap fcopy">{{ business.copyright }}</div>
+    <div class="wrap fcopy">
+      <span>{{ business.copyright }}</span>
+      <span>{{ business.developerCredit }}</span>
+    </div>
   </footer>
 </template>
 
@@ -173,6 +176,10 @@ ul a:hover {
   text-align: center;
   font-size: 0.88rem;
   color: var(--color-brand-haze);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 18px;
 }
 
 /* Logo versi footer */

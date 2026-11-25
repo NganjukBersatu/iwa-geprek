@@ -7,6 +7,9 @@ export type Page = { path: string; label: string; screen: Screen };
 
 export const CANCELLATIONS_TAB = 'cancellations';
 export const USAGE_TAB = 'usage';
+export const LEAVE_TAB = 'izin';
+// Jangkar panel QC nontunai di Ringkasan Keuangan, tempat pemeriksaannya dikerjakan.
+export const QC_ANCHOR = 'qc-nontunai';
 
 const page = (path: string, label: string, screen: Screen): Page => ({ path, label, screen });
 
@@ -14,9 +17,9 @@ export const PAGES = {
 	dashboard: page(resolve('/admin/dashboard'), 'Dashboard', 'dashboard'),
 	issues: page(resolve('/admin/issues'), 'Laporan Masalah', 'issues'),
 	financeOverview: page(resolve('/admin/reports/finance-overview'), 'Ringkasan Keuangan', 'finance_overview'),
-	busySales: page(resolve('/admin/reports/sales-peak'), 'Waktu Teramai Penjualan', 'busy_sales'),
-	busyProducts: page(resolve('/admin/reports/product-peak'), 'Waktu Teramai Produk', 'busy_products'),
-	categoriesReport: page(resolve('/admin/reports/categories'), 'Kategori dan Produk', 'categories_report'),
+	busySales: page(resolve('/admin/reports/sales-peak'), 'Penjualan', 'busy_sales'),
+	busyProducts: page(resolve('/admin/reports/product-peak'), 'Produk', 'busy_products'),
+	categoriesReport: page(resolve('/admin/reports/categories'), 'Kategori', 'categories_report'),
 	optionsReport: page(resolve('/admin/reports/options'), 'Varian dan Ekstra', 'options_report'),
 	promosReport: page(resolve('/admin/reports/promotions'), termText.promo, 'promos_report'),
 	voidsReport: page(resolve('/admin/reports/voids'), 'Transaksi Batal', 'voids_report'),
@@ -55,12 +58,14 @@ export const PAGES = {
 	schedule: page(resolve('/admin/schedule'), 'Jadwal dan Kehadiran', 'schedule'),
 	shiftCodes: page(resolve('/admin/shift-codes'), 'Kode Shift', 'shift_codes'),
 	attendance: page(resolve('/admin/attendance'), 'Daftar Absensi', 'attendance'),
+	leaveRequests: page(resolve(`/admin/attendance?tab=${LEAVE_TAB}`), 'Pengajuan Izin', 'attendance'),
+	nonCashCheck: page(resolve(`/admin/reports/finance-overview#${QC_ANCHOR}`), 'QC Non-tunai', 'finance_overview'),
 	sop: page(resolve('/admin/sop'), 'SOP Karyawan', 'sop'),
 	tasks: page(resolve('/admin/tasks'), 'Tugas', 'tasks'),
 	branches: page(resolve('/admin/branches'), termText.branch, 'branches'),
 	cafeSettings: page(resolve('/admin/cafe-settings'), 'Pengaturan Struk', 'cafe_settings'),
 	devices: page(resolve('/admin/devices'), 'Perangkat', 'devices'),
-	printers: page(resolve('/admin/printers'), 'Stasiun & Printer', 'printers'),
+	printers: page(resolve('/admin/printers'), 'Stasiun dan Printer', 'printers'),
 	attendanceRules: page(resolve('/admin/attendance-rules'), 'Aturan Absensi', 'attendance_rules')
 } as const satisfies Record<string, Page>;
 

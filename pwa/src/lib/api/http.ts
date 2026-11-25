@@ -1,6 +1,7 @@
 import { browser } from '$app/environment';
 import { updated } from '$app/state';
 import { updateRequired } from '../platform/update-required.svelte';
+import { demoMode } from '../platform/demo-mode.svelte';
 import { failureOfError, failureOfStatus, unreadableAnswer, type AppFailure } from '../failure/failure';
 import { ServerClock } from '../time/server-clock';
 
@@ -55,6 +56,7 @@ async function send<T>(method: string, path: string, body: unknown, parse: (text
 	}
 
 	ServerClock.sync(response.headers.get('date'));
+	demoMode.observe(response.headers);
 	// Server menolak versi lama: cek rilis baru supaya penanda pembaruan muncul.
 	if (browser && response.status === STATUS_UPGRADE_REQUIRED) void updated.check().catch(() => false);
 	let text = '';

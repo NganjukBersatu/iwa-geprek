@@ -6,6 +6,7 @@ from app.employee.attendance.service import Notice
 from app.employee.attendance.work_time import worked_minutes
 from app.employee.schedule.assignment import work_window
 from app.models.attendance import Attendance
+from app.core.demo import state as demo_state
 from app.models.outlet import Outlet
 from app.models.schedule import Schedule
 
@@ -55,7 +56,8 @@ def branch_out(branch: Outlet | None) -> AttendanceBranchOut | None:
         name=branch.name,
         latitude=branch.latitude,
         longitude=branch.longitude,
-        radius_meters=branch.attendance_radius_meters,
+        # Selama mode demo aplikasi tidak membatasi jarak, sama seperti server (location_validation).
+        radius_meters=None if demo_state.is_active() else branch.attendance_radius_meters,
     )
 
 

@@ -117,6 +117,16 @@
   animation: success-pop var(--duration-data) var(--ease-enter) both, success-draw var(--duration-data) var(--ease-enter) 120ms both;
 }
 
+/* Bilah kemajuan yang terisi bergeser halus, tidak melompat. */
+.progress-fill {
+  transition: width var(--duration-data) var(--ease-move);
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill {
+    transition: none;
+  }
+}
+
 /* A section reached through a link with #id is framed for a moment. */
 @keyframes spotlight-fade {
   from, 40% { box-shadow: 0 0 0 3px var(--color-brand-accent); }
@@ -430,6 +440,33 @@ html.welcome-lock body::-webkit-scrollbar {
   transform-origin: top;
   transform: scaleY(var(--trace-fill, 0));
 }
+/* Nama merek di judul halaman unduhan: tersingkap dari kiri, garisnya tergambar menyusul, lalu kilau cahaya menyapu hurufnya berkala. */
+.headline-mark {
+  position: relative;
+  display: inline-block;
+  color: transparent;
+  background: linear-gradient(105deg, var(--color-brand-accent) 0 42%, var(--color-brand-accent-soft) 50%, var(--color-brand-accent) 58% 100%);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: headline-reveal 1000ms var(--ease-enter) 200ms both, headline-sheen 6s ease-in-out 1800ms infinite;
+}
+.headline-mark::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.12em;
+  height: 0.1em;
+  border-radius: 999px;
+  background: var(--color-brand-accent);
+  transform-origin: left;
+  animation: headline-draw 800ms var(--ease-enter) 900ms both;
+}
+@keyframes headline-reveal { from { clip-path: inset(-0.3em 100% -0.3em 0); } to { clip-path: inset(-0.3em 0 -0.3em 0); } }
+@keyframes headline-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes headline-sheen { 0%, 70% { background-position: 100% 0; } 100% { background-position: 0 0; } }
 .guide-dot { transition: background 400ms, border-color 400ms, color 400ms, transform 400ms var(--ease-enter); }
 .guide-step[data-lit] .guide-dot {
   background: var(--color-brand-accent);
@@ -439,6 +476,10 @@ html.welcome-lock body::-webkit-scrollbar {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .headline-mark,
+  .headline-mark::after {
+    animation: none;
+  }
   .welcome,
   .welcome::after,
   .welcome-blob,

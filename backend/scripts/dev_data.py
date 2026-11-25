@@ -32,7 +32,7 @@ TEST_BRANCH = "Cabang Uji"
 # Tabel versi migrasi menyimpan posisi skema, bukan data, jadi tidak ikut dikosongkan.
 KEPT_TABLES = frozenset({"alembic_version", "alembic_version_v2"})
 # Urutan mengikuti ketergantungan tiap skrip: penjualan dulu, lalu yang membaca kasir, menu, dan kategori demo.
-SEEDS = ("seed_demo_sales", "seed_demo_stations", "seed_demo_inventory", "seed_demo_finance", "seed_demo_attendance")
+SEEDS = ("seed_demo_branch", "seed_demo_sales", "seed_demo_stations", "seed_demo_inventory", "seed_demo_finance", "seed_demo_attendance", "seed_demo_operations")
 
 
 def target() -> str:

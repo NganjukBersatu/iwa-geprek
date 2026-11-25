@@ -34,6 +34,16 @@ const BRAND_LAYER = new Set(
 	].map((path) => path.split('/').join(sep))
 );
 
+// Berkas teks milik klien (_skip_if_exists di copier.yml template): isinya data klien sendiri, jadi boleh menyebut mereknya.
+const CLIENT_OWNED = new Set(
+	[
+		'backend/scripts/demo_catalog.json',
+		'app/core/src/commonMain/composeResources/values/strings_release.xml',
+		'web/src/lib/text/admin-release.ts',
+		'web/src/lib/text/release-notes.ts'
+	].map((path) => path.split('/').join(sep))
+);
+
 if (!existsSync(ANSWERS)) {
 	console.log('check-brand: dilewati, berkas jawaban Copier tidak ada (ini repositori template, bukan klon).');
 	process.exit(0);
@@ -67,7 +77,7 @@ const violations = [];
 const roots = readdirSync(ROOT).filter((name) => !statSync(join(ROOT, name)).isDirectory() || TEMPLATE_FOLDERS.includes(name));
 for (const path of roots.flatMap((name) => (statSync(join(ROOT, name)).isDirectory() ? walk(join(ROOT, name)) : [join(ROOT, name)]))) {
 	const file = relative(ROOT, path);
-	if (!TEXT.test(file) || BRAND_LAYER.has(file) || file.endsWith('package-lock.json')) continue;
+	if (!TEXT.test(file) || BRAND_LAYER.has(file) || CLIENT_OWNED.has(file) || file.endsWith('package-lock.json')) continue;
 	readFileSync(path, 'utf8')
 		.split('\n')
 		.forEach((line, index) => {

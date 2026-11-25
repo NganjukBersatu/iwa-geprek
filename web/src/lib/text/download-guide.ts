@@ -26,7 +26,7 @@ export const TABLET_GUIDE: Guide = {
 				step('building-store', 'Stasiun tanpa tablet', 'Stasiun yang hanya punya printer, tanpa tablet, dicentang di tablet Kasir pada bagian Stasiun tanpa tablet yang dicetak dari sini. Struk menunya dikirim tablet Kasir ke printer di stasiun itu.'),
 				step('qrcode', 'Pasangkan tablet', 'Ketuk Buat kode, lalu di tablet pada layar masuk ketuk Menu perangkat, Daftarkan perangkat operasional, dan pindai kode QR-nya. Kode juga bisa diketik bila kamera tidak bisa dipakai.'),
 				step('printer', 'Pasang printer di tablet', 'Di tablet, buka Printer. Tablet hanya meminta printer yang dibutuhkan stasiunnya. Nyalakan Bluetooth, pilih printernya, lalu jawab apakah kertas uji tercetak benar.'),
-				step('list-check', 'Periksa kesiapan', 'Di web, tab Ringkasan cabang menampilkan Kesiapan cabang, dan tab Stasiun & Printer menampilkan tablet dan printer setiap stasiun beserta pratinjau rute menu.')
+				step('list-check', 'Periksa kesiapan', 'Di web, tab Ringkasan cabang menampilkan Kesiapan cabang, dan tab Stasiun dan Printer menampilkan tablet dan printer setiap stasiun beserta pratinjau rute menu.')
 			]
 		},
 		{
@@ -38,7 +38,7 @@ export const TABLET_GUIDE: Guide = {
 				step('qrcode', 'Masuk dengan QR', 'Di tablet, ketuk Tampilkan QR. Di HP, buka Absen, lalu Pindai QR pada bagian Perangkat operasional dan arahkan kamera ke QR di tablet. QR ditutup sendiri bila lama tidak dipakai; ketuk Tampilkan QR lagi.'),
 				step('switch-horizontal', 'Ganti karyawan', 'Karyawan yang sedang masuk ketuk Keluar dulu, lalu karyawan berikutnya masuk dengan QR. Setiap pesanan dan sesi tercatat atas nama yang sedang masuk.'),
 				step('logout', 'Keluar', 'Buka menu, lalu ketuk Keluar. Pesanan yang belum terkirim dikirim dulu; tunggu sampai lembar Mengirim pesanan selesai.'),
-				step('cash-banknote', 'Keluar saat sesi kasir berjalan', 'Tombolnya berubah menjadi Tutup sesi & keluar. Hitung uang di laci, isi Uang aktual di laci sekarang, lalu tutup. Tablet baru bisa keluar setelah sesi ditutup.'),
+				step('cash-banknote', 'Keluar saat sesi kasir berjalan', 'Tombolnya berubah menjadi Tutup sesi dan keluar. Hitung uang di laci, isi Uang aktual di laci sekarang, lalu tutup. Tablet baru bisa keluar setelah sesi ditutup.'),
 				step('wifi-off', 'Keluar saat internet putus', 'Bila muncul Status sesi belum terbaca, sambungkan internet dulu supaya sesi dan pesanan tidak tertinggal.')
 			]
 		},
@@ -85,7 +85,7 @@ export const TABLET_GUIDE: Guide = {
 			steps: [
 				step('list', 'Daftar Bahan', 'Melihat stok setiap bahan di cabang ini. Bahan bertanda Stok menipis perlu segera dibeli.'),
 				step('truck-delivery', 'Barang Masuk', 'Ketuk +, pilih bahan, isi jumlah sesuai satuannya, lalu Simpan. Yang dicatat hanya jumlah; harga beli dicatat di Pengeluaran.'),
-				step('flask', 'Rusak & RnD', 'Pilih tab Rusak atau RnD, ketuk +, pilih bahan, dan isi jumlah. Untuk Rusak pilih sebabnya (sebab Lainnya wajib dengan catatan); untuk RnD catatan wajib diisi. Simpan, dan stok berkurang sebesar jumlah itu.'),
+				step('flask', 'Rusak dan RnD', 'Pilih tab Rusak atau RnD, ketuk +, pilih bahan, dan isi jumlah. Untuk Rusak pilih sebabnya (sebab Lainnya wajib dengan catatan); untuk RnD catatan wajib diisi. Simpan, dan stok berkurang sebesar jumlah itu.'),
 				step('clipboard-check', 'Stok Opname', 'Hanya untuk peran dengan izin Tutup periode. Hitung fisik bahan dan isi Jumlah real; bahan yang dikosongkan dianggap tidak dihitung. Draf tersimpan otomatis dan bisa dilanjutkan di web atau tablet lain. Tutup periode menyamakan stok, lalu seluruh stok bahan cabang ini kembali 0 untuk periode baru, termasuk yang tidak dihitung. Menu yang memakai bahan itu tidak bisa dipesan sampai admin mengisi Stok awal di web. Satu periode hanya bisa ditutup sekali; perbaikan dan pembatalan dilakukan admin dari halaman detail periode di web.'),
 				step('tag', 'Stok Barang Jual-Ulang', 'Daftar menampilkan stok dengan penanda Habis atau Menipis; tab Masuk dan Penyesuaian memuat riwayatnya. Ketuk barang untuk mencatat Barang masuk, Penyesuaian tambah, atau Penyesuaian kurang; penyesuaian wajib beralasan minimal 3 karakter. Untuk menghitung, ketuk Mulai opname, isi Jumlah fisik, lalu Simpan opname. Opname jual-ulang tidak berperiode dan tidak mengembalikan stok ke 0; selisihnya dicatat sebagai penyesuaian.')
 			]
@@ -97,7 +97,7 @@ export const TABLET_GUIDE: Guide = {
 			who: 'Sesuai izin produk',
 			steps: [
 				step('coffee', 'Kelola Menu', 'Cari menu untuk mengubah nama, kategori, deskripsi, ketersediaan, dan foto. Menandai tidak tersedia membuat menu tidak bisa dipesan di kasir semua cabang sampai ditandai tersedia lagi. Harga dan harga pokok tetap hanya diatur dari web admin.'),
-				step('adjustments', 'Varian & Ekstra', 'Pilih tab Varian atau Ekstra, lalu Tambah. Isi pilihan dan harganya, tandai Wajib dipilih bila perlu, dan pilih menu yang memakainya.'),
+				step('adjustments', 'Varian dan Ekstra', 'Pilih tab Varian atau Ekstra, lalu Tambah. Isi pilihan dan harganya, tandai Wajib dipilih bila perlu, dan pilih menu yang memakainya.'),
 				step('tools-kitchen', 'Master Resep', 'Pilih menu, lalu tambahkan bahan beserta Takaran per porsi. HPP dan margin terhitung otomatis. Menu tanpa resep belum bisa dijual, kecuali memakai harga pokok tetap dari web.'),
 				step('discount', 'Promosi', 'Ketuk Tambah promosi. Pilih Diskon kasir atau Info kafe, berlaku untuk Semua item, Produk tertentu, atau Total belanja, potongan Persen atau Nominal, lalu cara aktif Otomatis atau Dipilih kasir.'),
 				step('notes', 'Catatan Pesanan', 'Daftar catatan siap pilih di kasir, milik cabang ini saja. Ketuk + untuk menambah; ketuk satu catatan untuk mengganti nama atau menghapusnya. Catatan yang sudah dipakai pesanan hanya bisa diganti nama. Catatan umum berlaku di semua cabang dan hanya diatur dari web. Kasir tetap bisa menambah catatan langsung dari kasir.'),
@@ -130,15 +130,15 @@ export const TABLET_GUIDE: Guide = {
 	],
 	troubles: [
 		{ icon: 'printer', title: 'Printer tidak ditemukan', body: 'Nyalakan Bluetooth, dekatkan printer, lalu cari ulang di menu Printer.' },
-		{ icon: 'receipt-off', title: 'Struk pesanan tidak tercetak', body: 'Buka tab Stasiun & Printer di halaman Cabang untuk melihat tablet mana yang mengirim struk stasiun itu, pasang printernya di menu Printer tablet tersebut, lalu ketuk Cetak ulang pada pemberitahuan di Papan Stasiun.' },
+		{ icon: 'receipt-off', title: 'Struk pesanan tidak tercetak', body: 'Buka tab Stasiun dan Printer di halaman Cabang untuk melihat tablet mana yang mengirim struk stasiun itu, pasang printernya di menu Printer tablet tersebut, lalu ketuk Cetak ulang pada pemberitahuan di Papan Stasiun.' },
 		{ icon: 'layout-kanban', title: 'Menu tidak muncul di stasiun', body: 'Pastikan stasiun itu sudah ditetapkan ke tablet ini di halaman Cabang, tab Perangkat.' },
 		{ icon: 'cash-off', title: 'Tidak bisa membuka sesi', body: 'Hanya tablet dengan stasiun Kasir yang bisa membuka sesi. Tetapkan stasiun Kasir di halaman Cabang, tab Perangkat.' },
 		{ icon: 'qrcode', title: 'QR ditolak', body: 'Tekan Pindai ulang di tablet, lalu pindai lagi dari HP.' },
 		{ icon: 'cloud-upload', title: 'Pesanan tertahan', body: 'Pembuat pesanan memindai QR kembali supaya pesanannya terkirim.' },
 		{ icon: 'logout', title: 'Tidak bisa keluar', body: 'Tutup sesi kasir dulu dan tunggu semua pesanan terkirim. Bila sesi belum terbaca, sambungkan internet.' },
-		{ icon: 'clipboard-off', title: 'Menu Stok Opname tidak ada', body: 'Menu ini hanya tampil untuk peran dengan izin Tutup periode. Minta admin mencentangnya di Peran & Izin.' },
+		{ icon: 'clipboard-off', title: 'Menu Stok Opname tidak ada', body: 'Menu ini hanya tampil untuk peran dengan izin Tutup periode. Minta admin mencentangnya di Peran dan Izin.' },
 		{ icon: 'package-off', title: 'Menu Bahan habis setelah tutup periode', body: 'Seluruh stok bahan kembali 0 saat periode ditutup. Admin mengisi Stok awal di web, menu Stok Opname.' },
-		{ icon: 'notes-off', title: 'Tidak ada menu Catatan Pesanan', body: 'Menu ini perlu izin Kelola referensi. Minta admin mencentangnya di Peran & Izin.' },
+		{ icon: 'notes-off', title: 'Tidak ada menu Catatan Pesanan', body: 'Menu ini perlu izin Kelola referensi. Minta admin mencentangnya di Peran dan Izin.' },
 		{ icon: 'cloud-off', title: 'Hitungan opname tidak tersimpan', body: 'Hitungan tersimpan otomatis sebagai draf. Bila muncul Draf belum tersimpan, periksa internet; Stok Opname butuh internet dan tidak masuk antrean Mode Offline.' },
 		{ icon: 'download', title: 'Aplikasi meminta pembaruan', body: 'Unduh dan pasang versi terbaru hanya dari halaman ini.' }
 	]
@@ -154,7 +154,7 @@ export const ATTENDANCE_GUIDE: Guide = {
 			title: 'Persiapan',
 			who: 'Sekali di HP',
 			steps: [
-				step('download', 'Pasang aplikasi', 'Android memakai APK dari tab Android, iPhone dan iPad memasang lewat Safari dari tab iPhone & iPad. Masuk dengan akun masing-masing.'),
+				step('download', 'Pasang aplikasi', 'Android memakai APK dari tab Android, iPhone dan iPad memasang lewat Safari dari tab iPhone dan iPad. Masuk dengan akun masing-masing.'),
 				step('map-pin', 'Izinkan Lokasi', 'Saat diminta, ketuk Izinkan dan pilih lokasi tepat. Lokasi memastikan absen dilakukan di kafe.'),
 				step('camera', 'Izinkan Kamera', 'Kamera dipakai untuk foto saat absen.'),
 				step('gps', 'Nyalakan GPS', 'Layanan lokasi HP harus menyala. Halaman Izin diperlukan menunjukkan mana yang belum siap.')
