@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Fish, Flame, MapPin, Star, Zap } from 'lucide-vue-next'
 import AnchorLink from '@/components/AnchorLink.vue'
-import logo from '@/assets/images/logo.jpeg'
+import logo from '@/assets/images/logo-iwageprek-hd.png'
 import heroPhoto from '@/assets/images/hero.jpeg'
 
 // ===== Data Hero =====

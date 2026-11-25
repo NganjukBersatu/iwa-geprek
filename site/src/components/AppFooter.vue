@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Clock, Mail, MapPin, MessageCircle, Instagram } from 'lucide-vue-next'
 import AnchorLink from '@/components/AnchorLink.vue'
-import logo from '@/assets/images/logo.jpeg'
+import logo from '@/assets/images/logo-iwageprek-hd.png'
 import { business, navLinks, socialLinks } from '@/data/site'
 </script>
 

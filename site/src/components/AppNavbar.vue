@@ -3,7 +3,7 @@ import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Utensils } from 'lucide-vue-next'
 import AnchorLink from '@/components/AnchorLink.vue'
-import logo from '@/assets/images/logo.jpeg'
+import logo from '@/assets/images/logo-iwageprek-hd.png'
 import { business, navLinks, type NavKey } from '@/data/site'
 
 const route = useRoute()
@@ -345,5 +345,28 @@ nav.scrolled .brand {
   .pillbg {
     transition: none !important;
   }
+}
+/* Logo: lingkaran biru saja, tanpa bingkai luar */
+nav .mark {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 50%;
+  overflow: hidden;
+  display: block;
+  flex-shrink: 0;
+}
+nav .mark::before,
+nav .mark::after {
+  display: none;
+}
+nav .mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 </style>
