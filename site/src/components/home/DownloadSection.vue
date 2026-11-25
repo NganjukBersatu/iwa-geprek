@@ -1,40 +1,28 @@
 <script setup lang="ts">
-import { Download, Smartphone, Tablet } from 'lucide-vue-next'
+import { ArrowRight, Download } from 'lucide-vue-next'
 
-// Alamat diisi saat build dari variabel Railway; tombol yang alamatnya kosong tidak ditampilkan.
-const apkUrl = import.meta.env.VITE_APK_URL?.trim() ?? ''
-const pwaUrl = import.meta.env.VITE_PWA_URL?.trim() ?? ''
+// Alamat halaman Unduhan diisi saat build dari variabel Railway; bagian ini tidak tampil bila kosong.
+const downloadPageUrl = import.meta.env.VITE_DOWNLOAD_PAGE_URL?.trim() ?? ''
 
 const download = {
   title: 'Aplikasi',
   highlight: 'IwaGeprek',
   subtitle: 'Khusus untuk tim IwaGeprek: aplikasi kasir di tablet dan aplikasi karyawan di ponsel.',
-  apkLabel: 'Unduh untuk Tablet',
-  apkNote: 'Android, berkas APK',
-  pwaLabel: 'Buka Aplikasi Karyawan',
-  pwaNote: 'Android dan iPhone, lewat peramban',
+  label: 'Ke Halaman Unduhan',
 }
 </script>
 
 <template>
-  <section v-if="apkUrl || pwaUrl" id="unduh" class="dl">
-    <div class="wrap dl-inner">
+  <section v-if="downloadPageUrl" id="unduh" class="dl">
+    <div class="wrap">
       <h2 class="dl-title">
         <span class="b">{{ download.title }}</span>
         <span class="r">{{ download.highlight }}</span>
       </h2>
       <p class="dl-sub">{{ download.subtitle }}</p>
-      <div class="dl-btns">
-        <a v-if="apkUrl" class="btn" :href="apkUrl" download>
-          <Tablet class="ic" aria-hidden="true" />
-          <span class="dl-text"><b>{{ download.apkLabel }}</b><small>{{ download.apkNote }}</small></span>
-          <Download class="ic" aria-hidden="true" />
-        </a>
-        <a v-if="pwaUrl" class="btn o" :href="pwaUrl" target="_blank" rel="noopener">
-          <Smartphone class="ic" aria-hidden="true" />
-          <span class="dl-text"><b>{{ download.pwaLabel }}</b><small>{{ download.pwaNote }}</small></span>
-        </a>
-      </div>
+      <a class="btn" :href="downloadPageUrl" target="_blank" rel="noopener">
+        <Download class="ic" aria-hidden="true" /> {{ download.label }} <ArrowRight class="ic" aria-hidden="true" />
+      </a>
     </div>
   </section>
 </template>
@@ -67,34 +55,14 @@ const download = {
   margin: 12px auto 28px;
   max-width: 560px;
 }
-.dl-btns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  justify-content: center;
-}
-.dl-btns .btn {
-  padding: 12px 24px;
+.dl .btn {
+  padding: 12px 28px;
   border-radius: 999px;
-  gap: 12px;
-}
-.dl-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 1.25;
-}
-.dl-text small {
-  font-weight: 500;
-  opacity: 0.85;
+  gap: 10px;
 }
 @media (max-width: 480px) {
   .dl {
     padding: 48px 0;
-  }
-  .dl-btns .btn {
-    flex: 1 1 100%;
-    justify-content: center;
   }
 }
 </style>

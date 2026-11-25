@@ -40,7 +40,7 @@ export default defineRailway(() => {
       // Aplikasi di bawah versi ini diminta memperbarui lewat halaman unduhan web admin; naikkan bersama versi rilis.
       MIN_VERSION_APK: "1.0.0",
       MIN_VERSION_PWA: "1.0.0",
-      DOWNLOAD_URL: "https://${{iwa-geprek.RAILWAY_PUBLIC_DOMAIN}}/#unduh",
+      DOWNLOAD_URL: "https://${{web.RAILWAY_PUBLIC_DOMAIN}}/unduh",
     },
   });
 
@@ -68,11 +68,8 @@ export default defineRailway(() => {
     source: github(REPOSITORY, { rootDirectory: "site" }),
     build: "npm run build",
     deploy: RESTART,
-    // Dibaca Vite saat build untuk bagian unduhan; nama berkas APK mengikuti versionName di app/version.properties.
-    env: {
-      VITE_APK_URL: "https://${{web.RAILWAY_PUBLIC_DOMAIN}}/apk/IWAGEPREK%20Management%20System%201.0.0.apk",
-      VITE_PWA_URL: "https://${{pwa.RAILWAY_PUBLIC_DOMAIN}}",
-    },
+    // Dibaca Vite saat build: tombol di bagian unduhan membuka halaman Unduhan web admin.
+    env: { VITE_DOWNLOAD_PAGE_URL: "https://${{web.RAILWAY_PUBLIC_DOMAIN}}/unduh" },
   });
 
   return project("iwageprek", {
