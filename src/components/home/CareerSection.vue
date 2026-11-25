@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ClipboardList, Mail, MessageCircle, Star, Users } from 'lucide-vue-next'
-import logo from '@/assets/images/logo.jpeg'
+import logo from '@/assets/images/logo-iwageprek-hd.png'
 import crewPhoto from '@/assets/images/crew.jpeg'
 
 // ===== Data Karier =====
