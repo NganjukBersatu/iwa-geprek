@@ -95,6 +95,7 @@ export const branchPath = (id: string, tab?: BranchTab): string => {
 };
 export const branchPeriodPath = (outlet: string, start: string): string => resolve('/(app)/admin/branches/periods/[outlet]/[start]', { outlet, start });
 export const stockItemPath = (id: string): string => resolve('/(app)/admin/stock-items/[id]', { id });
+export const scheduleEntryPath = (id: string): string => resolve('/(app)/admin/schedule/[id]', { id });
 export const stockItemCountPath = (): string => resolve('/(app)/admin/stock-items/count');
 export const orderNotePath = (id: string): string => resolve('/(app)/admin/order-notes/[id]', { id });
 export const paymentMethodPath = (id: string): string => resolve('/(app)/admin/payment-methods/[id]', { id });

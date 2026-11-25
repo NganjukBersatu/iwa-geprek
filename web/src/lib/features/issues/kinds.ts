@@ -8,7 +8,7 @@ import { formatDayMonth } from '$lib/date/range';
 import { parseDate } from '@internationalized/date';
 import { todayIso } from '$lib/date/range';
 import { withFilters } from '$lib/nav/link-filters';
-import { menuPath, PAGES, sessionPath, type Page } from '$lib/nav/pages';
+import { devicePath, employeePath, ingredientPath, menuPath, PAGES, promoPath, scheduleEntryPath, sessionPath, stockItemPath, type Page } from '$lib/nav/pages';
 import { issueText } from '$lib/text/issues';
 import { format } from '$lib/text/format';
 
@@ -16,11 +16,15 @@ export type IssueRow = { main: string; meta: string; figure: string };
 // Halaman detail yang membuka tepat data temuan itu lewat subject_id-nya.
 type Detail = { page: Page; path: (id: string) => string };
 // search: halaman daftarnya bisa dicari dengan nama temuan; day: daftarnya bisa disaring ke tanggal temuan; until: hari akhir bila temuannya mencakup beberapa hari.
-type KindText = { title: string; link: Page; row: (issue: Issue) => IssueRow; detail?: Detail; search?: true; day?: true; until?: (issue: Issue) => string | null };
+type KindText = { title: string; link: Page; row: (issue: Issue) => IssueRow; detail?: Detail | ((issue: Issue) => Detail); search?: true; day?: true; until?: (issue: Issue) => string | null };
 export type IssueLink = { path: string; page: Page };
 
 const SESSION: Detail = { page: PAGES.sessionHistory, path: sessionPath };
 const MENU: Detail = { page: PAGES.menu, path: menuPath };
+const DEVICE: Detail = { page: PAGES.devices, path: devicePath };
+const PROMO: Detail = { page: PAGES.promotions, path: promoPath };
+const EMPLOYEE: Detail = { page: PAGES.user, path: employeePath };
+const SCHEDULE_ENTRY: Detail = { page: PAGES.schedule, path: scheduleEntryPath };
 
 export const LEVELS: { level: IssueLevel; label: string; caption: string; tone: Tone; accent: SummaryAccent; icon: string }[] = [
 	{ level: 'problem', label: issueText.levelProblem, caption: issueText.levelProblemHint, tone: 'danger', accent: 'red', icon: 'alert-triangle' },
@@ -30,6 +34,8 @@ export const LEVELS: { level: IssueLevel; label: string; caption: string; tone: 
 ];
 
 const RESALE = 'resale';
+// Temuan stok menunjuk bahan atau barang jual-ulang; masing-masing punya halaman detailnya sendiri.
+const stockDetail = (issue: Issue): Detail => (issue.subject_kind === RESALE ? { page: PAGES.stockItems, path: stockItemPath } : { page: PAGES.ingredients, path: ingredientPath });
 
 const day = (issue: Issue): string => (issue.day ? formatDayMonth(issue.day) : '');
 // Hari terakhir dari N hari berturut-turut yang dimulai di tanggal temuan.
@@ -113,15 +119,17 @@ const TEXTS: Record<IssueKind, KindText> = {
 		link: PAGES.stationMonitor,
 		row: (issue) => ({ main: branch(issue), meta: '', figure: format(controlText.ordersCount, { count: String(issue.count) }) })
 	},
-	stock_out: { title: issueText.stockOut, link: PAGES.ingredients, search: true, row: (issue) => ({ main: issue.subject, meta: where(issue), figure: issueText.stockOutFigure }) },
+	stock_out: { title: issueText.stockOut, link: PAGES.ingredients, search: true, detail: stockDetail, row: (issue) => ({ main: issue.subject, meta: where(issue), figure: issueText.stockOutFigure }) },
 	stock_negative: {
 		title: issueText.stockNegative,
 		link: PAGES.ingredients, search: true,
+		detail: stockDetail,
 		row: (issue) => ({ main: issue.subject, meta: where(issue), figure: quantity(issue.amount, issue.unit) })
 	},
 	stock_low: {
 		title: issueText.stockLow,
 		link: PAGES.ingredients, search: true,
+		detail: stockDetail,
 		row: (issue) => ({
 			main: issue.subject,
 			meta: joined(
@@ -156,9 +164,9 @@ const TEXTS: Record<IssueKind, KindText> = {
 			figure: format(issueText.increaseOf, { percent: formatPercentPlain(issue.percent) })
 		})
 	},
-	ingredient_idle: { title: issueText.ingredientIdle, link: PAGES.ingredients, search: true, row: (issue) => subjectInBranch(issue) },
-	ingredient_no_minimum: { title: issueText.ingredientNoMinimum, link: PAGES.ingredients, search: true, row: (issue) => ({ main: issue.subject, meta: where(issue), figure: '' }) },
-	ingredient_unused: { title: issueText.ingredientUnused, link: PAGES.ingredients, search: true, row: (issue) => subjectInBranch(issue) },
+	ingredient_idle: { title: issueText.ingredientIdle, link: PAGES.ingredients, search: true, detail: stockDetail, row: (issue) => subjectInBranch(issue) },
+	ingredient_no_minimum: { title: issueText.ingredientNoMinimum, link: PAGES.ingredients, search: true, detail: stockDetail, row: (issue) => ({ main: issue.subject, meta: where(issue), figure: '' }) },
+	ingredient_unused: { title: issueText.ingredientUnused, link: PAGES.ingredients, search: true, detail: stockDetail, row: (issue) => subjectInBranch(issue) },
 	margin_below_target: {
 		title: issueText.marginBelowTarget,
 		link: PAGES.recipes,
@@ -173,10 +181,11 @@ const TEXTS: Record<IssueKind, KindText> = {
 		row: (issue) => ({ main: issue.subject, meta: '', figure: format(controlText.menusCount, { count: String(issue.count) }) })
 	},
 	menu_unsold: { title: issueText.menuNotSold, link: PAGES.menu, detail: MENU, row: (issue) => subjectInBranch(issue) },
-	promo_ending: { title: issueText.promoEndingSoon, link: PAGES.promotions, row: (issue) => ({ main: issue.subject, meta: '', figure: format(issueText.endsOn, { day: day(issue) }) }) },
+	promo_ending: { title: issueText.promoEndingSoon, link: PAGES.promotions, detail: PROMO, row: (issue) => ({ main: issue.subject, meta: '', figure: format(issueText.endsOn, { day: day(issue) }) }) },
 	promo_unused: {
 		title: issueText.promoNeverUsed,
 		link: PAGES.promotions,
+		detail: PROMO,
 		row: (issue) => ({ main: issue.subject, meta: '', figure: format(issueText.runningSince, { day: day(issue) }) })
 	},
 	leave_waiting: {
@@ -199,6 +208,7 @@ const TEXTS: Record<IssueKind, KindText> = {
 	no_clock_in: {
 		title: issueText.noCheckIn,
 		link: PAGES.schedule, day: true,
+		detail: SCHEDULE_ENTRY,
 		row: (issue) => ({ main: issue.subject, meta: joined(branch(issue), issue.at ? format(issueText.dayAtTime, { day: day(issue), time: formatTime(issue.at) }) : day(issue)), figure: '' })
 	},
 	no_clock_out: { title: issueText.noCheckOut, link: PAGES.attendance, search: true, day: true, row: (issue) => subjectInBranch(issue, day(issue)) },
@@ -209,7 +219,7 @@ const TEXTS: Record<IssueKind, KindText> = {
 		row: (issue) => ({ main: issue.subject, meta: joined(branch(issue), issueText.withinThirtyDays), figure: format(issueText.timesCount, { count: String(issue.count) }) })
 	},
 	overtime_open: { title: issueText.overtimeNotEnded, link: PAGES.attendance, search: true, day: true, row: (issue) => subjectInBranch(issue, day(issue)) },
-	user_unplaced: { title: issueText.employeeNoBranch, link: PAGES.user, search: true, row: (issue) => ({ main: issue.subject, meta: '', figure: '' }) },
+	user_unplaced: { title: issueText.employeeNoBranch, link: PAGES.user, search: true, detail: EMPLOYEE, row: (issue) => ({ main: issue.subject, meta: '', figure: '' }) },
 	task_missed: {
 		title: issueText.outletTaskNotDone,
 		link: PAGES.tasks, search: true, day: true,
@@ -218,9 +228,10 @@ const TEXTS: Record<IssueKind, KindText> = {
 	device_idle: {
 		title: issueText.deviceIdle,
 		link: PAGES.devices,
+		detail: DEVICE,
 		row: (issue) => subjectInBranch(issue, issue.at ? format(issueText.lastOn, { day: at(issue) }) : '')
 	},
-	device_code_expired: { title: issueText.pairingCodeExpired, link: PAGES.devices, row: (issue) => subjectInBranch(issue) }
+	device_code_expired: { title: issueText.pairingCodeExpired, link: PAGES.devices, detail: DEVICE, row: (issue) => subjectInBranch(issue) }
 };
 
 export function textOf(kind: IssueKind): KindText {
@@ -230,7 +241,8 @@ export function textOf(kind: IssueKind): KindText {
 // Tujuan satu baris: halaman detail datanya bila ada, selain itu halaman daftar jenisnya yang sudah tersaring ke temuan itu.
 export function linkOf(kind: IssueKind, issue: Issue): IssueLink {
 	const text = TEXTS[kind];
-	if (text.detail && issue.subject_id) return { path: text.detail.path(issue.subject_id), page: text.detail.page };
+	const detail = typeof text.detail === 'function' ? text.detail(issue) : text.detail;
+	if (detail && issue.subject_id) return { path: detail.path(issue.subject_id), page: detail.page };
 	const page = text.link === PAGES.ingredients && issue.subject_kind === RESALE ? PAGES.stockItems : text.link;
 	// Rentang selalu dikirim: tanggal temuan bila jenisnya bertanggal, selain itu kosong supaya halaman tujuan tidak memakai sisa rentang halaman lain.
 	const filters = { branch: issue.outlet_id, search: text.search ? issue.subject : null, day: text.day ? (issue.day ?? '') : '', until: text.day ? (text.until?.(issue) ?? null) : null };
