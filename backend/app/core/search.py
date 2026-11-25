@@ -18,8 +18,10 @@ def trigram_opclass(bind: Connection) -> str:
     return f"{schema}.gin_trgm_ops"
 
 
-# How much of what was typed must be found in one stretch of the text: low enough for "ppuc" to find "Cappuccino" and for a typo to pass.
-WORD_SIMILARITY_THRESHOLD = 0.3
+# Ambang salah ketik: "minyk" terhadap "Minyak" (0,67) dan "capucino" (0,54) lolos; "minyk" terhadap "Mineral" (0,5) dan "Minyak" terhadap "Minuman" (0,43), yang hanya sama awalannya, tidak.
+WORD_SIMILARITY_THRESHOLD = 0.51
+# Potongan yang lebih pendek dari ini tidak dilayani indeks trigram, jadi pencocokan potongan utuh hanya untuk ketikan sepanjang ini.
+MIN_FRAGMENT_LENGTH = 3
 
 
 class _matches(FunctionElement):
@@ -35,16 +37,27 @@ def _postgres(element, compiler, **kwargs) -> str:
     return compiler.process(column.op("%>")(text), **kwargs)
 
 
+def _similar(column, typed: str) -> ColumnElement[bool]:
+    return _matches(column, bindparam(None, typed, unique=True))
+
+
+def _fragment(column, typed: str) -> ColumnElement[bool]:
+    escaped = typed.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    return column.ilike(bindparam(None, f"%{escaped}%", unique=True), escape="\\")
+
+
 def contains(column, text: str) -> ColumnElement[bool]:
-    """Whether the column matches what a person typed; the text is a bound value, so no character acts as a wildcard."""
-    return _matches(column, bindparam(None, text.strip(), unique=True))
+    """Kolom memuat ketikan sebagai potongan utuh ("ppuc" di "Cappuccino") atau cukup mirip untuk salah ketik; keduanya dilayani indeks trigram."""
+    typed = text.strip()
+    if len(typed) < MIN_FRAGMENT_LENGTH:
+        return _similar(column, typed)
+    return or_(_fragment(column, typed), _similar(column, typed))
 
 
 def mentions(column, text: str) -> ColumnElement[bool]:
     """Hanya untuk daftar yang sudah dipersempit (misalnya satu sesi), karena potongan teks utuh seperti dua digit nomor nota ikut dicocokkan tanpa indeks."""
     typed = text.strip()
-    escaped = typed.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
-    return or_(contains(column, typed), column.ilike(bindparam(None, f"%{escaped}%", unique=True), escape="\\"))
+    return or_(_similar(column, typed), _fragment(column, typed))
 
 
 def install(engine: Engine) -> None:

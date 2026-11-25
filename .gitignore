@@ -25,3 +25,6 @@ desktop.ini
 # Logs and scratch
 *.log
 *.tmp
+
+# Paket Node di akar repo, misalnya SDK railway untuk railway config plan.
+node_modules/
