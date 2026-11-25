@@ -11,14 +11,14 @@ const RESTART = { restartPolicyType: "ON_FAILURE", restartPolicyMaxRetries: 3 } 
 const NODE_SERVER = { NODE_ENV: "production", HOST: "0.0.0.0", PROTOCOL_HEADER: "x-forwarded-proto", HOST_HEADER: "x-forwarded-host" };
 
 export default defineRailway(() => {
-  const database = postgres("postgres");
+  const database = postgres("Postgres");
   const cache = redis("redis");
   const files = bucket("files", { region: "sin" });
 
   const backend = service("backend", {
     source: github(REPOSITORY, { rootDirectory: "backend" }),
-    // Mendengarkan di :: supaya terjangkau dari jaringan privat Railway, tempat web dan PWA memanggilnya.
-    start: "uvicorn server:app --host :: --port $PORT --proxy-headers --forwarded-allow-ips='*'",
+    // Satu soket IPv4 dan IPv6: jaringan privat Railway (web, PWA) memakai IPv6, cek kesehatan dan domain publik memakai IPv4.
+    start: "python serve.py",
     // Migrasi dan penjaga data berjalan sebelum versi baru menerima permintaan; gagal berarti deploy dihentikan.
     preDeploy: "python scripts/pra_deploy.py",
     healthcheck: "/health",
