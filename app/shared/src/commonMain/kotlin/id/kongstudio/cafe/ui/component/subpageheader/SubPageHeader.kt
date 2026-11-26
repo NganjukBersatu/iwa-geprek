@@ -57,7 +57,9 @@ fun SubPageHeader(
                 verticalArrangement = Arrangement.spacedBy(spacing.xs),
                 itemVerticalAlignment = Alignment.CenterVertically,
             ) {
-                BasicText(text = title, style = AppTheme.typography.title.copy(color = AppTheme.colors.content))
+                // Layar pendek (HP miring) memakai judul lebih kecil supaya isi di bawahnya tetap terlihat.
+                val style = if (AppTheme.windowSize.short) AppTheme.typography.section else AppTheme.typography.title
+                BasicText(text = title, style = style.copy(color = AppTheme.colors.content))
                 trailing?.invoke()
             }
         }

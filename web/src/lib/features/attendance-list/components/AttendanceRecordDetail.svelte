@@ -69,8 +69,8 @@
 					<p class="mt-0.5 text-xl font-semibold text-brand-ink">{formatDuration(record.work_minutes)}</p>
 				</div>
 			</div>
-			<div class="grid laptop:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
-				<div class="border-b border-slate-100 p-4 tablet:p-5 laptop:border-b-0 laptop:border-r">
+			<div>
+				<div class="border-b border-slate-100 p-4 tablet:p-5">
 					<FigureList
 						title={attendanceListText.details}
 						figures={[

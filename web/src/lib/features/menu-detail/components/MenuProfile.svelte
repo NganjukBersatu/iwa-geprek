@@ -15,7 +15,7 @@
 <Card flush>
 	<div class="flex flex-col gap-3 bg-brand-soft p-4">
 		<span class="text-xs font-medium text-brand-deep">{menuDetailText.photo}</span>
-		<div class="flex aspect-4/3 items-center justify-center overflow-hidden rounded-lg bg-brand-tint">
+		<div class="flex aspect-4/3 w-full max-w-80 items-center justify-center overflow-hidden rounded-lg bg-brand-tint">
 			{#if item.image_url}
 				<img src={item.image_url} alt={format(controlText.photoOf, { name: item.name })} class="size-full object-cover" />
 			{:else}

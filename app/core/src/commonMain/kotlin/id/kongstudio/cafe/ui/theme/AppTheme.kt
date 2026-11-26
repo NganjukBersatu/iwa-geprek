@@ -30,6 +30,7 @@ import id.kongstudio.cafe.ui.theme.spacing.AppSpacing
 import id.kongstudio.cafe.ui.theme.spacing.DefaultAppSpacing
 import id.kongstudio.cafe.ui.theme.typography.AppTypography
 import id.kongstudio.cafe.ui.theme.typography.DefaultAppTypography
+import id.kongstudio.cafe.ui.theme.window.FormFactor
 import id.kongstudio.cafe.ui.theme.window.WindowSize
 
 /** Batas pembesaran huruf dari pengaturan sistem; di atasnya tata letak tablet mulai sesak. */
@@ -41,7 +42,7 @@ private val LocalAppShapes = staticCompositionLocalOf { DefaultAppShapes }
 private val LocalAppSpacing = staticCompositionLocalOf { DefaultAppSpacing }
 private val LocalAppSizes = staticCompositionLocalOf { DefaultAppSizes }
 private val LocalAppEffects = staticCompositionLocalOf { DefaultAppEffects }
-private val LocalWindowSize = staticCompositionLocalOf { WindowSize.Compact }
+private val LocalWindowSize = staticCompositionLocalOf { WindowSize.Default }
 
 object AppTheme {
     val colors: AppColors
@@ -78,8 +79,9 @@ fun AppInterfaceScale(content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalDensity provides density, content = content)
 }
 
+/** [formFactor] dari pengaturan perangkat di web admin; kosong berarti jenis perangkat ditebak dari layarnya. */
 @Composable
-fun AppTheme(content: @Composable () -> Unit) {
+fun AppTheme(formFactor: FormFactor? = null, content: @Composable () -> Unit) {
     // Poppins sama dengan web manajemen; satu-satunya keluarga huruf teks.
     val poppins = FontFamily(
         Font(Res.font.poppins_regular, FontWeight.Normal),
@@ -89,7 +91,7 @@ fun AppTheme(content: @Composable () -> Unit) {
     )
     val typography = remember(poppins) { DefaultAppTypography.withFontFamily(poppins) }
     BoxWithConstraints(Modifier.fillMaxSize()) {
-        val windowSize = WindowSize.from(maxWidth)
+        val windowSize = WindowSize.from(maxWidth, maxHeight, formFactor)
         val system = LocalDensity.current
         // Skala layar: layar lebar memperkecil seluruh antarmuka sedikit, dan pembesaran huruf sistem dibatasi supaya tata letak tetap utuh.
         val density = remember(system, windowSize) { scaledDensity(system, windowSize) }

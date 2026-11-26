@@ -31,7 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import id.kongstudio.cafe.ui.theme.AppTheme
-import id.kongstudio.cafe.ui.theme.window.WindowSize
+import id.kongstudio.cafe.ui.theme.window.WidthClass
 
 private val WideFormMaxWidth: Dp = 440.dp
 private val NarrowFormMaxWidth: Dp = 520.dp
@@ -62,7 +62,7 @@ fun AuthCard(
         if (windowSize.isWide) {
             WideLayout(brandImage, brandDescription, content)
         } else {
-            NarrowLayout(brandImage, brandDescription, windowSize == WindowSize.Tiny, content)
+            NarrowLayout(brandImage, brandDescription, windowSize.width == WidthClass.Tiny, content)
         }
 
         if (topAction != null) {

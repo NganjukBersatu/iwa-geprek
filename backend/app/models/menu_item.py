@@ -63,3 +63,5 @@ class MenuOutletPrice(Base):
     menu_item_id: Mapped[str] = mapped_column(String)
     outlet_id: Mapped[str] = mapped_column(String)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    # Dibaca halaman perangkat untuk menilai apakah perangkat cabang ini sudah menerima harga terbaru.
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, onupdate=_utc_now)

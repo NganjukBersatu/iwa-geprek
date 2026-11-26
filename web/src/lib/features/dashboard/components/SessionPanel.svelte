@@ -49,7 +49,7 @@
 		<DataTable sort={sessions.sort} {columns} rows={sessions.rows} rowKey={(row) => row.id} trailing="nilai" onunfold={(row) => void sessions.unfold(row.id)}>
 			{#snippet first(row)}
 				<span class="flex flex-col">
-					<span class="truncate font-semibold text-slate-800">{row.cashier}</span>
+					<span class="font-semibold text-slate-800 wrap-break-word">{row.cashier}</span>
 					{#if row.end === null}<span><Badge tone="success">{termText.running}</Badge></span>{/if}
 				</span>
 			{/snippet}

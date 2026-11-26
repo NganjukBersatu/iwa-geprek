@@ -13,7 +13,7 @@ MAX_STATIONS = 50
 NOT_FOUND = 404
 STATION_NOT_FOUND = "Stasiun tidak ditemukan. Muat ulang halaman, lalu pilih lagi."
 TOO_MANY = "Pilih paling banyak {limit} stasiun."
-NO_STATION = "Pilih minimal satu stasiun supaya tablet ini punya tab kerja."
+NO_STATION = "Pilih minimal satu stasiun supaya perangkat ini punya tab kerja."
 
 
 def held_ids(db: Session, device_ids: list[str]) -> dict[str, list[str]]:

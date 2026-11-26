@@ -90,3 +90,13 @@ class BranchReadinessOut(BaseModel):
     # Tablet terdaftar yang memegang stasiun Kasir; kosong berarti belum ada yang bisa bertransaksi.
     cashier_name: str | None
     stations: list[StationRouteOut]
+    # Menu yang dijual cabang ini dan masih aktif; nol berarti kasir belum punya apa pun untuk dijual.
+    menu_count: int
+    # Menu tanpa resep, harga pokok tetap, atau stok; kasir menolaknya, jadi namanya ditunjukkan sebagian.
+    unpriced_menu_count: int
+    unpriced_menu_names: list[str]
+    # Metode bayar yang bisa dipakai kasir sekarang, dan yang menyala tetapi belum punya gambar atau catatan.
+    open_payment_labels: list[str]
+    incomplete_payment_labels: list[str]
+    # Akun aktif di cabang ini yang boleh membuka sesi kas dan mencatat transaksi.
+    cashier_staff_count: int

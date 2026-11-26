@@ -16,6 +16,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import id.kongstudio.cafe.feature.release.ApkReleaseNotes
+import org.jetbrains.compose.resources.StringResource
+import id.kongstudio.cafe.resources.release_fixes_title
+import id.kongstudio.cafe.feature.release.ApkReleaseFixes
 import id.kongstudio.cafe.resources.Res
 import id.kongstudio.cafe.resources.about_developer_line
 import id.kongstudio.cafe.resources.about_place
@@ -103,11 +106,21 @@ private fun IdentityCard() {
 
 @Composable
 private fun ReleaseCard() {
+    Column(verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.md)) {
+        ReleaseList(AppIcons.Sparkles, stringResource(Res.string.release_title, appVersionName()), ApkReleaseNotes)
+        if (ApkReleaseFixes.isNotEmpty()) {
+            ReleaseList(AppIcons.ShieldCheck, stringResource(Res.string.release_fixes_title, appVersionName()), ApkReleaseFixes)
+        }
+    }
+}
+
+@Composable
+private fun ReleaseList(icon: ImageVector, title: String, notes: List<Pair<StringResource, ImageVector>>) {
     ListCard {
-        CardHeader(icon = AppIcons.Sparkles, title = stringResource(Res.string.release_title, appVersionName()))
+        CardHeader(icon = icon, title = title)
         AppDivider()
-        DividedItems(ApkReleaseNotes) { (text, icon) ->
-            ListRow(title = stringResource(text), leading = { IconBadge(icon = icon) })
+        DividedItems(notes) { (text, noteIcon) ->
+            ListRow(title = stringResource(text), leading = { IconBadge(icon = noteIcon) })
         }
     }
 }

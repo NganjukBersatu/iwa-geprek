@@ -44,6 +44,7 @@ internal fun OpenSessionSheet(
             amount = amount,
             onAmountChange = { amount = it },
             label = stringResource(Res.string.session_form_opening_cash),
+            onDone = { amount?.let { if (known && !submitting) onSubmit(it) } },
         )
     }
 }

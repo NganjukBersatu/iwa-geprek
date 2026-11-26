@@ -3,7 +3,6 @@
 	import Button from '$lib/components/button/Button.svelte';
 	import Modal from '$lib/components/dialog/Modal.svelte';
 	import QrCodeImage from '$lib/components/media/QrCodeImage.svelte';
-	import { formatDateTime } from '$lib/format/datetime';
 	import { actionText } from '$lib/text/actions';
 	import { deviceText } from '$lib/text/devices';
 	import { format } from '$lib/text/format';
@@ -12,13 +11,16 @@
 	let { issued, onclose }: { issued: DeviceCode; onclose: () => void } = $props();
 
 	let copied = $state(false);
+	let copyFailed = $state(false);
 
 	async function copy(): Promise<void> {
 		try {
 			await navigator.clipboard.writeText(issued.code);
 			copied = true;
+			copyFailed = false;
 		} catch {
 			copied = false;
+			copyFailed = true;
 		}
 	}
 </script>
@@ -30,7 +32,10 @@
 			<p class="text-sm leading-6 text-slate-600">{deviceText.pairSteps}</p>
 			<p class="text-xs text-slate-500">{deviceText.pairTypeCode}</p>
 			<p class="select-all font-mono text-2xl font-bold tracking-widest text-slate-800">{issued.code}</p>
-			<p class="text-xs text-slate-500">{format(deviceText.codeExpiresNote, { time: formatDateTime(issued.code_expires_at) })}</p>
+			{#if copyFailed}
+				<p class="text-xs text-danger-700" role="alert">{deviceText.copyFailed}</p>
+			{/if}
+			<p class="text-xs text-slate-500">{deviceText.codeKeptNote}</p>
 		</div>
 	</div>
 	{#snippet footer()}

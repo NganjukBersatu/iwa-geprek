@@ -3,6 +3,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from app.core.devices.device_layout import DeviceLayout
 from app.core.devices.device_stations import MAX_STATIONS
 from app.models.station import StationKind
 from web.management.devices.constants import MAX_NAME_LENGTH
@@ -18,6 +19,7 @@ class DeviceCreateIn(BaseModel):
     # Klien lama saja: stasiun tanpa tablet yang struknya dikirim dari tablet ini; diabaikan bila mode dikirim.
     print_station_ids: list[str] = Field(default_factory=list, max_length=MAX_STATIONS)
     mode: DeviceMode | None = None
+    layout: DeviceLayout = "auto"
 
 
 class DeviceUpdateIn(BaseModel):
@@ -27,6 +29,8 @@ class DeviceUpdateIn(BaseModel):
     station_ids: list[str] | None = Field(None, max_length=MAX_STATIONS)
     print_station_ids: list[str] | None = Field(None, max_length=MAX_STATIONS)
     mode: DeviceMode | None = None
+    # Mengganti tampilan tidak memasang ulang perangkat; app membacanya dari jawaban berikutnya.
+    layout: DeviceLayout | None = None
 
 
 class StationOptionOut(BaseModel):
@@ -48,12 +52,17 @@ class DeviceOut(BaseModel):
     section: str
     status: str
     mode: DeviceMode
+    layout: DeviceLayout
     android_id: str | None
     serial: str | None
     brand: str | None
     model: str | None
     # Nama admin yang menambahkan perangkat; kosong bila akunnya sudah tidak ada.
     registered_by_name: str | None
+    # Kapan data cabang yang dibaca perangkat (menu, harga cabang, promo, metode bayar) terakhir berubah.
+    data_changed_at: datetime | None
+    # Kosong bila perangkat belum pernah dipakai; selain itu apakah perangkat tersambung sejak perubahan terakhir.
+    has_latest_data: bool | None
     created_at: datetime
     paired_at: datetime | None
     last_used_at: datetime | None
@@ -63,6 +72,12 @@ class DeviceOut(BaseModel):
     print_station_names: list[str]
 
 
+class DeviceDetailOut(DeviceOut):
+    """Only the detail page receives the pairing code; the device list never carries it."""
+
+    # Empty for a device whose code was issued before codes were kept; the admin issues a new code.
+    pairing_code: str | None
+
+
 class DeviceCodeOut(DeviceOut):
-    code: str = Field(description="Shown once; afterwards only its hash exists on the server")
-    code_expires_at: datetime
+    code: str = Field(description="The pairing code; it stays valid for pairing the device again until a new code is issued")

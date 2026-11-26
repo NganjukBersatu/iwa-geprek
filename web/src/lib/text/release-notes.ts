@@ -2,16 +2,14 @@
 
 import type { ReleaseNote } from '$lib/features/download/release';
 
-export const APK_VERSION = "1.0.0";
+export const APK_VERSION = "1.0.1";
 
 export const IOS_VERSION = "1.0.0";
 
 export const APK_NOTES: ReleaseNote[] = [
-	{ icon: "shopping-cart", text: "Kasir untuk mencatat pesanan dan menerima pembayaran tunai maupun nontunai" },
-	{ icon: "receipt", text: "Pesanan dapat disimpan sebagai tagihan terbuka dan dibayar belakangan" },
-	{ icon: "printer", text: "Struk dan tiket dapur dicetak langsung ke printer yang terhubung" },
-	{ icon: "clipboard-list", text: "Stok bahan berkurang otomatis mengikuti resep setiap menu yang terjual" },
-	{ icon: "qrcode", text: "Absen karyawan lewat kode QR di tablet" },
+	{ icon: "device-mobile", text: "Perangkat kasir kini nyaman dipakai di HP, tegak maupun mendatar" },
+	{ icon: "shopping-bag", text: "Jenis pesanan awal mengikuti pengaturan cabang: makan di tempat atau dibawa pulang" },
+	{ icon: "refresh", text: "Perangkat yang terlepas dapat dipasang ulang dengan kode tanpa keluar dari akun" },
 ];
 
 export const IOS_NOTES: ReleaseNote[] = [

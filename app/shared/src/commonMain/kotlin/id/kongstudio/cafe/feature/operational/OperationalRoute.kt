@@ -3,6 +3,9 @@ package id.kongstudio.cafe.feature.operational
 import id.kongstudio.cafe.feature.demo.DemoBanner
 import id.kongstudio.cafe.feature.demo.DemoMode
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.LaunchedEffect
@@ -132,7 +135,8 @@ internal fun OperationalRoute(
     } else if (state.connected && userToken == null) {
         OperationalRelink(onRelink = unlink, modifier = modifier)
     } else if (state.connected) {
-        Column(modifier = modifier) {
+        // Jarak bilah status dipasang di sini (dan habis dipakai), supaya pita demo tidak menumpuk dengan jam dan kerangka di bawahnya tidak menambah jarak dua kali.
+        Column(modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)) {
             DemoBanner(demo)
             SessionExpiryBanner(userToken.orEmpty())
             OperationalDashboard(

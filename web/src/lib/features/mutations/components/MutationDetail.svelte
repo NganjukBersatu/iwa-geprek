@@ -79,7 +79,7 @@
 				{ label: mutationText.revenueDifference, value: session.revenue_difference === null ? termText.running : formatSigned(session.revenue_difference) }
 			]}
 		/>
-		<div class="grid items-start gap-4 tablet:gap-6 laptop:grid-cols-2">
+		<div class="flex flex-col gap-4 tablet:gap-6">
 			<Card flush>
 				<CardHeader divided title={mutationText.threePartsTitle} description={mutationText.threePartsDescription} />
 				<DataTable {columns} rows={partsOf(session)} rowKey={(part) => part.label} trailing="selisih" />

@@ -54,7 +54,7 @@ internal class Promotion(
 
 internal class PromotionMenu(val id: String, val name: String)
 
-/** Isian formulir; satu bentuk untuk diskon kasir dan info kafe, bidang yang tidak relevan diabaikan. */
+/** Isian formulir; satu bentuk untuk diskon kasir dan info outlet, bidang yang tidak relevan diabaikan. */
 internal class PromotionForm(
     val title: String,
     val description: String,

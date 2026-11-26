@@ -150,8 +150,11 @@
 		{/if}
 
 		<Card>
-			<div class="grid items-end gap-3 tablet:grid-cols-[minmax(0,1fr)_14rem_auto]">
-				<TextField label={sopText.sopTitle} bind:value={draft.title} maxlength={120} required placeholder={sopText.sopTitleExample} />
+			<!-- Judul diberi lebar minimum: kolom centang ikut lebar teksnya, jadi tanpa batas ini judul terdesak sampai nol di layar menengah. -->
+			<div class="grid items-end gap-3 tablet:grid-cols-2 laptop:grid-cols-[minmax(16rem,1fr)_14rem_minmax(0,18rem)]">
+				<div class="tablet:col-span-2 laptop:col-span-1">
+					<TextField label={sopText.sopTitle} bind:value={draft.title} maxlength={120} required placeholder={sopText.sopTitleExample} />
+				</div>
 				<BranchField label={sopText.availableIn} bind:value={draft.outletId} everyLabel={draft.canChooseEveryBranch ? termText.allBranches : undefined} />
 				<CheckRow label={sopText.shownToEmployees} hint={sopText.shownToEmployeesHint} checked={draft.active} onchange={() => (draft.active = !draft.active)} />
 			</div>

@@ -118,8 +118,8 @@
 				</section>
 			</Card>
 		{/if}
-		<Card flush class="grid laptop:grid-cols-2">
-			<div class="flex flex-col gap-4 border-b border-slate-100 p-4 tablet:p-5 laptop:border-b-0 laptop:border-r">
+		<Card flush>
+			<div class="flex flex-col gap-4 border-b border-slate-100 p-4 tablet:p-5">
 				<FigureList
 					title={taskText.details}
 					figures={[

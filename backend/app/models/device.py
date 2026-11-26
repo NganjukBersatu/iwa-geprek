@@ -24,8 +24,12 @@ class Device(Base):
     section: Mapped[str] = mapped_column(String(30), default="kasir")
     status: Mapped[str] = mapped_column(String(20), default="menunggu")
     mode: Mapped[str] = mapped_column(Text, default=MODE_STATION)
+    # Kosong berarti otomatis; nilainya diatur app.core.devices.device_layout.
+    layout: Mapped[str | None] = mapped_column(Text, nullable=True)
     code_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     code_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # Kode pasang apa adanya, untuk dilihat lagi di detail dan dipakai memasang ulang; kosong pada kode lama yang sekali pakai.
+    pairing_code: Mapped[str | None] = mapped_column(Text, nullable=True)
     token_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     android_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
     serial: Mapped[str | None] = mapped_column(String(80), nullable=True)

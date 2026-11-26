@@ -49,7 +49,7 @@
 					{@const typed = count.counted[item.menu_item_id]?.trim()}
 					<li class="flex items-center justify-between gap-3 py-2">
 						<span class="min-w-0">
-							<span class="block truncate text-sm text-slate-800">{item.menu_item_name}</span>
+							<span class="block text-sm text-slate-800 wrap-break-word">{item.menu_item_name}</span>
 							<span class="block text-xs text-slate-500">{format(stockItemText.systemBalance, { amount: formatNumber(item.balance), unit: item.unit ?? '' })}</span>
 						</span>
 						<div class="w-28 shrink-0">

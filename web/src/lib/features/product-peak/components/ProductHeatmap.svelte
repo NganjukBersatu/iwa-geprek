@@ -51,7 +51,7 @@
 								? 'border-slate-100 bg-slate-50 opacity-60'
 								: 'border-brand-tint bg-white hover:border-brand hover:bg-brand-soft'}"
 						>
-							<span class="truncate text-xs font-semibold text-slate-700">{series.menu_item_name}</span>
+							<span class="line-clamp-2 text-xs font-semibold text-slate-700 wrap-break-word" title={series.menu_item_name}>{series.menu_item_name}</span>
 							<span class="text-xs text-slate-500">{format(productPeakText.itemsAndRevenue, { items: formatNumber(series.total_qty, 0), revenue: formatRupiah(series.total_revenue) })}</span>
 						</button>
 					</li>

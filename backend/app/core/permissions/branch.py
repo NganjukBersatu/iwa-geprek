@@ -13,6 +13,6 @@ GROUP = Group("branch", "Cabang", (
         Permission("pembayaran.kelola", "Atur cara pembayaran", "Menambah, mengubah, dan menghapus cara pembayaran; termasuk QRIS statis."),
         Permission("pengunjung.kelola", "Atur kategori pengunjung", "Menambah, mengubah, dan menghapus jenis rombongan (sendiri, berkeluarga, dan seterusnya) dan pilihan jenis kelamin yang muncul di kasir."),
         Permission("pengaturan.kelola", "Ubah pengaturan struk, harga, dan absensi", "Mengubah pengaturan struk, harga dan margin, serta aturan absensi cabang. Berikan dengan hati-hati: salah tangan di sini pernah mengubah WiFi dan identitas struk cabang tanpa sengaja."),
-        Permission("panduan.lihat", "Panduan Setup", "Membuka checklist kelengkapan setup kafe (metode bayar, peran, dan seterusnya)."),
+        Permission("panduan.lihat", "Panduan Setup", "Melihat daftar kesiapan cabang di dasbor: menu dan resep, metode bayar, karyawan kasir, dan perangkat kasir, beserta tautan untuk melengkapinya. Hanya membaca."),
     )),
 ))

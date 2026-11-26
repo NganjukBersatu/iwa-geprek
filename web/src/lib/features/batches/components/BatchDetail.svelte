@@ -158,8 +158,8 @@
 		{#if batch.target === TARGET_USER && batch.user.length === 0}
 			<Banner tone="warning" icon="alert-triangle" title={batchText.noRecipientTitle}>{batchText.noRecipientBody}</Banner>
 		{/if}
-		<Card flush class="grid laptop:grid-cols-2">
-			<div class="flex flex-col gap-4 border-b border-slate-100 p-4 tablet:p-5 laptop:border-b-0 laptop:border-r">
+		<Card flush>
+			<div class="flex flex-col gap-4 border-b border-slate-100 p-4 tablet:p-5">
 				<FigureList title={batchText.details} figures={rowsOf(batch)} />
 				{#if batch.shift_codes.length > 0}
 					<div class="flex flex-wrap gap-2">

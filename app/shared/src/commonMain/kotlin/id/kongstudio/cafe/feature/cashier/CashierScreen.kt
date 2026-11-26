@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -48,6 +49,7 @@ import id.kongstudio.cafe.resources.cashier_clear_message
 import id.kongstudio.cafe.resources.cashier_clear_title
 import id.kongstudio.cafe.resources.cashier_items_count
 import id.kongstudio.cafe.resources.cashier_menu_empty
+import id.kongstudio.cafe.resources.cashier_menu_none
 import id.kongstudio.cafe.resources.cashier_order_note_confirm_action
 import id.kongstudio.cafe.resources.cashier_order_note_confirm_message
 import id.kongstudio.cafe.resources.cashier_order_note_confirm_title
@@ -96,7 +98,7 @@ internal fun CashierScreen(
     var notingKey by remember { mutableStateOf<String?>(null) }
     var clearing by rememberSaveable { mutableStateOf(false) }
     var addingNote by remember { mutableStateOf<String?>(null) }
-    val wide = AppTheme.windowSize.isWide
+    val wide = AppTheme.windowSize.twoPane
 
     val catalog = remember(state.items) { state.items.associateBy { it.id } }
     val lines = cart.lines(catalog)
@@ -349,6 +351,9 @@ internal fun CashierScreen(
 
 private class CartToggle(val hidden: Boolean, val count: Int, val onClick: () -> Unit)
 
+/** Bagian lebar baris untuk kotak pencarian saat pencarian dan kategori berbagi satu baris. */
+private const val SearchShare = 0.4f
+
 @Composable
 private fun MenuPane(
     state: CashierUiState,
@@ -377,8 +382,8 @@ private fun MenuPane(
             .fillMaxSize()
             .padding(horizontal = AppTheme.windowSize.pagePadding),
     ) {
-        Spacer(Modifier.height(spacing.lg))
-        PageTitle(title = stringResource(Res.string.nav_cashier)) {
+        val window = AppTheme.windowSize
+        val cartButton: @Composable () -> Unit = {
             cartToggle?.let { toggle ->
                 AppIconButton(
                     icon = AppIcons.Cart,
@@ -390,6 +395,13 @@ private fun MenuPane(
                     badge = toggle.count.takeIf { it > 0 }?.toString(),
                 )
             }
+        }
+        // Di HP judul sudah tertulis di bilah bawah, jadi ruang layarnya dipakai untuk daftar menu.
+        if (window.isPhone) {
+            Spacer(Modifier.height(spacing.sm))
+        } else {
+            Spacer(Modifier.height(spacing.lg))
+            PageTitle(title = stringResource(Res.string.nav_cashier)) { cartButton() }
         }
         state.billNotice?.let { notice ->
             StatusBanner(
@@ -434,29 +446,49 @@ private fun MenuPane(
             )
             Spacer(Modifier.height(spacing.md))
         }
-        AppTextField(
-            value = query,
-            onValueChange = { query = it },
-            label = stringResource(Res.string.cashier_search),
-            trailing = {
-                AppIcon(
-                    icon = AppIcons.Search,
-                    tint = colors.contentMuted,
-                    size = AppTheme.sizes.iconSmall,
-                    modifier = Modifier.padding(end = spacing.md),
-                )
-            },
-        )
-        Spacer(Modifier.height(spacing.md))
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(spacing.sm)) {
-            items(categories, key = { it }) { tab ->
-                AppChip(label = categoryLabel(tab), selected = tab == active, onClick = { onCategory(tab) })
+        val search: @Composable (Modifier) -> Unit = { fieldModifier ->
+            AppTextField(
+                value = query,
+                onValueChange = { query = it },
+                label = stringResource(Res.string.cashier_search),
+                modifier = fieldModifier,
+                trailing = {
+                    AppIcon(
+                        icon = AppIcons.Search,
+                        tint = colors.contentMuted,
+                        size = AppTheme.sizes.iconSmall,
+                        modifier = Modifier.padding(end = spacing.md),
+                    )
+                },
+            )
+        }
+        val chips: @Composable (Modifier) -> Unit = { rowModifier ->
+            LazyRow(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(spacing.sm)) {
+                items(categories, key = { it }) { tab ->
+                    AppChip(label = categoryLabel(tab), selected = tab == active, onClick = { onCategory(tab) })
+                }
             }
+        }
+        if (window.short) {
+            // Layar pendek (HP miring): pencarian dan kategori berbagi satu baris supaya kisi menu tetap terlihat.
+            Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(spacing.md)) {
+                search(Modifier.weight(SearchShare))
+                chips(Modifier.weight(1f - SearchShare))
+                if (window.isPhone) cartButton()
+            }
+        } else {
+            Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(spacing.sm)) {
+                search(Modifier.weight(1f))
+                if (window.isPhone) cartButton()
+            }
+            Spacer(Modifier.height(spacing.md))
+            chips(Modifier)
         }
 
         if (visible.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Notice(stringResource(Res.string.cashier_menu_empty))
+                // Cabang yang belum punya menu sama sekali diberi langkah berikutnya, bukan kesan pencarian gagal.
+                Notice(stringResource(if (state.items.isEmpty()) Res.string.cashier_menu_none else Res.string.cashier_menu_empty))
             }
         } else {
             val soldOut = stringResource(Res.string.cashier_status_sold_out)

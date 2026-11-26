@@ -1,4 +1,4 @@
-"""The pairing code a tablet types to register itself; only its hash is stored."""
+"""The pairing code a device types or scans to register itself; the hash finds it, and the code itself is kept so the admin can show it again."""
 import secrets
 
 # No 0/O and 1/I/L, so the code can be typed safely from a screen.

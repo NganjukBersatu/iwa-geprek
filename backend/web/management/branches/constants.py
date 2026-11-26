@@ -5,6 +5,9 @@ PERMISSION_MANAGE = "cabang.kelola"
 PERMISSION_REMOVE = "cabang.hapus"
 # Halaman cabang memuat pengaturan struk, harga dan margin, serta aturan absensi, jadi pemegang izin pengaturan juga boleh membukanya; mengubah cabang tetap butuh cabang.kelola.
 READ_GATE = AnyOf((PERMISSION_MANAGE, SETTINGS_MANAGE))
+PERMISSION_GUIDE = "panduan.lihat"
+# Daftar kesiapan juga tampil di dasbor, jadi pemegang izin panduan boleh membacanya tanpa membuka halaman cabang.
+READINESS_GATE = AnyOf((PERMISSION_MANAGE, SETTINGS_MANAGE, PERMISSION_GUIDE))
 
 MAX_NAME_LENGTH = 120
 MAX_CODE_LENGTH = 16

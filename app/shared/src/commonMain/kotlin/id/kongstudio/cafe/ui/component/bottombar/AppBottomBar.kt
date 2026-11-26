@@ -3,6 +3,7 @@ package id.kongstudio.cafe.ui.component.bottombar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -83,6 +84,28 @@ fun AppBottomBar(
 private fun BarItem(item: BottomBarItem, modifier: Modifier) {
     val colors = AppTheme.colors
     val tint = if (item.selected) colors.primary else colors.contentMuted
+
+    // Layar pendek (HP miring): ikon dan label berdampingan dalam satu baris setinggi target sentuh, supaya tinggi layar dipakai isi.
+    if (AppTheme.windowSize.short && !item.prominent) {
+        Row(
+            modifier = modifier
+                .heightIn(min = AppTheme.spacing.touchTarget)
+                .clip(AppTheme.shapes.field)
+                .background(if (item.selected) colors.selected else Color.Transparent)
+                .selectable(selected = item.selected, role = Role.Tab, onClick = item.onClick),
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.spacing.sm, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            AppIcon(icon = item.icon, tint = tint, size = AppTheme.sizes.icon)
+            BasicText(
+                text = item.label,
+                style = AppTheme.typography.label.copy(color = tint, fontWeight = if (item.selected) FontWeight.Bold else FontWeight.Normal),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        return
+    }
 
     Column(
         modifier = modifier

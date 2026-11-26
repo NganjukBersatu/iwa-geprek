@@ -46,7 +46,7 @@ CONFLICT = 409
 
 TASK_NOT_FOUND = "Item tidak ditemukan di stasiun ini."
 MIXED_STATIONS = "Pilih item dari satu stasiun saja."
-MOVED_ELSEWHERE = "Item ini sudah diubah dari tablet lain. Papan diperbarui."
+MOVED_ELSEWHERE = "Item ini sudah diubah dari perangkat lain. Papan diperbarui."
 NOT_ARRIVED = "Item ini belum tiba di stasiun ini."
 ORDER_VOIDED = "Pesanan ini sudah dibatalkan."
 ITEM_REMOVED = "Item ini sudah dihapus lewat koreksi pesanan."
@@ -59,7 +59,7 @@ STALE_BUSINESS_DAYS = 2
 STALE_CLOSE_LIMIT = 500
 STALE_CLOSE_REASON = "Ditutup otomatis: tertinggal lebih dari 2 hari bisnis"
 # Menu di stasiun tanpa tablet tidak punya layar; dihentikan tanpa waktu kerja, per batch STALE_CLOSE_LIMIT dengan paling banyak ORPHAN_STOP_BATCHES putaran.
-ORPHAN_STOP_REASON = "Dihentikan sistem: stasiun tidak dipegang tablet mana pun"
+ORPHAN_STOP_REASON = "Dihentikan sistem: stasiun tidak dipegang perangkat mana pun"
 ORPHAN_STOP_BATCHES = 10
 LEFT_BEHIND_LIMIT = 100
 

@@ -7,9 +7,10 @@
     <string name="release_employee_tasks">Tugas harian dan tugas rutin dikerjakan dan dikirim lengkap dengan foto</string>
     <string name="release_employee_guides">Panduan kerja dapat dibaca langsung dari ponsel</string>
     <!-- Ringkasan APK versi ini, dibaca app dan halaman Unduhan. -->
-    <string name="release_apk_cashier">Kasir untuk mencatat pesanan dan menerima pembayaran tunai maupun nontunai</string>
-    <string name="release_apk_open_bills">Pesanan dapat disimpan sebagai tagihan terbuka dan dibayar belakangan</string>
-    <string name="release_apk_printing">Struk dan tiket dapur dicetak langsung ke printer yang terhubung</string>
-    <string name="release_apk_stock">Stok bahan berkurang otomatis mengikuti resep setiap menu yang terjual</string>
-    <string name="release_apk_attendance">Absen karyawan lewat kode QR di tablet</string>
+    <string name="release_apk_phone">Perangkat kasir kini nyaman dipakai di HP, tegak maupun mendatar</string>
+    <string name="release_apk_order_type">Jenis pesanan awal mengikuti pengaturan cabang: makan di tempat atau dibawa pulang</string>
+    <string name="release_apk_repair">Perangkat yang terlepas dapat dipasang ulang dengan kode tanpa keluar dari akun</string>
+    <!-- Perbaikan di APK versi ini. -->
+    <string name="release_fix_clipped_numbers">Angka di dasbor tidak lagi terpotong</string>
+    <string name="release_fix_restored_order">Pesanan yang dipulihkan mengikuti jenis pesanan cabang</string>
 </resources>

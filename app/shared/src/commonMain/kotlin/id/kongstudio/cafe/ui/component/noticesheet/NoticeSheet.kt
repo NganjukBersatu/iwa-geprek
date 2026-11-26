@@ -26,6 +26,9 @@ import id.kongstudio.cafe.ui.theme.AppTheme
 /** Satu baris pengumuman: kalimat utama, keterangan waktunya, dan ikon penanda bila ada. */
 class NoticeSheetItem(val title: String, val caption: String?, val icon: ImageVector? = null)
 
+/** Kelompok tambahan di bawah daftar utama, dengan judul dan ikonnya sendiri. */
+class NoticeSheetSection(val title: String, val icon: ImageVector, val items: List<NoticeSheetItem>)
+
 /** Pengumuman berupa modal tengah yang tidak mengunci apa pun: ditutup lewat tombol, ketuk di luar, atau tombol kembali. */
 @Composable
 fun NoticeSheet(
@@ -33,6 +36,7 @@ fun NoticeSheet(
     items: List<NoticeSheetItem>,
     closeLabel: String,
     onClose: () -> Unit,
+    sections: List<NoticeSheetSection> = emptyList(),
 ) {
     AppDialog(title = title, onDismiss = onClose) {
         Column(
@@ -42,22 +46,38 @@ fun NoticeSheet(
                 .padding(AppTheme.spacing.lg),
             verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.md),
         ) {
-            Column {
-                items.forEachIndexed { index, item ->
-                    if (index > 0) AppDivider()
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = AppTheme.spacing.md),
-                        horizontalArrangement = Arrangement.spacedBy(AppTheme.spacing.md),
-                    ) {
-                        item.icon?.let { NoticeIcon(it) }
-                        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.xs)) {
-                            AppText(text = item.title, role = TextRole.Caption, color = AppTheme.colors.content)
-                            item.caption?.let { AppText(text = it, role = TextRole.Caption, color = AppTheme.colors.contentMuted) }
-                        }
-                    }
+            NoticeRows(items)
+            sections.filter { it.items.isNotEmpty() }.forEach { section ->
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = AppTheme.spacing.sm),
+                    horizontalArrangement = Arrangement.spacedBy(AppTheme.spacing.sm),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    AppIcon(icon = section.icon, tint = AppTheme.colors.content, size = AppTheme.sizes.iconSmall)
+                    AppText(text = section.title, role = TextRole.Subtitle, color = AppTheme.colors.content)
                 }
+                NoticeRows(section.items)
             }
             PrimaryButton(text = closeLabel, onClick = onClose)
+        }
+    }
+}
+
+@Composable
+private fun NoticeRows(items: List<NoticeSheetItem>) {
+    Column {
+        items.forEachIndexed { index, item ->
+            if (index > 0) AppDivider()
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = AppTheme.spacing.md),
+                horizontalArrangement = Arrangement.spacedBy(AppTheme.spacing.md),
+            ) {
+                item.icon?.let { NoticeIcon(it) }
+                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.xs)) {
+                    AppText(text = item.title, role = TextRole.Caption, color = AppTheme.colors.content)
+                    item.caption?.let { AppText(text = it, role = TextRole.Caption, color = AppTheme.colors.contentMuted) }
+                }
+            }
         }
     }
 }

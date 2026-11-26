@@ -236,7 +236,7 @@ internal class CashierRepository(
         }
     }
 
-    /** Identitas kafe untuk kepala struk; disimpan agar struk tetap bisa dicetak saat offline. */
+    /** Identitas outlet untuk kepala struk; disimpan agar struk tetap bisa dicetak saat offline. */
     suspend fun shopInfo(): DeviceResult<ShopInfo> {
         val result = deviceCall(
             client = client,
@@ -539,8 +539,9 @@ private class ShopDto(
     @SerialName("wifi_password") val wifiPassword: String = "",
     @SerialName("complaint_number") val complaintNumber: String = "",
     @SerialName("social_handles") val socialHandles: List<String> = emptyList(),
+    @SerialName("default_order_type") val defaultOrderType: String = "free_table",
 ) {
-    fun toModel() = ShopInfo(name, address, phone, thanks, hasWifi, wifiPassword, complaintNumber, socialHandles)
+    fun toModel() = ShopInfo(name, address, phone, thanks, hasWifi, wifiPassword, complaintNumber, socialHandles, defaultTakeAway = defaultOrderType == TakeAwayCode)
 }
 
 @Serializable

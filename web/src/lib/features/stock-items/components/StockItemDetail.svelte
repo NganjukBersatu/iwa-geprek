@@ -158,8 +158,8 @@
 		<Button label={stockItemText.adjust} icon="adjustments" variant="tertiary" onclick={() => (movement = 'adjust')} />
 	{/snippet}
 	{#snippet body(item)}
-		<Card flush class="grid laptop:grid-cols-2">
-			<div class="border-b border-slate-100 p-4 tablet:p-5 laptop:border-b-0 laptop:border-r">
+		<Card flush>
+			<div class="border-b border-slate-100 p-4 tablet:p-5">
 				<FigureList
 					title={termText.stock}
 					figures={[

@@ -4,6 +4,7 @@ from decimal import Decimal
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.orders import order_types
 from app.models.cafe_settings import CafeSettings
 from app.models.outlet import Outlet
 
@@ -14,7 +15,7 @@ DEFAULT_MARKUP_PERCENT = Decimal(30)
 
 
 def ensure(db: Session, outlet_id: str) -> CafeSettings:
-    """Mengembalikan baris pengaturan cabang, membuatnya dengan nilai bawaan dan nama kafe sama dengan nama cabang bila belum ada."""
+    """Mengembalikan baris pengaturan cabang, membuatnya dengan nilai bawaan dan nama outlet sama dengan nama cabang bila belum ada."""
     row = db.get(CafeSettings, outlet_id)
     if row is not None:
         return row
@@ -40,6 +41,7 @@ def ensure(db: Session, outlet_id: str) -> CafeSettings:
         target_margin_percent=None,
         tax_percent=Decimal(0),
         service_percent=Decimal(0),
+        default_order_type=order_types.DINE_IN,
     )
     db.add(row)
     db.flush()

@@ -109,7 +109,7 @@
 				</div>
 			</Card>
 
-			<div class="grid gap-4 laptop:grid-cols-2">
+			<div class="flex flex-col gap-4">
 				<Card>
 					<CardHeader class="mb-4" title={t.onTimeTitle} description={t.onTimeDescription} />
 					<SeriesChart

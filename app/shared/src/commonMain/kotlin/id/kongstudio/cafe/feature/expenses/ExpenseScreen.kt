@@ -278,7 +278,8 @@ internal fun ExpenseScreen(
                 caption = listOfNotNull(item.buyer ?: item.cashier, sourceLabel(item.source)).joinToString(" · "),
                 footnote = DateTimeFormat.stamp(item.createdAt)?.let { whenLabel(it) },
                 leading = { IconBadge(AppIcons.Wallet) },
-                trailing = { AppText(text = formatRupiah(item.amount), role = TextRole.Title, color = AppTheme.colors.content) },
+                // Nominal baris daftar cukup sebesar subjudul, supaya nama item tidak terdesak di layar sempit.
+                trailing = { AppText(text = formatRupiah(item.amount), role = TextRole.Subtitle, color = AppTheme.colors.content) },
                 opensDetail = true,
                 onClick = {
                     detailId = item.id

@@ -22,10 +22,10 @@ from app.models.station import CategoryBranchStation, CategoryStation, DeviceSta
 
 NOT_FOUND = 404
 STATION_NOT_FOUND = "Stasiun tidak ditemukan. Muat ulang halaman, lalu pilih lagi."
-ONLY_MAKERS = "Hanya stasiun berjenis Membuat menu atau Mengantar menu yang bisa dicetak dari tablet kasir."
+ONLY_MAKERS = "Hanya stasiun berjenis Membuat menu atau Mengantar menu yang bisa dicetak dari perangkat kasir."
 PRINTABLE_FROM_CASHIER = (StationKind.MAKE, StationKind.DELIVER)
 MENU_NOT_FOUND = "Menu tidak ditemukan. Muat ulang halaman, lalu pilih lagi."
-NEEDS_CASHIER = "Stasiun tanpa tablet hanya bisa dicetak dari tablet yang memegang stasiun Kasir."
+NEEDS_CASHIER = "Stasiun tanpa perangkat hanya bisa dicetak dari perangkat Mode Kasir."
 
 
 class RouteState(StrEnum):

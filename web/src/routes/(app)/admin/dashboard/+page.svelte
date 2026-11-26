@@ -21,11 +21,15 @@
 	import PeriodTotalsCard from '$lib/features/dashboard/components/PeriodTotalsCard.svelte';
 	import ProfitLossCard from '$lib/features/dashboard/components/ProfitLossCard.svelte';
 	import { syncBranchPeriod } from '$lib/features/report/branch-period.svelte';
+	import ReceiptsPanel from '$lib/features/dashboard/components/ReceiptsPanel.svelte';
 	import SessionPanel from '$lib/features/dashboard/components/SessionPanel.svelte';
 	import SummaryGrid from '$lib/features/dashboard/components/SummaryGrid.svelte';
 	import TopListCard from '$lib/features/dashboard/components/TopListCard.svelte';
 	import TrendCard from '$lib/features/dashboard/components/TrendCard.svelte';
 	import { actionText } from '$lib/text/actions';
+	import { access } from '$lib/auth/access.svelte';
+	import { demoMode } from '$lib/stores/demo-mode.svelte';
+	import BranchReadiness from '$lib/features/branch-detail/components/BranchReadiness.svelte';
 	import { pageText } from '$lib/text/pages';
 	import { format } from '$lib/text/format';
 
@@ -37,11 +41,21 @@
 
 	syncBranchPeriod(() => dashboard.filters);
 
+	let branchOptions = $state<{ value: string; label: string }[]>([]);
+	// Panduan menunjuk satu cabang: yang dipilih di filter, atau satu-satunya cabang milik owner baru.
+	const guideBranch = $derived.by(() => {
+		const chosen = dashboard.filters.get('cabang');
+		return branchOptions.find((option) => option.value === chosen) ?? (branchOptions.length === 1 ? branchOptions[0] : undefined);
+	});
+
 	whenChanged(() => dashboard.query, (query) => void dashboard.load(query));
 	whenChanged(() => dashboard.filters.get('cabang'), () => void dashboard.loadStock());
 
 	onMount(() => {
-		void loadBranchOptions().then((options) => dashboard.setBranches(options));
+		void loadBranchOptions().then((options) => {
+			branchOptions = options;
+			dashboard.setBranches(options);
+		});
 		const stopSales = live.on(SALES_TABLES, () => void dashboard.refresh());
 		const stopStock = live.on(STOCK_TABLES, () => void dashboard.loadStock());
 		return () => {
@@ -63,6 +77,13 @@
 
 	<FilterChips filters={dashboard.filters} />
 
+	<!-- Demo memperagakan usaha yang sudah berjalan, jadi panduan setup tidak ditampilkan selama demo. -->
+	{#if guideBranch && access.allows('view_setup_guide') && !demoMode.active}
+		{#key guideBranch.value}
+			<BranchReadiness branchId={guideBranch.value} guideFor={guideBranch.label} />
+		{/key}
+	{/if}
+
 	{#if dashboard.error}
 		<Banner tone="danger" icon="alert-triangle" title={listText.reportLoadFailedTitle}>
 			{dashboard.error}
@@ -80,7 +101,14 @@
 		<Reveal>
 			<SummaryGrid {dashboard}>
 				{#snippet children(panel)}
-					<SessionPanel {dashboard} kind={panel} />
+					{#if panel === 'income'}
+						<div class="flex flex-col gap-4">
+							<ReceiptsPanel {dashboard} />
+							<SessionPanel {dashboard} kind={panel} />
+						</div>
+					{:else}
+						<SessionPanel {dashboard} kind={panel} />
+					{/if}
 				{/snippet}
 			</SummaryGrid>
 

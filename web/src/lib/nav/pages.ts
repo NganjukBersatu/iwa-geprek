@@ -86,8 +86,9 @@ export const NEW_SOP_PATH = resolve('/admin/sop/new');
 
 export const employeePath = (id: string): string => resolve('/(app)/admin/users/[id]', { id });
 export const userPerformancePath = (id: string): string => resolve('/(app)/admin/user-performance/[id]', { id });
+export const cancellationPath = (id: string): string => resolve('/(app)/admin/session-history/cancellations/[id]', { id });
 /** Tab halaman detail cabang; alamat lama halaman-halaman pengaturan cabang mengarah ke sini. */
-export const BRANCH_TABS = { summary: 'summary', periods: 'periods', receipt: 'receipt', pricing: 'pricing', rules: 'rules', devices: 'devices', printers: 'printers' } as const;
+export const BRANCH_TABS = { summary: 'summary', periods: 'periods', receipt: 'receipt', pricing: 'pricing', cashier: 'cashier', rules: 'rules', devices: 'devices', printers: 'printers' } as const;
 export type BranchTab = (typeof BRANCH_TABS)[keyof typeof BRANCH_TABS];
 export const branchPath = (id: string, tab?: BranchTab): string => {
 	const path = resolve('/(app)/admin/branches/[id]', { id });

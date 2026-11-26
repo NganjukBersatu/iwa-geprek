@@ -17,7 +17,7 @@
 	const BADGE_SCALE = 0.28;
 	const BADGE_ICON_SCALE = 0.17;
 
-	/** Logo kafe yang menangis: air mata jatuh dari bawah kacamatanya dan badannya terkulai pelan, dengan lencana di pojok kanan bawah. */
+	/** Logo merek yang menangis: air mata jatuh dari bawah kacamatanya dan badannya terkulai pelan, dengan lencana di pojok kanan bawah. */
 	let { badgeIcon, size = 176 }: { badgeIcon: IconName; size?: number } = $props();
 
 	function teardrop(centerX: number): string {

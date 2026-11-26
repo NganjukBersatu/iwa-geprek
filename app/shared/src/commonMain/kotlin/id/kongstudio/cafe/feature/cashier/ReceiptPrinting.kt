@@ -44,7 +44,7 @@ import id.kongstudio.cafe.resources.print_wifi_password
 import org.jetbrains.compose.resources.getString
 
 
-/** Identitas kafe di kepala dan kaki struk, dari pengaturan cabang. */
+/** Identitas outlet di kepala dan kaki struk, dari pengaturan cabang. */
 internal class ShopInfo(
     val name: String,
     val address: String,
@@ -54,6 +54,8 @@ internal class ShopInfo(
     val wifiPassword: String = "",
     val complaintNumber: String = "",
     val socialHandles: List<String> = emptyList(),
+    /** Jenis pesanan yang terpilih saat pesanan baru dimulai, dari Pengaturan Kasir cabang. */
+    val defaultTakeAway: Boolean = false,
 )
 
 internal class PrintableLine(

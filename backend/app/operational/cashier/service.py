@@ -36,7 +36,7 @@ def menu(db: Session, outlet_id: str, base_url: str) -> list[CashierMenuOut]:
     categories = {category.id: category.name for category in menu_repository.menu_categories(db)}
     sellable = sorted(selling.menus_of(db, outlet_id), key=_till_order(categories))
     ids = [item.menu.id for item in sellable]
-    ready = menu_repository.ready_ids(db, outlet_id, ids)
+    ready = line_rules.ready_ids(db, outlet_id, ids)
     missing = line_rules.missing_ingredients(db, outlet_id, ids)
     marked_out = availability.off_ids(db, outlet_id, ids)
     return [
@@ -106,6 +106,7 @@ def shop(db: Session, outlet_id: str) -> ShopOut:
         complaint_number=settings.complaint_number or "",
         # Every entry, even one without a handle, so the receipt matches the web till's line for line.
         social_handles=[str(entry.get("handle", "")) for entry in settings.social or [] if isinstance(entry, dict)],
+        default_order_type=settings.default_order_type,
     )
 
 

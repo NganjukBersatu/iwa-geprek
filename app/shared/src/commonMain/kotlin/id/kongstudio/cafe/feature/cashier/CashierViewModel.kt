@@ -61,6 +61,8 @@ internal data class CashierUiState(
     /** Kasir memilih "Tanpa promo", jadi promo otomatis tidak dipasang di pesanan ini. */
     val promoOff: Boolean = false,
     val takeAway: Boolean = false,
+    /** Kasir sudah memilih jenis pesanan untuk pesanan ini, jadi pengaturan cabang yang dimuat ulang tidak menimpanya. */
+    val takeAwayChosen: Boolean = false,
     val customerName: String = "",
     /** Pelanggan terdaftar yang dipilih dari saran; mengetik ulang nama melepasnya, jadi pesanan kembali tanpa pelanggan terdaftar. */
     val customerId: String? = null,
@@ -167,7 +169,7 @@ internal class CashierViewModel(
     private suspend fun reloadReference() {
         val loaded = listOf(
             repository.paymentMethods().consume { methods -> _state.update { it.copy(methods = methods.value) } },
-            repository.shopInfo().consume { shop -> _state.update { it.copy(shop = shop.value) } },
+            repository.shopInfo().consume { shop -> _state.update { it.withShop(shop.value) } },
             repository.visitorChoices().consume { choices -> _state.update { it.copy(visitors = choices.value) } },
             repository.promos().consume { promos -> _state.update { it.copy(promos = promos.value) } },
             repository.orderNotes().consume { notes -> _state.update { it.copy(notes = notes.value) } },
@@ -246,7 +248,13 @@ internal class CashierViewModel(
 
     fun selectCategory(tab: String) = _state.update { it.copy(category = tab) }
 
-    fun setTakeAway(value: Boolean) = _state.update { it.copy(takeAway = value) }
+    fun setTakeAway(value: Boolean) = _state.update { it.copy(takeAway = value, takeAwayChosen = true) }
+
+    // Selama kasir belum memilih jenis untuk pesanan ini, pesanan mengikuti jenis bawaan cabang, termasuk pesanan yang dipulihkan.
+    private fun CashierUiState.withShop(shop: ShopInfo) = copy(
+        shop = shop,
+        takeAway = if (takeAwayChosen) takeAway else shop.defaultTakeAway,
+    )
 
     fun setCustomerName(value: String) {
         _state.update { it.copy(customerName = value, customerId = null) }
@@ -308,6 +316,8 @@ internal class CashierViewModel(
 
     /** Identitas pesanan kembali kosong untuk pesanan berikutnya. */
     private fun CashierUiState.withoutIdentity() = copy(
+        takeAway = shop.defaultTakeAway,
+        takeAwayChosen = false,
         customerName = "",
         customerId = null,
         customerSuggestions = emptyList(),

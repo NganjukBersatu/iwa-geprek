@@ -18,7 +18,7 @@
 			{#each ingredients.catalog as entry (entry.id)}
 				<li class="flex items-center justify-between gap-3 py-2">
 					<span class="min-w-0">
-						<span class="block truncate text-sm text-slate-800">{entry.name}{entry.unit ? ` (${entry.unit})` : ''}</span>
+						<span class="block text-sm text-slate-800 wrap-break-word">{entry.name}{entry.unit ? ` (${entry.unit})` : ''}</span>
 						<span class="block text-xs text-slate-500">{entry.branch_count === 0 ? ingredientText.notUsed : format(ingredientText.usedByBranches, { count: entry.branch_count })}</span>
 					</span>
 					{#if entry.branch_count === 0}

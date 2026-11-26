@@ -18,7 +18,7 @@ export const batchText = {
 	everyDay: 'Tiap hari',
 	activeShownToEmployees: 'Aktif (tampil untuk karyawan)',
 	itemsDescription: 'Langkah yang diisi karyawan. Urutan di sini adalah urutan di aplikasi.',
-	itemNameExample: 'Nama item, misalnya Cek mesin espresso',
+	itemNameExample: 'Nama item, misalnya Cek kompor dan gas',
 	mustFill: 'Wajib diisi',
 	addItem: 'Tambah item',
 	saveChanges: 'Simpan perubahan',

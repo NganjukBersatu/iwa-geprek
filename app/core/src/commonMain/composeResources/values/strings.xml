@@ -269,6 +269,7 @@
     <!-- Pemberitahuan -->
     <string name="notices_title">Pemberitahuan</string>
     <string name="notices_close">Tutup</string>
+    <string name="release_fixes_title">Perbaikan di versi %1$s</string>
     <string name="release_title">Yang baru di versi %1$s</string>
     <string name="notice_task_assigned">Tugas baru: %1$s</string>
     <string name="notice_task_overdue">Lewat tenggat: %1$s</string>
@@ -532,8 +533,13 @@
     <string name="device_setup_code_label">Kode perangkat</string>
     <string name="device_setup_code_placeholder">Masukkan kode perangkat</string>
     <string name="device_setup_action">Daftarkan</string>
+    <string name="device_unpaired_message">Perangkat ini belum terdaftar. Masukkan kode pasang dari web admin: halaman Cabang, tab Perangkat, buka perangkat ini.</string>
+    <string name="device_unpaired_enter">Masukkan kode pasang</string>
+    <string name="device_repair_title">Masukkan kode pasang</string>
+    <string name="device_repair_description">Ketik kode pasang perangkat ini dari web admin, atau pindai QR-nya. Akun yang sedang masuk tidak keluar.</string>
+    <string name="device_repair_action">Pasangkan</string>
     <string name="device_release_title">Lepas perangkat</string>
-    <string name="device_release_description">Masukkan kode perangkat untuk melepas tablet ini dari mode operasional.</string>
+    <string name="device_release_description">Masukkan kode perangkat untuk melepas perangkat ini dari mode operasional.</string>
     <string name="device_release_action">Lepas</string>
     <string name="device_release_invalid">Kode perangkat tidak sesuai.</string>
 
@@ -590,7 +596,7 @@
     <string name="permission_title">Izin diperlukan</string>
     <string name="permission_message">Absen memerlukan izin Lokasi, izin Kamera, dan GPS yang menyala.</string>
     <string name="permission_location_title">Lokasi</string>
-    <string name="permission_location_description">Memastikan absen dilakukan di kafe. Pilih lokasi tepat.</string>
+    <string name="permission_location_description">Memastikan absen dilakukan di outlet. Pilih lokasi tepat.</string>
     <string name="permission_camera_title">Kamera</string>
     <string name="permission_camera_description">Mengambil foto saat absen.</string>
     <string name="permission_gps_title">GPS</string>
@@ -684,8 +690,10 @@
     <string name="cashier_search">Cari menu</string>
     <string name="cashier_all">Semua</string>
     <string name="cashier_bestseller">Terlaris</string>
-    <string name="cashier_menu_empty">Menu tidak ditemukan.</string>
+    <string name="cashier_menu_empty">Tidak ada menu yang cocok. Ubah kata pencarian atau pilih kategori lain.</string>
+    <string name="cashier_menu_none">Belum ada menu yang dijual di cabang ini. Tambahkan menu di web admin, menu Produk lalu Kelola Menu, atau lewat Lainnya lalu Kelola Menu di perangkat ini.</string>
     <string name="cashier_order_title">Pesanan</string>
+    <string name="cashier_order_details">Detail pesanan (opsional)</string>
     <string name="cashier_order_empty">Belum ada item.</string>
     <string name="cashier_items_count">%1$d item</string>
     <string name="cashier_total">Total</string>
@@ -766,8 +774,7 @@
     <string name="cashier_payment_pick">Pilih metode pembayaran</string>
     <string name="cashier_method_ready">Tersedia</string>
     <string name="cashier_method_unready">Tidak tersedia</string>
-    <string name="cashier_method_unready_reason">Metode yang tidak tersedia belum lengkap disetel di web admin, menu Pembayaran: %1$s.</string>
-    <string name="cashier_method_unready_item">%1$s (belum diisi: %2$s)</string>
+    <string name="cashier_method_unready_short">Belum bisa dipakai: %1$s. Lengkapi di web admin, menu Metode Pembayaran.</string>
     <string name="cashier_method_none">Belum ada cara pembayaran yang aktif. Atur dulu di menu Pembayaran.</string>
     <string name="cashier_method_none_ready">Belum ada cara pembayaran yang lengkap disetel, jadi belum ada yang bisa dipakai. Lengkapi dulu di menu Pembayaran.</string>
     <string name="cashier_show_customer">Tunjukkan ke Pelanggan</string>
@@ -798,7 +805,7 @@
     <string name="cashier_understood">Selesai</string>
     <string name="cashier_saved_receipt">Transaksi tersimpan · No. Nota %1$s</string>
     <string name="cashier_saved">Transaksi tersimpan</string>
-    <string name="cashier_saved_offline">Tersimpan di tablet. Internet putus, transaksi terkirim otomatis saat online; struk tetap dicetak.</string>
+    <string name="cashier_saved_offline">Tersimpan di perangkat. Internet putus, transaksi terkirim otomatis saat online; struk tetap dicetak.</string>
     <string name="cashier_method">Metode</string>
     <string name="cashier_receipt_printed">Struk tercetak.</string>
     <string name="printer_logo_title">Logo struk</string>
@@ -830,10 +837,10 @@
     <string name="user_sign_out">Keluar</string>
     <string name="user_close_and_sign_out">Tutup sesi dan keluar</string>
     <string name="user_sign_out_needs_network">Status sesi belum terbaca. Sambungkan internet untuk keluar.</string>
-    <string name="session_close_signs_out">Setelah sesi ditutup, Anda keluar dari tablet.</string>
+    <string name="session_close_signs_out">Setelah sesi ditutup, Anda keluar dari perangkat.</string>
     <string name="queue_gate_title">Mengirim pesanan</string>
     <string name="queue_gate_sending">%1$d pesanan belum terkirim. Proses dilanjutkan setelah semua pesanan diterima server.</string>
-    <string name="queue_gate_offline">Tablet offline. Pesanan dikirim otomatis saat internet tersambung.</string>
+    <string name="queue_gate_offline">Perangkat offline. Pesanan dikirim otomatis saat internet tersambung.</string>
     <string name="queue_gate_rejected_title">Pesanan ditolak server</string>
     <string name="queue_gate_rejected">%1$d pesanan ditolak. Kirim ulang atau hapus pesanan tersebut sebelum melanjutkan.</string>
     <string name="queue_gate_rejected_action">Lihat pesanan</string>
@@ -841,7 +848,7 @@
     <string name="cashier_cart_show">Tampilkan panel pesanan</string>
     <string name="cashier_cart_expand">Lebarkan panel pesanan</string>
     <string name="cashier_cart_shrink">Ciutkan panel pesanan</string>
-    <string name="cashier_queued_title">Tersimpan di tablet</string>
+    <string name="cashier_queued_title">Tersimpan di perangkat</string>
     <string name="cashier_queued_message">Belum terkirim ke server dan akan dikirim otomatis saat tersambung. Kembalian %1$s.</string>
     <string name="update_title">Pembaruan wajib</string>
     <string name="update_message">Versi aplikasi ini sudah tidak didukung. Unduh dan pasang versi terbaru untuk melanjutkan.</string>
@@ -854,11 +861,11 @@
     <string name="update_no_link">Hubungi admin untuk mendapatkan versi terbaru.</string>
     <string name="cashier_customer_linked">Pelanggan terhubung</string>
     <string name="cashier_customer_visits">%1$d×</string>
-    <string name="cashier_printer_station_offline">Printer %1$s terputus. %2$s belum tentu tercetak. Pastikan printer menyala dan dekat tablet.</string>
-    <string name="cashier_printer_station_unpaired">Printer %1$s belum dipasang di tablet ini. %2$s tidak tercetak. Sampaikan pesanan ini ke %1$s secara langsung.</string>
+    <string name="cashier_printer_station_offline">Printer %1$s terputus. %2$s belum tentu tercetak. Pastikan printer menyala dan dekat perangkat.</string>
+    <string name="cashier_printer_station_unpaired">Printer %1$s belum dipasang di perangkat ini. %2$s tidak tercetak. Sampaikan pesanan ini ke %1$s secara langsung.</string>
     <string name="device_setup_or_type">Atau ketik kode perangkat</string>
     <string name="device_setup_scan">Pindai QR</string>
-    <string name="device_setup_scan_hint">Arahkan kamera ke QR perangkat di web admin. Tablet terdaftar otomatis begitu QR terbaca.</string>
+    <string name="device_setup_scan_hint">Arahkan kamera ke QR perangkat di web admin. Perangkat terdaftar otomatis begitu QR terbaca.</string>
     <string name="device_setup_scan_invalid">QR ini bukan QR perangkat. Pindai QR dari web admin, halaman Cabang, tab Perangkat, atau ketik kodenya.</string>
     <string name="session_card_unknown">Belum terbaca</string>
     <string name="session_chart_cash_use">Uang tunai sesi ini</string>
@@ -901,9 +908,9 @@
     <string name="nav_open_bill_setting">Open Bill</string>
     <string name="nav_open_bills">Bill Terbuka</string>
     <string name="openbill_setting_blocked">Masih ada %1$d bill yang belum dibayar. Bayar atau batalkan semuanya dulu sebelum Open Bill dimatikan.</string>
-    <string name="openbill_setting_caption">Kasir bisa menyimpan pesanan sebagai bill, mengirimnya ke dapur, lalu membayarnya belakangan. Pengaturan ini hanya untuk tablet ini.</string>
+    <string name="openbill_setting_caption">Kasir bisa menyimpan pesanan sebagai bill, mengirimnya ke dapur, lalu membayarnya belakangan. Pengaturan ini hanya untuk perangkat ini.</string>
     <string name="openbill_setting_check_failed">Belum bisa memeriksa bill yang belum dibayar. Periksa koneksi, lalu coba lagi.</string>
-    <string name="openbill_setting_off_hint">Tombol Simpan Bill dan menu Bill Terbuka disembunyikan di tablet ini. Bill yang masih ada tetap bisa dibuka lewat menu ini setelah dinyalakan lagi.</string>
+    <string name="openbill_setting_off_hint">Tombol Simpan Bill dan menu Bill Terbuka disembunyikan di perangkat ini. Bill yang masih ada tetap bisa dibuka lewat menu ini setelah dinyalakan lagi.</string>
     <string name="openbill_setting_title">Simpan Bill di kasir</string>
     <string name="user_sign_out_close_session_first">Tutup sesi di Sesi Kasir Saya sebelum keluar.</string>
     <string name="demo_mode_banner">Mode demo</string>

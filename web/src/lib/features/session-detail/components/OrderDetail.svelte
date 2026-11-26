@@ -23,7 +23,7 @@
 	]);
 </script>
 
-<div class="grid items-start gap-4 tablet:gap-6 laptop:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+<div class="flex flex-col gap-4 tablet:gap-6">
 	<Card>
 		<CardHeader title={sessionDetailText.orderDetailTitle} icon="receipt" description={format(sessionDetailText.itemsInOrder, { count: order.items.length })} />
 		<ul class="mt-3 flex flex-col divide-y divide-slate-100 text-xs text-slate-700">

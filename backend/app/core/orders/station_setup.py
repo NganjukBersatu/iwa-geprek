@@ -38,7 +38,8 @@ NAME_REQUIRED = "Isi nama stasiun."
 NAME_TAKEN = "Nama stasiun itu sudah dipakai. Gunakan nama lain."
 KIND_TAKEN = "Hanya boleh ada satu stasiun dengan jenis ini."
 KIND_LOCKED = "Jenis stasiun yang sudah pernah dipakai tidak bisa diubah, supaya riwayatnya tetap terbaca."
-STATION_IN_USE = "Stasiun yang sudah pernah dipakai atau masih dituju kategori tidak bisa dihapus. Lepaskan dari tablet di cabang bila tidak dipakai lagi."
+STATION_IN_USE = "Stasiun yang sudah pernah dipakai atau masih dituju kategori tidak bisa dihapus. Lepaskan dari perangkat di cabang bila tidak dipakai lagi."
+CASHIER_REQUIRED = "Stasiun Kasir dipakai perangkat Mode Kasir, jadi tidak bisa dihapus atau diganti jenisnya. Nama stasiunnya tetap bisa diubah."
 NOT_A_MAKER = "Kategori menu hanya bisa diarahkan ke stasiun berjenis Membuat menu."
 TARGET_RANGE = "Isi target antara 1 detik dan 24 jam."
 REMINDER_RANGE = "Isi jeda pengingat 0 untuk mematikan, atau antara 15 detik dan 10 menit."
@@ -178,6 +179,8 @@ def create_station(db: Session, name: str, kind: StationKind, target_seconds: in
 def update_station(db: Session, station_id: str, name: str, kind: StationKind, target_seconds: int | None) -> Station:
     station = _station(db, station_id)
     clean = _checked_name(db, name, kind, station.id)
+    if station.kind == StationKind.HANDOVER and kind != StationKind.HANDOVER:
+        raise DomainError(CASHIER_REQUIRED, status=CONFLICT)
     if kind != station.kind and _used_before(db, station.id):
         raise DomainError(KIND_LOCKED, status=CONFLICT)
     station.name, station.kind, station.target_seconds = clean, kind, _target(target_seconds) if kind == StationKind.DELIVER else None
@@ -187,6 +190,8 @@ def update_station(db: Session, station_id: str, name: str, kind: StationKind, t
 
 def delete_station(db: Session, station_id: str) -> None:
     station = _station(db, station_id)
+    if station.kind == StationKind.HANDOVER:
+        raise DomainError(CASHIER_REQUIRED, status=CONFLICT)
     pointed = db.scalar(select(exists().where(CategoryStation.station_id == station.id))) or db.scalar(
         select(exists().where(CategoryBranchStation.station_id == station.id))
     )

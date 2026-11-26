@@ -2,7 +2,7 @@ from app.core.permissions.model import Group, Permission, Section
 
 GROUP = Group("people", "Orang", (
     Section("Akun dan peran", (
-        Permission("web.masuk", "Masuk web admin", "Membuka web admin untuk pengelolaan dan laporan. Tanpa izin ini, akun hanya bisa memakai aplikasi karyawan dan tablet operasional."),
+        Permission("web.masuk", "Masuk web admin", "Membuka web admin untuk pengelolaan dan laporan. Tanpa izin ini, akun hanya bisa memakai aplikasi karyawan dan perangkat operasional."),
         Permission("karyawan.kelola", "Kelola karyawan", "Menambah akun, mengubah peran, dan menempatkan di cabang."),
         Permission("peran.kelola", "Kelola peran dan izin", "Membuat peran baru dan menentukan izinnya. Izin ini bisa memberi izin lain."),
     )),

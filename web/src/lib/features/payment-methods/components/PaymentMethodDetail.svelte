@@ -71,11 +71,11 @@
 		{#if method.missing.length > 0}
 			<Banner tone="warning" icon="alert-triangle">{format(paymentMethodText.missingFieldsHint, { fields: method.missing.join(' dan ') })}</Banner>
 		{/if}
-		<div class="grid items-stretch gap-4 tablet:gap-6 laptop:grid-cols-[20rem_minmax(0,1fr)]">
+		<div class="flex flex-col gap-4 tablet:gap-6">
 			<Card flush>
-				<div class="flex h-full flex-col gap-3 bg-brand-soft p-4">
+				<div class="flex flex-col gap-3 bg-brand-soft p-4">
 					<span class="text-xs font-medium text-brand-deep">{paymentMethodText.image}</span>
-					<div class="flex aspect-4/3 items-center justify-center overflow-hidden rounded-lg bg-brand-tint laptop:aspect-auto laptop:flex-1">
+					<div class="flex aspect-4/3 w-full max-w-80 items-center justify-center overflow-hidden rounded-lg bg-brand-tint">
 						{#if method.image_url}
 							<img src={method.image_url} alt={format(paymentMethodText.imageOf, { name: method.label })} class="size-full object-contain" />
 						{:else}

@@ -82,7 +82,7 @@ export const sessionDetailText = {
 	expensesKeptNote: '**{count} pengeluaran** tetap ada, hanya dilepas dari sesi ini.',
 	noteLabel: 'Catatan: {note}',
 	cancelNoteTitle: 'Membatalkan transaksi ini',
-	cancelNote: 'Transaksi yang sudah dibayar dibatalkan lewat pengajuan dari tablet kasir, lalu disetujui di Pengajuan Pembatalan. Mengubah atau menghapus di sini hanya untuk koreksi.',
+	cancelNote: 'Transaksi yang sudah dibayar dibatalkan lewat Ajukan pembatalan di perangkat (Riwayat Pesanan, atau Papan Stasiun tab Kasir), lalu disetujui di Pengajuan Pembatalan. Mengubah atau menghapus di sini hanya untuk koreksi.',
 	cancelNoteOpen: 'Buka Pengajuan Pembatalan',
 	orderRemoveNote: '{amount} hilang dari pendapatan sesi ini, dan bahan serta stoknya kembali ke gudang. Pendapatan dan selisih sesi yang sudah ditutup dihitung ulang.',
 	sessionOrdersRemovedNote: '**{count} transaksi** ikut terhapus, dan bahan serta stoknya kembali ke gudang.',

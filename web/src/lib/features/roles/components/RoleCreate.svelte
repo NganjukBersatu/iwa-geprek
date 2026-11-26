@@ -34,6 +34,7 @@
 			error={props.error}
 			fieldErrors={props.fieldErrors}
 			defaultKeys={permissions.filter((permission) => permission.default_for_new_role).map((permission) => permission.key)}
+			exampleKeys={permissions.filter((permission) => permission.in_cashier_example).map((permission) => permission.key)}
 			canMarkProtected={(props.context?.roles ?? []).some((role) => role.is_protected && role.held_by_viewer)}
 			onsave={(body) => props.onsave(body as RoleCreate)}
 			onclose={props.onclose}

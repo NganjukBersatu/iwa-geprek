@@ -9,12 +9,19 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import id.kongstudio.cafe.core.format.formatRupiah
@@ -35,6 +42,7 @@ import id.kongstudio.cafe.resources.cashier_cart_expand
 import id.kongstudio.cafe.resources.cashier_cart_shrink
 import id.kongstudio.cafe.resources.cashier_clear
 import id.kongstudio.cafe.resources.cashier_no_shift
+import id.kongstudio.cafe.resources.cashier_order_details
 import id.kongstudio.cafe.resources.cashier_order_empty
 import id.kongstudio.cafe.resources.cashier_order_title
 import id.kongstudio.cafe.resources.cashier_pay
@@ -43,6 +51,7 @@ import id.kongstudio.cafe.resources.session_open
 import id.kongstudio.cafe.ui.component.button.PrimaryButton
 import id.kongstudio.cafe.ui.component.secondarybutton.ButtonTone
 import id.kongstudio.cafe.ui.component.secondarybutton.SecondaryButton
+import id.kongstudio.cafe.ui.component.appicon.AppIcon
 import id.kongstudio.cafe.ui.component.divider.AppDivider
 import id.kongstudio.cafe.ui.component.iconbutton.AppIconButton
 import id.kongstudio.cafe.ui.component.notice.Notice
@@ -87,7 +96,7 @@ internal fun CartPanel(
 ) {
     val colors = AppTheme.colors
     val spacing = AppTheme.spacing
-    val wide = AppTheme.windowSize.isWide
+    val wide = AppTheme.windowSize.twoPane
 
     Column(modifier = modifier.fillMaxSize()) {
         Row(
@@ -156,23 +165,40 @@ internal fun CartPanel(
                         )
                     }
                 }
+            }
+            // Identitas semuanya opsional, jadi di bawah item dan promo: yang dipilih kasir tidak tertutup formulir.
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                if (AppTheme.windowSize.isPhone) {
+                    // Di HP dilipat supaya daftar pesanan dan tombol bayar tetap dekat; terbuka sendiri bila ada isian yang sudah terisi.
+                    val filled = identity.customerName.isNotBlank() || identity.tableNo.isNotBlank() ||
+                        identity.visitorCategoryId != null || identity.visitorGenderId != null || identity.noteId != null
+                    var open by rememberSaveable { mutableStateOf(false) }
+                    Column(modifier = Modifier.padding(top = spacing.sm)) {
+                        DisclosureRow(
+                            label = stringResource(Res.string.cashier_order_details),
+                            open = open || filled,
+                            onToggle = { open = !(open || filled) },
+                        )
+                        if (open || filled) OrderHeader(identity = identity, actions = identityActions, modifier = Modifier.padding(top = spacing.sm))
+                    }
+                } else {
+                    OrderHeader(
+                        identity = identity,
+                        actions = identityActions,
+                        modifier = Modifier.padding(top = spacing.sm),
+                    )
+                }
+            }
+            if (lines.isNotEmpty()) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    // Bayar satu-satunya tombol utama; aksi menghapus keranjang memakai tombol pendamping bernada bahaya (rules 6.8.2).
+                    // Bayar satu-satunya tombol utama; menghapus keranjang memakai tombol pendamping bernada bahaya di akhir daftar, jauh dari alur utama (rules 6.8.2).
                     SecondaryButton(
                         text = stringResource(Res.string.cashier_clear),
                         onClick = onClear,
                         tone = ButtonTone.Danger,
-                        modifier = Modifier.padding(vertical = spacing.sm),
+                        modifier = Modifier.padding(vertical = spacing.md),
                     )
                 }
-            }
-            // Identitas semuanya opsional, jadi di bawah item dan promo: yang dipilih kasir tidak tertutup formulir.
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                OrderHeader(
-                    identity = identity,
-                    actions = identityActions,
-                    modifier = Modifier.padding(top = spacing.sm),
-                )
             }
         }
 
@@ -203,21 +229,27 @@ internal fun CartPanel(
                     )
                 }
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                AppText(
-                    text = stringResource(Res.string.cashier_total),
-                    role = TextRole.Body,
-                    color = colors.contentMuted,
-                )
-                AppText(
-                    text = formatRupiah(total),
-                    role = TextRole.Title,
-                    color = colors.content,
-                )
+            // Layar pendek (HP miring): total menumpang di baris tombol, supaya daftar pesanan di atasnya tetap terlihat.
+            val short = AppTheme.windowSize.short && !addingToBill
+            val totalBlock: @Composable (Modifier) -> Unit = { blockModifier ->
+                Row(
+                    modifier = blockModifier,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    AppText(
+                        text = stringResource(Res.string.cashier_total),
+                        role = TextRole.Body,
+                        color = colors.contentMuted,
+                    )
+                    AppText(
+                        text = formatRupiah(total),
+                        role = if (short) TextRole.Subtitle else TextRole.Title,
+                        color = colors.content,
+                    )
+                }
             }
+            if (!short) totalBlock(Modifier.fillMaxWidth())
             if (addingToBill) {
                 PrimaryButton(
                     text = stringResource(Res.string.bill_add_to, billReceipt.orEmpty()),
@@ -229,7 +261,8 @@ internal fun CartPanel(
                 if (promo != null && lines.isNotEmpty()) {
                     AppText(text = stringResource(Res.string.bill_promo_not_kept), role = TextRole.Caption, color = colors.contentMuted)
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(spacing.sm)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(spacing.sm), verticalAlignment = Alignment.CenterVertically) {
+                    if (short) totalBlock(Modifier.weight(1f).padding(end = spacing.sm))
                     if (canSaveBill) {
                         SecondaryButton(
                             text = stringResource(Res.string.bill_save),
@@ -247,5 +280,21 @@ internal fun CartPanel(
                 }
             }
         }
+    }
+}
+
+
+/** Baris pembuka bagian yang bisa dilipat, setinggi target sentuh, dengan panah yang menunjukkan keadaannya. */
+@Composable
+private fun DisclosureRow(label: String, open: Boolean, onToggle: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = AppTheme.spacing.touchTarget)
+            .clickable(role = Role.Button, onClick = onToggle),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        AppText(text = label, role = TextRole.Label, color = AppTheme.colors.content, modifier = Modifier.weight(1f))
+        AppIcon(icon = if (open) AppIcons.ChevronUp else AppIcons.ChevronDown, tint = AppTheme.colors.contentMuted, size = AppTheme.sizes.iconSmall)
     }
 }

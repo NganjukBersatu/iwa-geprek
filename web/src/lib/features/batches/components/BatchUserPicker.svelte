@@ -53,7 +53,7 @@
 		{#snippet option(person)}
 			<span class="flex min-w-0 items-center gap-2">
 				<i class="ti ti-check shrink-0 text-base {isPicked(person) ? 'text-brand' : 'opacity-0'}" aria-hidden="true"></i>
-				<span class="truncate">{person.name}</span>
+				<span class="min-w-0 wrap-break-word">{person.name}</span>
 			</span>
 			<span class="shrink-0 text-xs text-slate-500">{person.role_name ?? ''}</span>
 		{/snippet}

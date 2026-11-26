@@ -68,7 +68,8 @@ val DefaultAppSizes = AppSizes(
     thumbnail = 88.dp,
     photoAspectRatio = 3f / 4f,
     bannerBaseline = 252.dp,
-    tileBaseline = 112.dp,
+    // Tidak boleh di bawah tinggi isi ubin (jarak 2x12, ikon 36, jarak 2x4, label 18, nilai 35 = 121): lebih rendah dari itu baris nilai terjepit dan ekor hurufnya terpotong.
+    tileBaseline = 124.dp,
     qrMaxWidth = 300.dp,
     progressLine = 3.dp,
 )

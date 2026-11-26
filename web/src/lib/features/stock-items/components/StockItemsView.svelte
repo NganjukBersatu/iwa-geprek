@@ -63,7 +63,7 @@
 				{#each stock.candidates as candidate (candidate.menu_item_id)}
 					<li class="flex items-center justify-between gap-3 py-2">
 						<span class="min-w-0">
-							<span class="block truncate text-sm text-slate-800">{candidate.menu_item_name}</span>
+							<span class="block text-sm text-slate-800 wrap-break-word">{candidate.menu_item_name}</span>
 							{#if candidate.category}<span class="block text-xs text-slate-500">{candidate.category}</span>{/if}
 						</span>
 						<Button label={stockItemText.mark} icon="plus" variant="tertiary" small compact disabled={stock.busy} onclick={() => void stock.mark(candidate)} />

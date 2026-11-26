@@ -97,13 +97,14 @@
 	};
 </script>
 
-<div class="hidden tablet:block" aria-busy={loading}>
-	<table class="w-full border-collapse text-right text-xs wrap-anywhere">
+<!-- Tabel lebar menggulir di wadahnya sendiri, dan teks hanya dipatah per kata, supaya kolom tidak pernah terlipat per huruf. -->
+<div class="hidden overflow-x-auto tablet:block" aria-busy={loading}>
+	<table class="w-full border-collapse text-right text-xs wrap-break-word">
 		<thead>
 			<tr class="bg-brand text-brand-on">
 				{#each columns as column, index (column.key)}
 					<th
-						class="wrap-normal px-3 py-2 font-semibold {align(column)} {index === 0 ? 'sticky left-0 z-10 bg-brand text-left' : ''}"
+						class="wrap-normal px-3 py-2 font-semibold {align(column)} {index === 0 ? 'sticky left-0 z-10 min-w-40 bg-brand text-left' : ''}"
 						aria-sort={sort && column.sort ? ARIA_SORT[sort.direction(column.sort)] : undefined}
 					>
 						{#if index === 0 && selection && picking}

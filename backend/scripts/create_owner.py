@@ -51,26 +51,42 @@ def tidy(text: str) -> str:
     return unicodedata.normalize("NFC", " ".join(text.replace("\ufeff", "").split()))
 
 
+def clean_username(text: str) -> str:
+    return unicodedata.normalize("NFC", text.replace("\ufeff", "").strip())
+
+
+def text_problem(value: str, limit: int) -> str | None:
+    if not value:
+        return "Tidak boleh kosong."
+    if len(value) > limit:
+        return f"Maksimal {limit} karakter."
+    return None
+
+
+def username_problem(value: str) -> str | None:
+    if not value or " " in value:
+        return "Wajib diisi dan tidak boleh berisi spasi."
+    if len(value) > MAX_USERNAME_LENGTH:
+        return f"Maksimal {MAX_USERNAME_LENGTH} karakter."
+    return None
+
+
 def ask(label: str, limit: int) -> str:
     while True:
         value = tidy(input(f"{label}: "))
-        if not value:
-            print("  Tidak boleh kosong.")
-        elif len(value) > limit:
-            print(f"  Maksimal {limit} karakter.")
-        else:
+        problem = text_problem(value, limit)
+        if problem is None:
             return value
+        print(f"  {problem}")
 
 
 def ask_username() -> str:
     while True:
-        value = unicodedata.normalize("NFC", input("Username (tanpa spasi): ").replace("\ufeff", "").strip())
-        if not value or " " in value:
-            print("  Wajib diisi dan tidak boleh berisi spasi.")
-        elif len(value) > MAX_USERNAME_LENGTH:
-            print(f"  Maksimal {MAX_USERNAME_LENGTH} karakter.")
-        else:
+        value = clean_username(input("Username (tanpa spasi): "))
+        problem = username_problem(value)
+        if problem is None:
             return value
+        print(f"  {problem}")
 
 
 def ask_password(username: str) -> str:

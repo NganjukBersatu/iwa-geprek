@@ -77,7 +77,7 @@
 			<Banner tone="danger" icon="alert-triangle">{target.saveError}</Banner>
 		{/if}
 
-		<div class="grid grid-cols-1 gap-4 laptop:grid-cols-2 tablet:gap-6">
+		<div class="flex flex-col gap-4 tablet:gap-6">
 			<Card>
 				<CardHeader title={stationText.defaultTarget} description={stationText.defaultTargetHint} icon="target-arrow" />
 				<div class="mt-4 grid grid-cols-2 gap-3">
@@ -107,7 +107,7 @@
 			</Card>
 		</div>
 
-		<div class="grid grid-cols-1 gap-4 laptop:grid-cols-2 tablet:gap-6">
+		<div class="flex flex-col gap-4 tablet:gap-6">
 			<Card flush>
 				<CardHeader divided title={stationText.perBranch} description={stationText.currentMonthPeriod} icon="building-store" />
 				<DataTable columns={branchColumns} rows={data.branches} rowKey={(row) => row.outlet_id} />

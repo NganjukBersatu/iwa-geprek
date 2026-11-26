@@ -860,7 +860,7 @@ export interface paths {
         put?: never;
         /**
          * Pair
-         * @description Public, since the tablet has no token yet; the code itself is the proof, it works once, and too many wrong codes lock pairing for a while.
+         * @description Public, since the tablet has no token yet; the code itself is the proof, it stays valid until a new code is issued, and too many wrong codes lock pairing for a while.
          */
         post: operations["pair_v2_devices_pair_post"];
         delete?: never;
@@ -3293,6 +3293,26 @@ export interface paths {
          * @description Waiting requests, oldest first, in a fixed number of queries whatever the page holds; never cached, the screen reloads on live signals.
          */
         get: operations["list_waiting_web_management_cancellations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/web/management/cancellations/{request_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Request Detail
+         * @description One request, decided or not; a branch-bound account only sees its own branch's.
+         */
+        get: operations["request_detail_web_management_cancellations__request_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -7411,7 +7431,7 @@ export interface components {
          * @description A part inside a screen that only some accounts may see or use.
          * @enum {string}
          */
-        Ability: "decide_cancellations" | "view_deposits" | "manage_deposits" | "manage_variants" | "manage_extras" | "manage_recipes" | "see_recipe_costs" | "arrange_schedule" | "mark_attendance" | "intervene_stations" | "view_summary" | "view_trend" | "view_profit_loss" | "view_inventory_value" | "view_cashier_figures" | "view_customer_figures" | "view_comparison" | "view_transaction_list" | "validate_non_cash" | "receive_stock" | "adjust_stock" | "count_stock" | "request_stock_close" | "manage_stock_items" | "correct_stock" | "manage_ingredients" | "record_expenses" | "edit_own_expenses" | "edit_all_expenses" | "correct_sessions" | "delete_sessions" | "manage_own_sessions" | "edit_orders" | "delete_orders" | "void_orders" | "manage_roles" | "manage_tasks" | "manage_branches" | "remove_branches";
+        Ability: "decide_cancellations" | "view_deposits" | "manage_deposits" | "manage_variants" | "manage_extras" | "manage_recipes" | "see_recipe_costs" | "arrange_schedule" | "mark_attendance" | "intervene_stations" | "view_summary" | "view_trend" | "view_profit_loss" | "view_inventory_value" | "view_cashier_figures" | "view_customer_figures" | "view_comparison" | "view_transaction_list" | "validate_non_cash" | "receive_stock" | "adjust_stock" | "count_stock" | "request_stock_close" | "manage_stock_items" | "correct_stock" | "manage_ingredients" | "record_expenses" | "edit_own_expenses" | "edit_all_expenses" | "correct_sessions" | "delete_sessions" | "manage_own_sessions" | "edit_orders" | "delete_orders" | "void_orders" | "manage_roles" | "manage_tasks" | "manage_branches" | "remove_branches" | "view_setup_guide";
         /**
          * Action
          * @enum {string}
@@ -8638,6 +8658,18 @@ export interface components {
             cashier_name: string | null;
             /** Stations */
             stations: components["schemas"]["StationRouteOut"][];
+            /** Menu Count */
+            menu_count: number;
+            /** Unpriced Menu Count */
+            unpriced_menu_count: number;
+            /** Unpriced Menu Names */
+            unpriced_menu_names: string[];
+            /** Open Payment Labels */
+            open_payment_labels: string[];
+            /** Incomplete Payment Labels */
+            incomplete_payment_labels: string[];
+            /** Cashier Staff Count */
+            cashier_staff_count: number;
         };
         /** BranchRemovalIn */
         BranchRemovalIn: {
@@ -8969,6 +9001,8 @@ export interface components {
             tax_percent?: number | string | null;
             /** Service Percent */
             service_percent?: number | string | null;
+            /** Default Order Type */
+            default_order_type?: ("free_table" | "take_away") | null;
         };
         /** CafeSettingsOut */
         CafeSettingsOut: {
@@ -9003,6 +9037,12 @@ export interface components {
             tax_percent: string;
             /** Service Percent */
             service_percent: string;
+            /**
+             * Default Order Type
+             * @description The order type a new order on the cashier starts with
+             * @enum {string}
+             */
+            default_order_type: "free_table" | "take_away";
         };
         /** CancellationCreatedOut */
         CancellationCreatedOut: {
@@ -9059,6 +9099,8 @@ export interface components {
             cashier: string;
             /** Requested By */
             requested_by: string;
+            /** Requested By Id */
+            requested_by_id: string;
             /** Reason */
             reason: string | null;
             /**
@@ -9066,6 +9108,14 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+            /** Decision */
+            decision: ("approved" | "rejected") | null;
+            /** Decided At */
+            decided_at: string | null;
+            /** Decided By */
+            decided_by: string | null;
+            /** Manager Note */
+            manager_note: string | null;
         };
         /** CancellationPageOut */
         CancellationPageOut: {
@@ -10268,6 +10318,11 @@ export interface components {
              * @enum {string}
              */
             mode: "cashier" | "station";
+            /**
+             * Layout
+             * @enum {string}
+             */
+            layout: "auto" | "phone" | "tablet";
             /** Android Id */
             android_id: string | null;
             /** Serial */
@@ -10278,6 +10333,10 @@ export interface components {
             model: string | null;
             /** Registered By Name */
             registered_by_name: string | null;
+            /** Data Changed At */
+            data_changed_at: string | null;
+            /** Has Latest Data */
+            has_latest_data: boolean | null;
             /**
              * Created At
              * Format: date-time
@@ -10297,14 +10356,9 @@ export interface components {
             print_station_names: string[];
             /**
              * Code
-             * @description Shown once; afterwards only its hash exists on the server
+             * @description The pairing code; it stays valid for pairing the device again until a new code is issued
              */
             code: string;
-            /**
-             * Code Expires At
-             * Format: date-time
-             */
-            code_expires_at: string;
         };
         /** DeviceCreateIn */
         DeviceCreateIn: {
@@ -10316,6 +10370,73 @@ export interface components {
             print_station_ids?: string[];
             /** Mode */
             mode?: ("cashier" | "station") | null;
+            /**
+             * Layout
+             * @default auto
+             * @enum {string}
+             */
+            layout: "auto" | "phone" | "tablet";
+        };
+        /**
+         * DeviceDetailOut
+         * @description Only the detail page receives the pairing code; the device list never carries it.
+         */
+        DeviceDetailOut: {
+            /** Id */
+            id: string;
+            /** Outlet Id */
+            outlet_id: string;
+            /** Outlet Name */
+            outlet_name: string;
+            /** Name */
+            name: string;
+            /** Section */
+            section: string;
+            /** Status */
+            status: string;
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "cashier" | "station";
+            /**
+             * Layout
+             * @enum {string}
+             */
+            layout: "auto" | "phone" | "tablet";
+            /** Android Id */
+            android_id: string | null;
+            /** Serial */
+            serial: string | null;
+            /** Brand */
+            brand: string | null;
+            /** Model */
+            model: string | null;
+            /** Registered By Name */
+            registered_by_name: string | null;
+            /** Data Changed At */
+            data_changed_at: string | null;
+            /** Has Latest Data */
+            has_latest_data: boolean | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Paired At */
+            paired_at: string | null;
+            /** Last Used At */
+            last_used_at: string | null;
+            /** Station Ids */
+            station_ids: string[];
+            /** Station Names */
+            station_names: string[];
+            /** Print Station Ids */
+            print_station_ids: string[];
+            /** Print Station Names */
+            print_station_names: string[];
+            /** Pairing Code */
+            pairing_code: string | null;
         };
         /** DeviceOut */
         DeviceOut: {
@@ -10336,6 +10457,11 @@ export interface components {
              * @enum {string}
              */
             mode: "cashier" | "station";
+            /**
+             * Layout
+             * @enum {string}
+             */
+            layout: "auto" | "phone" | "tablet";
             /** Android Id */
             android_id: string | null;
             /** Serial */
@@ -10346,6 +10472,10 @@ export interface components {
             model: string | null;
             /** Registered By Name */
             registered_by_name: string | null;
+            /** Data Changed At */
+            data_changed_at: string | null;
+            /** Has Latest Data */
+            has_latest_data: boolean | null;
             /**
              * Created At
              * Format: date-time
@@ -10382,6 +10512,8 @@ export interface components {
             print_station_ids?: string[] | null;
             /** Mode */
             mode?: ("cashier" | "station") | null;
+            /** Layout */
+            layout?: ("auto" | "phone" | "tablet") | null;
         };
         /** DraftContentIn */
         DraftContentIn: {
@@ -13322,6 +13454,8 @@ export interface components {
             description: string;
             /** Default For New Role */
             default_for_new_role: boolean;
+            /** In Cashier Example */
+            in_cashier_example: boolean;
         };
         /**
          * PermissionReason
@@ -15176,6 +15310,11 @@ export interface components {
              * @default []
              */
             social_handles: string[];
+            /**
+             * Default Order Type
+             * @default free_table
+             */
+            default_order_type: string;
         };
         /** SlideIn */
         SlideIn: {
@@ -16175,6 +16314,11 @@ export interface components {
              * @description A general note of every branch, which only the web admin can change
              */
             shared: boolean;
+            /**
+             * Created By
+             * @description Nama pembuatnya; kosong untuk catatan lama yang tidak tahu pembuatnya
+             */
+            created_by: string | null;
         };
         /** TabletOrderNotePageOut */
         TabletOrderNotePageOut: {
@@ -22407,6 +22551,8 @@ export interface operations {
                 search?: string | null;
                 /** @description name, or -name for descending; no choice means A to Z */
                 sort?: string | null;
+                /** @description Hanya catatan buatan orang ini */
+                created_by_id?: string | null;
                 page?: number;
                 size?: number;
             };
@@ -24610,6 +24756,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CancellationPageOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    request_detail_web_management_cancellations__request_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CancellationOut"];
                 };
             };
             /** @description Validation Error */
@@ -30540,7 +30717,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DeviceOut"];
+                    "application/json": components["schemas"]["DeviceDetailOut"];
                 };
             };
             /** @description Validation Error */
@@ -30610,7 +30787,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DeviceOut"];
+                    "application/json": components["schemas"]["DeviceDetailOut"];
                 };
             };
             /** @description Validation Error */

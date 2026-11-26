@@ -1,9 +1,12 @@
 from decimal import Decimal
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
 from web.management.cafe_settings import constants as c
 
+# Kode yang sama dengan app.core.orders.order_types; pesanan baru di kasir mulai dari jenis ini.
+OrderType = Literal["free_table", "take_away"]
 
 class WifiEntry(BaseModel):
     area: str = Field(min_length=1, max_length=c.MAX_WIFI_TEXT)
@@ -30,6 +33,7 @@ class CafeSettingsIn(BaseModel):
     target_margin_percent: Decimal | None = Field(None, gt=0, lt=c.MAX_PERCENT)
     tax_percent: Decimal | None = Field(None, ge=0, le=c.MAX_PERCENT)
     service_percent: Decimal | None = Field(None, ge=0, le=c.MAX_PERCENT)
+    default_order_type: OrderType | None = None
 
 
 class CafeSettingsOut(BaseModel):
@@ -47,3 +51,4 @@ class CafeSettingsOut(BaseModel):
     target_margin_percent: Decimal | None
     tax_percent: Decimal
     service_percent: Decimal
+    default_order_type: OrderType = Field(description="The order type a new order on the cashier starts with")

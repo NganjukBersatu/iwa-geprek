@@ -117,8 +117,8 @@
 			<Banner tone="danger" icon="alert-triangle">{editor.error}</Banner>
 		{/if}
 
-		<Card flush class="grid laptop:grid-cols-2">
-			<div class="border-b border-slate-100 p-4 tablet:p-5 laptop:border-b-0 laptop:border-r">
+		<Card flush>
+			<div class="border-b border-slate-100 p-4 tablet:p-5">
 				<FigureList
 					title={batchRunText.summary}
 					figures={[
@@ -152,7 +152,7 @@
 							<li class="flex items-center gap-3 px-3 py-2 text-sm">
 								<span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-brand-soft text-xs font-semibold text-brand">{item.number}</span>
 								<span class="min-w-0 flex-1">
-									<span class="block truncate font-semibold text-slate-800">{item.title}</span>
+									<span class="block font-semibold text-slate-800 wrap-break-word">{item.title}</span>
 									<span class="block truncate text-xs text-slate-500">
 										{format(batchRunText.followUpFor, { name: item.assignee_name ?? EMPTY_VALUE })}{item.due_at ? format(batchRunText.followUpDue, { time: formatDateTime(item.due_at) }) : ''}{item.completed_at ? format(batchRunText.followUpDone, { time: formatDateTime(item.completed_at) }) : ''}
 									</span>

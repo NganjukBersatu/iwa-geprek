@@ -2,7 +2,9 @@ package id.kongstudio.cafe
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -24,7 +26,9 @@ import id.kongstudio.cafe.feature.auth.session.LoginSession
 import id.kongstudio.cafe.feature.auth.session.SessionRevoker
 import id.kongstudio.cafe.feature.auth.session.SessionStore
 import id.kongstudio.cafe.feature.devicesetup.DeviceCredential
+import id.kongstudio.cafe.feature.devicesetup.DeviceLayout
 import id.kongstudio.cafe.feature.devicesetup.DeviceModeStore
+import id.kongstudio.cafe.feature.devicesetup.DeviceUnpairedGate
 import id.kongstudio.cafe.feature.devicesetup.DevicePairingResult
 import id.kongstudio.cafe.feature.devicesetup.KtorDevicePairingRepository
 import id.kongstudio.cafe.feature.home.HomeRoute
@@ -41,9 +45,13 @@ import id.kongstudio.cafe.feature.demo.DemoMode
 import id.kongstudio.cafe.offline.OfflineStore
 import id.kongstudio.cafe.ui.component.splashscreen.SplashScreen
 import id.kongstudio.cafe.ui.theme.AppTheme
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+
+// Jawaban tanpa token yang terbaca tetap menampilkan gerbang untuk perangkat yang sedang dipakai.
+private const val UnknownToken = "?"
 
 @Composable
 fun App(
@@ -55,7 +63,13 @@ fun App(
     printers: ThermalPrinters,
     network: NetworkMonitor,
 ) {
-    AppTheme {
+    // Pilihan tampilan perangkat dari web admin: dibaca dari simpanan saat app dibuka, lalu diperbarui dari header setiap jawaban server.
+    val layout = remember { DeviceLayout() }
+    val layoutScope = rememberCoroutineScope()
+    LaunchedEffect(Unit) { deviceModeStore.layout()?.let(layout::observe) }
+    val formFactor by layout.formFactor.collectAsState()
+
+    AppTheme(formFactor = formFactor) {
         var session by remember { mutableStateOf<LoginSession?>(null) }
         var device by remember { mutableStateOf<DeviceCredential?>(null) }
         var restored by remember { mutableStateOf(false) }
@@ -64,7 +78,23 @@ fun App(
         val installed = appVersionName()
         val update = remember { AppUpdate(installed) }
         val demo = remember { DemoMode() }
-        val client = remember { createApiClient(installed, update::refused, demo::observe) }
+        // Token yang dinyatakan server tidak berlaku lagi; gerbang pasang ulang hanya tampil bila itu token yang sedang dipakai, supaya jawaban basi dari token lama tidak menutup perangkat yang baru dipasang.
+        val unpaired = remember { MutableStateFlow<String?>(null) }
+        val rejectedToken by unpaired.collectAsState()
+        val client = remember {
+            createApiClient(
+                appVersion = installed,
+                onUpgradeRequired = update::refused,
+                onDemoMode = demo::observe,
+                onDeviceLayout = { code ->
+                    layout.observe(code)
+                    layoutScope.launch { deviceModeStore.saveLayout(code) }
+                },
+                onDeviceUnpaired = { token -> unpaired.value = token ?: UnknownToken },
+            )
+        }
+        // Perangkat yang dilepas kembali menebak tampilannya sendiri; simpanannya sudah dihapus bersama kredensial.
+        LaunchedEffect(restored, device) { if (restored && device == null) layout.observe("") }
         val pairing = remember { KtorDevicePairingRepository(client, ApiConfig.V2_BASE_URL) }
         val revoker = remember { SessionRevoker(client, ApiConfig.V2_BASE_URL, sessionStore) }
         val revoke: (String) -> Unit = { token -> scope.launch { revoker.revoke(token) } }
@@ -113,24 +143,58 @@ fun App(
         SplashScreen(ready = restored) {
             if (device != null) {
                 PermissionGateRoute(permissions, PermissionPurpose.Operational) {
-                    OperationalRoute(
-                        credential = device!!,
-                        client = client,
-                        store = deviceModeStore,
-                        offlineStore = offlineStore,
-                        printers = printers,
-                        network = network,
-                        revoke = revoke,
-                        onReleased = {
-                            device = null
-                            scope.launch { deviceModeStore.clear() }
-                        },
-                        onUserExpired = {
-                            scope.launch { device = deviceModeStore.load() }
-                        },
-                        onSessionOpen = update::sessionOpen,
-                        demo = demo,
-                    )
+                    // Token baru dari kode pasang membangun ulang halaman operasional, supaya tidak ada layar yang masih memegang token lama.
+                    key(device!!.token) {
+                        OperationalRoute(
+                            credential = device!!,
+                            client = client,
+                            store = deviceModeStore,
+                            offlineStore = offlineStore,
+                            printers = printers,
+                            network = network,
+                            revoke = revoke,
+                            onReleased = {
+                                device = null
+                                unpaired.value = null
+                                scope.launch { deviceModeStore.clear() }
+                            },
+                            onUserExpired = {
+                                scope.launch { device = deviceModeStore.load() }
+                            },
+                            onSessionOpen = update::sessionOpen,
+                            demo = demo,
+                        )
+                    }
+                    val held = device
+                    val showUnpaired = rejectedToken != null && held != null &&
+                        (rejectedToken == UnknownToken || rejectedToken == held.token || rejectedToken == held.userToken)
+                    if (showUnpaired) {
+                        DeviceUnpairedGate(
+                            onRepair = { code ->
+                                val result = pairing.pair(code, deviceModeStore.deviceInfo())
+                                if (result is DevicePairingResult.Paired) {
+                                    val previous = device
+                                    // Kode milik perangkat yang sama mempertahankan akun yang sedang masuk; perangkat lain mulai dari QR.
+                                    val sameDevice = previous != null && previous.id == result.credential.id
+                                    val renewed = DeviceCredential(
+                                        id = result.credential.id,
+                                        token = result.credential.token,
+                                        name = result.credential.name,
+                                        section = result.credential.section,
+                                        linked = sameDevice && previous!!.linked,
+                                        userName = previous?.userName.takeIf { sameDevice },
+                                        userToken = previous?.userToken.takeIf { sameDevice },
+                                    )
+                                    deviceModeStore.save(renewed, code)
+                                    device = renewed
+                                    unpaired.value = null
+                                }
+                                result
+                            },
+                            onRetry = { unpaired.value = null },
+                            permissions = permissions,
+                        )
+                    }
                 }
             } else if (current == null) {
                 LoginRoute(

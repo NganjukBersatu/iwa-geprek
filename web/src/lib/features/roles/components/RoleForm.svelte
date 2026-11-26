@@ -27,6 +27,7 @@
 		error,
 		fieldErrors = {},
 		defaultKeys,
+		exampleKeys = [],
 		canMarkProtected,
 		onsave,
 		onclose
@@ -40,6 +41,8 @@
 		/** What the server refused, by field name, shown under the field itself. */
 		fieldErrors?: Record<string, string>;
 		defaultKeys: string[];
+		/** Izin minimum peran Kasir; tombol contohnya hanya ada saat menambah peran. */
+		exampleKeys?: string[];
 		canMarkProtected: boolean;
 		onsave: (body: RoleCreate | RoleUpdate) => void;
 		onclose: () => void;
@@ -79,6 +82,13 @@
 		}
 	}
 
+	// Contoh hanya mengisi centang dan nama yang masih kosong; pemilik tetap bisa mengubah semuanya sebelum menyimpan.
+	function useCashierExample(): void {
+		chosen.clear();
+		for (const key of [...defaultKeys, ...exampleKeys]) chosen.add(key);
+		if (!name.trim()) name = roleText.cashierExampleName;
+	}
+
 	function submit(): void {
 		const found: Record<string, string> = {};
 		if (!name.trim()) found.name = roleText.nameRequired;
@@ -115,6 +125,14 @@
 		{/if}
 	</FormSection>
 	<FormSection icon="shield-check" title={roleText.permissions} description={locked ? roleText.fullAccessSummary : format(roleText.paidOfDue, { paid: chosen.size, due: total })}>
+		{#if !role && exampleKeys.length > 0}
+			<Banner tone="info" icon="bulb">
+				{roleText.cashierExampleHint}
+				{#snippet action()}
+					<Button label={roleText.cashierExample} variant="secondary" onclick={useCashierExample} />
+				{/snippet}
+			</Banner>
+		{/if}
 		{#each groups as group (group.name)}
 			{@const groupKeys = group.sections.flatMap((section) => section.items.map((item) => item.key))}
 			<section class="rounded-lg border border-slate-200 p-3 tablet:p-4">

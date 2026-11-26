@@ -1,6 +1,7 @@
 import type { Schemas } from '../contract';
 
 export type Device = Schemas['DeviceOut'];
+export type DeviceDetail = Schemas['DeviceDetailOut'];
 export type DeviceCode = Schemas['DeviceCodeOut'];
 export type DeviceCreate = Schemas['DeviceCreateIn'];
 export type DeviceUpdate = Schemas['DeviceUpdateIn'];

@@ -27,6 +27,8 @@
 
 	const MAX_NAME = 40;
 	const kindOptions = Object.entries(KIND_LABEL).map(([value, label]) => ({ value, label }));
+	// Stasiun Kasir dipegang setiap perangkat Mode Kasir; server menolak menghapus atau mengganti jenisnya.
+	const cashierLocked = $derived(edit.station?.kind === 'handover');
 
 	const branchesDescription = $derived(
 		[stationText.perBranchEditDescription, edit.kind === 'deliver' ? stationText.perBranchTargetNote : '', edit.kind !== 'handover' ? stationText.perBranchRolesNote : '']
@@ -42,7 +44,7 @@
 		items={[{ label: termText.station }, { label: PAGES.stationSetup.label, href: PAGES.stationSetup.path }, { label: edit.creating ? stationText.newStation : (edit.station?.name ?? termText.station) }]}
 	>
 		{#snippet actions()}
-			{#if !edit.creating && edit.station}
+			{#if !edit.creating && edit.station && !cashierLocked}
 				<DeleteButton disabled={edit.saving} onclick={() => (edit.confirmingDelete = true)} />
 			{/if}
 		{/snippet}
@@ -67,7 +69,11 @@
 				<CardHeader title={termText.station} description={KIND_HINT[edit.kind]} icon="tools-kitchen-2" />
 				<div class="mt-4 flex flex-col gap-3">
 					<TextField label={termText.name} bind:value={edit.name} maxlength={MAX_NAME} required />
-					<SelectField label={termText.kind} options={kindOptions} bind:value={edit.kind} />
+					{#if cashierLocked}
+						<TextField label={termText.kind} value={KIND_LABEL.handover} readonly hint={stationText.cashierKindLocked} />
+					{:else}
+						<SelectField label={termText.kind} options={kindOptions} bind:value={edit.kind} />
+					{/if}
 					{#if edit.kind === 'deliver'}
 						<div class="grid grid-cols-2 gap-3">
 							<TextField label={stationText.targetHours} inputmode="numeric" bind:value={edit.target.hours} maxlength={2} />
