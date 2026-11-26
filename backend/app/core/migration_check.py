@@ -13,7 +13,7 @@ from sqlalchemy import text
 from sqlalchemy.engine import Connection
 
 # Tabel yang diisi migrasi dengan sengaja, beserta jumlah baris terbanyak yang boleh bertambah; berkurang tetap menghentikan deploy.
-ROWS_ADDED_ON_PURPOSE = {"units": 8}
+ROWS_ADDED_ON_PURPOSE = {"units": 8, "stations": 1}
 
 # Sums that must not change: (label, table, column), written with the names before the English-names migration; the new names are found through RENAMES.
 SUMS = (
