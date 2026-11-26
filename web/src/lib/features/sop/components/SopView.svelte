@@ -34,7 +34,7 @@
 				<li>
 					<a href={sopDraftPath(draft.id)} class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 hover:bg-brand-soft tablet:px-5">
 						<div class="min-w-0">
-							<p class="truncate text-sm font-semibold text-slate-800">{draft.title || sopText.untitled}</p>
+							<p class="text-sm font-semibold text-slate-800 wrap-break-word">{draft.title || sopText.untitled}</p>
 							<p class="text-xs text-slate-500">{format(sopText.savedAt, { time: formatDateTime(draft.updated_at) })}</p>
 						</div>
 						<span class="flex items-center gap-1 text-xs font-semibold text-brand">{sopText.resume}<i class="ti ti-chevron-right" aria-hidden="true"></i></span>
@@ -61,7 +61,7 @@
 	{:else if sop.ordering}
 		<SortableList bind:items={sop.order} key={(row) => row.id} label={(row) => row.title}>
 			{#snippet row(item)}
-				<p class="truncate text-sm font-semibold text-slate-800">{item.title}</p>
+				<p class="text-sm font-semibold text-slate-800 wrap-break-word">{item.title}</p>
 				<p class="text-xs text-slate-500">{branchOf(item)}</p>
 			{/snippet}
 		</SortableList>

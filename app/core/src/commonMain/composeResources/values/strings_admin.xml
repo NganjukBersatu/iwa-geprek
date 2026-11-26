@@ -50,10 +50,10 @@
     <string name="receipt_printing">Mencetak.</string>
     <string name="receipt_reprint">Cetak ulang</string>
 
-    <string name="offline_hint">Saat jaringan putus, pesanan kasir disimpan di tablet dan dikirim otomatis begitu tersambung. Pesanan tidak dihapus sebelum diterima server.</string>
+    <string name="offline_hint">Saat jaringan putus, pesanan kasir disimpan di perangkat dan dikirim otomatis begitu tersambung. Pesanan tidak dihapus sebelum diterima server.</string>
     <string name="offline_send_now">Kirim sekarang</string>
 
-    <string name="printer_hint">Pasang printer sekali; tablet menyambung ulang sendiri bila terputus.</string>
+    <string name="printer_hint">Pasang printer sekali; perangkat menyambung ulang sendiri bila terputus.</string>
     <string name="printer_keep_alive">Jaga sambungan printer</string>
     <string name="printer_keep_alive_hint">Printer tetap tersambung walaupun aplikasi ditutup. Selama menyala, ada notifikasi tetap di HP.</string>
     <string name="printer_keep_alive_channel">Sambungan printer</string>
@@ -77,10 +77,10 @@
     <string name="printer_test_statement">Printer ini siap dipakai.</string>
     <string name="printer_notice_paired">Printer terpasang dan tersimpan.</string>
     <string name="printer_notice_test_printed">Kertas uji terkirim ke printer.</string>
-    <string name="printer_notice_nothing_found">Tidak ada printer ditemukan. Pastikan printer menyala dan dekat tablet.</string>
+    <string name="printer_notice_nothing_found">Tidak ada printer ditemukan. Pastikan printer menyala dan dekat perangkat.</string>
     <string name="printer_notice_no_permission">Izin Bluetooth belum diberikan.</string>
-    <string name="printer_notice_bluetooth_off">Bluetooth tablet belum menyala.</string>
-    <string name="printer_notice_unreachable">Printer tidak terjangkau. Pastikan menyala dan dekat tablet.</string>
+    <string name="printer_notice_bluetooth_off">Bluetooth perangkat belum menyala.</string>
+    <string name="printer_notice_unreachable">Printer tidak terjangkau. Pastikan menyala dan dekat perangkat.</string>
     <string name="printer_notice_interrupted">Sambungan putus saat mencetak. Periksa kertas, lalu cetak ulang.</string>
     <string name="printer_notice_not_a_printer">Perangkat ini tidak menerima data cetak. Pilih printer lain.</string>
 
@@ -100,7 +100,7 @@
     <string name="recipe_add_ingredient">Pilih bahan</string>
 
     <string name="promo_discount">Diskon kasir</string>
-    <string name="promo_info">Info kafe</string>
+    <string name="promo_info">Info outlet</string>
     <string name="promo_add">Tambah promosi</string>
     <string name="promo_empty">Belum ada promosi.</string>
     <string name="promo_form_add">Tambah promosi</string>
@@ -323,7 +323,7 @@
     <string name="menu_photo">Foto</string>
     <string name="menu_name_required">Nama menu belum diisi. Masukkan nama menu.</string>
     <string name="menu_category_required">Kategori belum dipilih. Pilih salah satu kategori.</string>
-    <string name="menu_price_readonly">Harga tidak bisa diubah dari tablet.</string>
+    <string name="menu_price_readonly">Harga tidak bisa diubah dari perangkat.</string>
     <string name="menu_discard_title">Buang perubahan?</string>
     <string name="menu_discard_message">Perubahan pada %1$s belum disimpan. Bila Anda keluar sekarang, perubahan itu hilang.</string>
     <string name="menu_discard_confirm">Buang dan keluar</string>
@@ -572,22 +572,22 @@
     <string name="stock_confirm_change">%1$s menjadi %2$s</string>
     <string name="stock_confirm_opening">Stok awal periode diisi %1$s.</string>
     <string name="stock_correct_before">Tercatat sekarang %1$s</string>
-    <string name="printer_no_slots">Tablet ini tidak mencetak apa pun. Tetapkan stasiun untuk tablet ini di web admin: halaman Cabang, tab Perangkat.</string>
-    <string name="printer_slot_receipt">Struk pembayaran pelanggan dari kasir tablet ini.</string>
-    <string name="printer_slot_held">Stasiun %1$s dipegang tablet ini; struk pesanannya dicetak saat menu ditekan Selesai.</string>
-    <string name="printer_slot_sent">%1$s tidak punya tablet; struk menunya dikirim dari sini ke printer di %1$s.</string>
+    <string name="printer_no_slots">Perangkat ini tidak mencetak apa pun. Tetapkan stasiun untuk perangkat ini di web admin: halaman Cabang, tab Perangkat.</string>
+    <string name="printer_slot_receipt">Struk pembayaran pelanggan dari kasir ini.</string>
+    <string name="printer_slot_held">Stasiun %1$s dipegang perangkat ini; struk pesanannya dicetak saat menu ditekan Selesai.</string>
+    <string name="printer_slot_sent">%1$s tidak punya perangkat; struk menunya dikirim dari sini ke printer di %1$s.</string>
     <string name="period_label">Periode</string>
     <string name="period_option">%1$s sampai %2$s</string>
     <string name="period_option_running">%1$s (berjalan)</string>
     <string name="period_custom">Rentang lain</string>
     <string name="period_running_caption">Periode berjalan: %1$s sampai %2$s</string>
-    <string name="offline_no_connection">Tablet tidak tersambung ke server. Pesanan tetap tersimpan di tablet dan dikirim otomatis begitu tersambung.</string>
+    <string name="offline_no_connection">Perangkat tidak tersambung ke server. Pesanan tetap tersimpan di perangkat dan dikirim otomatis begitu tersambung.</string>
     <string name="offline_summary">%1$d menunggu dikirim · %2$d menunggu kasirnya masuk lagi · %3$d ditolak server</string>
     <string name="offline_sending">Mengirim…</string>
     <string name="offline_report_sent">%1$d pesanan terkirim.</string>
     <string name="offline_report_rejected">%1$d ditolak server; buka pesanannya untuk melihat alasan.</string>
     <string name="offline_report_waiting">%1$d belum terkirim karena server belum terjangkau; dikirim otomatis begitu tersambung.</string>
-    <string name="offline_other_user_hint">%1$d pesanan milik karyawan lain di tablet ini terkirim saat karyawan itu masuk lagi di tablet ini.</string>
+    <string name="offline_other_user_hint">%1$d pesanan milik karyawan lain di perangkat ini terkirim saat karyawan itu masuk lagi di perangkat ini.</string>
     <string name="offline_empty">Tidak ada pesanan tertunda. Semua pesanan sudah diterima server.</string>
     <string name="offline_order_title">Pesanan pukul %1$s</string>
     <string name="offline_this_account">Dicatat akun ini</string>
@@ -597,8 +597,8 @@
     <string name="offline_status_sending">Sedang dikirim</string>
     <string name="offline_status_needs_login">Menunggu kasirnya masuk lagi</string>
     <string name="offline_status_rejected">Ditolak server</string>
-    <string name="offline_queued_hint">Pesanan ini tersimpan di tablet dan dikirim otomatis begitu server terjangkau.</string>
-    <string name="offline_needs_login_hint">Sesi karyawan pencatatnya sudah berakhir. Pesanan terkirim otomatis saat karyawan itu masuk lagi di tablet ini.</string>
+    <string name="offline_queued_hint">Pesanan ini tersimpan di perangkat dan dikirim otomatis begitu server terjangkau.</string>
+    <string name="offline_needs_login_hint">Sesi karyawan pencatatnya sudah berakhir. Pesanan terkirim otomatis saat karyawan itu masuk lagi di perangkat ini.</string>
     <string name="offline_rejected_hint">Server menolak pesanan ini. Bereskan penyebabnya lalu kirim ulang, atau hapus bila pesanan memang tidak jadi.</string>
     <string name="offline_reason">Alasan</string>
     <string name="offline_created">Dibuat</string>
@@ -617,7 +617,7 @@
     <string name="offline_menu_unknown">Menu tidak ada di katalog</string>
     <string name="offline_detail_unreadable">Isi pesanan ini tidak bisa ditampilkan, tetapi tetap tersimpan dan dikirim apa adanya.</string>
     <string name="offline_discard_title">Hapus pesanan ini?</string>
-    <string name="offline_discard_message">Pesanan %1$s dihapus dari tablet dan tidak pernah sampai ke server. Tindakan ini tidak bisa dibatalkan.</string>
+    <string name="offline_discard_message">Pesanan %1$s dihapus dari perangkat dan tidak pernah sampai ke server. Tindakan ini tidak bisa dibatalkan.</string>
     <string name="offline_discard_confirm">Ya, hapus pesanan</string>
     <string name="offline_report_nothing">Tidak ada pesanan dari akun ini yang menunggu dikirim.</string>
     <string name="stock_close_all_done">Semua periode sampai hari ini sudah ditutup. Periode berikutnya mulai besok.</string>
@@ -639,5 +639,5 @@
     <string name="badge_all_branches">Semua cabang</string>
     <string name="menu_switched_off_all">Dimatikan admin untuk semua cabang. Nyalakan dari web admin.</string>
     <string name="nav_ingredient_use">Bahan Tidak Langsung</string>
-    <string name="printer_slot_sent_delivery">Mode Kasir: satu struk antar per pesanan dicetak dari tablet ini saat pesanan dibuat, ke printer %1$s. Aktif setelah printer ini dipasang.</string>
+    <string name="printer_slot_sent_delivery">Mode Kasir: satu struk antar per pesanan dicetak dari perangkat ini saat pesanan dibuat, ke printer %1$s. Aktif setelah printer ini dipasang.</string>
 </resources>

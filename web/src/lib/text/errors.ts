@@ -19,7 +19,7 @@ export const errorText = {
 		QUERY_TOO_LONG: 'Permintaan ini terlalu berat dan dibatalkan. Persempit rentang atau filternya, lalu coba lagi.',
 		TOO_MANY_REQUESTS: 'Terlalu banyak permintaan dalam waktu singkat. Tunggu sebentar, lalu coba lagi.',
 		DEMO_UNAVAILABLE: 'Data contoh untuk mode demo belum tersedia di server ini. Hubungi admin bila Anda membutuhkannya.',
-		DEMO_CASHIER_OPEN: 'Masih ada sesi kasir yang terbuka. Tutup dulu sesi kasir di tablet, lalu coba mode demo lagi.',
+		DEMO_CASHIER_OPEN: 'Masih ada sesi kasir yang terbuka. Tutup dulu sesi kasir di perangkat, lalu coba mode demo lagi.',
 		DEMO_NOT_READY: 'Mode demo belum siap. Tunggu sebentar, lalu coba lagi.',
 		DEMO_NOT_ACTIVE: 'Mode demo sudah tidak aktif. Masuk kembali dengan akun Anda.'
 	} as Record<string, string>,

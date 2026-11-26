@@ -26,7 +26,7 @@
 			{@render leading()}
 		{/if}
 		<div class="min-w-0">
-			<h1 class="truncate text-xl font-semibold text-brand-ink">{title}</h1>
+			<h1 class="text-xl font-semibold text-brand-ink wrap-break-word">{title}</h1>
 			{#if description}
 				<p class="mt-0.5 max-w-3xl text-xs leading-5 text-slate-500">{description}</p>
 			{/if}
@@ -34,7 +34,8 @@
 	</div>
 
 	{#if actions}
-		<div class="flex shrink-0 flex-nowrap items-center gap-2">
+		<!-- Judul dan tombol sama-sama boleh turun baris, supaya judul (misalnya nomor nota) tidak pernah terpotong. -->
+		<div class="flex flex-wrap items-center gap-2 tablet:justify-end">
 			{@render actions()}
 		</div>
 	{/if}

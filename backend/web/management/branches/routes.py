@@ -13,8 +13,8 @@ from app.core.database import get_db
 from app.core.errors import DomainError, refusal
 from app.core.sorting import Sort
 from app.models.user import User
-from web.management.branches import service
-from web.management.branches.constants import PERMISSION_MANAGE, PERMISSION_REMOVE, READ_GATE
+from web.management.branches import readiness, service
+from web.management.branches.constants import PERMISSION_MANAGE, PERMISSION_REMOVE, READ_GATE, READINESS_GATE
 from web.management.branches.domain import BranchChanges, BranchDraft
 from web.management.branches.mappers import SORTING, branch_out
 from web.management.branches.schemas import BranchCreateIn, BranchOut, BranchPeriodIn, BranchReadinessOut, BranchRemovalIn, BranchRemovalOut, BranchUpdateIn
@@ -53,9 +53,9 @@ def get_branch(outlet_id: str, db: Session = Depends(get_db), admin: User = Depe
 
 # Tidak di-cache: keadaan tablet dan printer berubah dari tablet kapan saja; kartunya dimuat ulang lewat sinyal live.
 @router.get("/{outlet_id}/readiness", response_model=BranchReadinessOut)
-def branch_readiness(outlet_id: str, db: Session = Depends(get_db), admin: User = Depends(require_gate(READ_GATE))):
+def branch_readiness(outlet_id: str, db: Session = Depends(get_db), admin: User = Depends(require_gate(READINESS_GATE))):
     with _domain_errors():
-        return service.readiness(db, admin, outlet_id)
+        return readiness.readiness(db, admin, outlet_id)
 
 
 @router.post("", response_model=BranchOut, status_code=status.HTTP_201_CREATED)

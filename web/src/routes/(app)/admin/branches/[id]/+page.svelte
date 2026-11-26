@@ -6,6 +6,7 @@
 	import BranchDetailView from '$lib/features/branch-detail/components/BranchDetailView.svelte';
 	import BranchSummary from '$lib/features/branch-detail/components/BranchSummary.svelte';
 	import { BranchDetailState } from '$lib/features/branch-detail/branch-detail.svelte';
+	import CashierSettingsSection from '$lib/features/cafe-settings/components/CashierSettingsSection.svelte';
 	import PricingSettingsSection from '$lib/features/cafe-settings/components/PricingSettingsSection.svelte';
 	import ReceiptSettingsSection from '$lib/features/cafe-settings/components/ReceiptSettingsSection.svelte';
 	import DevicesSection from '$lib/features/devices/components/DevicesSection.svelte';
@@ -24,7 +25,8 @@
 		...(access.opens(PAGES.cafeSettings.screen)
 			? [
 					{ key: BRANCH_TABS.receipt, label: branchDetailText.tabs.receipt },
-					{ key: BRANCH_TABS.pricing, label: branchDetailText.tabs.pricing }
+					{ key: BRANCH_TABS.pricing, label: branchDetailText.tabs.pricing },
+					{ key: BRANCH_TABS.cashier, label: branchDetailText.tabs.cashier }
 				]
 			: []),
 		...(access.opens(PAGES.attendanceRules.screen) ? [{ key: BRANCH_TABS.rules, label: branchDetailText.tabs.rules }] : []),
@@ -47,6 +49,8 @@
 				<ReceiptSettingsSection />
 			{:else if tab === BRANCH_TABS.pricing}
 				<PricingSettingsSection />
+			{:else if tab === BRANCH_TABS.cashier}
+				<CashierSettingsSection />
 			{:else if tab === BRANCH_TABS.rules}
 				<AttendanceRulesSection />
 			{:else if tab === BRANCH_TABS.devices}

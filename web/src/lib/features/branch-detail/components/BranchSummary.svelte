@@ -43,7 +43,7 @@
 	</div>
 {/snippet}
 
-<div class="grid gap-4 tablet:gap-6 laptop:grid-cols-2">
+<div class="flex flex-col gap-4 tablet:gap-6">
 	<BranchReadiness branchId={branch.id} />
 
 	<Card>

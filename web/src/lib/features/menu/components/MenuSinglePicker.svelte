@@ -41,7 +41,7 @@
 		onmore={() => choices.more()}
 	>
 		{#snippet option(item)}
-			<span class="truncate">{item.name}</span>
+			<span class="min-w-0 wrap-break-word">{item.name}</span>
 		{/snippet}
 	</OptionList>
 </PickerField>

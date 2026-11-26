@@ -44,7 +44,7 @@ export const recipeText = {
 	addCostLabel: 'Add cost {kind}{value}',
 	suggestedPriceLabel: 'Harga disarankan ({percent}%{custom})',
 	ingredientQuantityNumber: 'Takaran bahan {number}',
-	markupFollowSetting: 'Ikut pengaturan kafe',
+	markupFollowSetting: 'Ikut pengaturan outlet',
 	markupPercent: 'Persen dari total bahan',
 	markupRupiah: 'Rupiah per porsi'
 } as const;

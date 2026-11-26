@@ -3,7 +3,7 @@ export const emptyText = {
 	employees: { title: 'Belum ada karyawan', text: 'Tambahkan karyawan pertama agar akunnya bisa dipakai masuk dan dijadwalkan.' },
 	ingredients: { title: 'Belum ada bahan', text: 'Tambahkan bahan pertama agar stok dan resep bisa dicatat.' },
 	shiftCodes: { title: 'Belum ada kode shift', text: 'Tambahkan kode shift pertama agar jadwal bisa disusun.' },
-	menuCategories: { title: 'Belum ada kategori menu', text: 'Tambahkan kategori pertama, misalnya Kopi atau Makanan, agar menu bisa dibuat dan tiketnya sampai ke stasiun yang tepat.', open: 'Buka Kategori Menu' },
+	menuCategories: { title: 'Belum ada kategori menu', text: 'Tambahkan kategori pertama, misalnya Makanan atau Minuman, agar menu bisa dibuat dan tiketnya sampai ke stasiun yang tepat.', open: 'Buka Kategori Menu' },
 	roles: { title: 'Belum ada peran', text: 'Tambahkan peran pertama untuk mengatur akses karyawan.' },
 	branches: { title: 'Belum ada cabang', text: 'Tambahkan cabang pertama agar kas dan transaksi bisa dicatat per cabang.' },
 	devices: { title: 'Belum ada perangkat', text: 'Tambahkan perangkat pertama untuk mulai mengelolanya.', action: 'Tambah perangkat' },

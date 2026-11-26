@@ -16,6 +16,7 @@ from app.models.ingredient import Ingredient, RecipeIngredient
 from app.models.menu_item import MenuItem
 from app.models.order import Order
 from app.models.order_item import OrderItem
+from app.models.stock import StockItem
 from app.models.user import User
 
 NOT_FOUND = 404
@@ -59,6 +60,19 @@ class WrittenLines:
 
 def is_sold_at(menu: MenuItem, outlet_id: str) -> bool:
     return branch_scope.listed_at(menu.outlet_ids, outlet_id)
+
+
+def ready_ids(db: Session, outlet_id: str | None, menu_ids: list[str]) -> set[str]:
+    """A menu is ready to sell where its cost is known: it has a recipe, its stock is tracked, or it has a fixed cost."""
+    if not menu_ids:
+        return set()
+    recipes = select(RecipeIngredient.menu_item_id).where(RecipeIngredient.menu_item_id.in_(menu_ids))
+    stocks = select(StockItem.menu_item_id).where(StockItem.menu_item_id.in_(menu_ids), StockItem.is_tracked.is_(True))
+    fixed = select(MenuItem.id).where(MenuItem.id.in_(menu_ids), MenuItem.fixed_cost.is_not(None))
+    if outlet_id:
+        recipes = recipes.where(RecipeIngredient.outlet_id == outlet_id)
+        stocks = stocks.where(StockItem.outlet_id == outlet_id)
+    return set(db.scalars(recipes).all()) | set(db.scalars(stocks).all()) | set(db.scalars(fixed).all())
 
 
 def missing_ingredients(db: Session, outlet_id: str | None, menu_ids: list[str]) -> dict[str, list[str]]:

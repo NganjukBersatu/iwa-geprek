@@ -45,6 +45,7 @@ def catalog_out() -> list[PermissionOut]:
             section=section.name,
             description=permission.description,
             default_for_new_role=permission.default_for_new_role,
+            in_cashier_example=permission.in_cashier_example,
         )
         for group in GROUPS
         for section in group.sections

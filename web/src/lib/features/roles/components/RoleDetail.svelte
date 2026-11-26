@@ -63,8 +63,8 @@
 		{:else if role.is_default || role.full_access}
 			<Banner tone="info" icon="lock">{roleText.notRemovableNote}</Banner>
 		{/if}
-		<Card flush class="grid laptop:grid-cols-[18rem_minmax(0,1fr)]">
-			<div class="border-b border-slate-100 p-4 tablet:p-5 laptop:border-b-0 laptop:border-r">
+		<Card flush>
+			<div class="border-b border-slate-100 p-4 tablet:p-5">
 				<FigureList
 					title={termText.summary}
 					figures={[

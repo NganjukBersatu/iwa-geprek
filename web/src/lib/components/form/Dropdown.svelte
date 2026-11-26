@@ -290,7 +290,7 @@
 							onmouseenter={() => (focused = index)}
 							class="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-xs {index === focused ? 'bg-brand-soft text-brand-deep' : 'text-slate-700'} {choice.value === value ? 'font-semibold' : ''}"
 						>
-							<span class="min-w-0 flex-1 truncate {choice.blank ? 'text-slate-500' : ''}">{choice.label}</span>
+							<span class="min-w-0 flex-1 wrap-break-word {choice.blank ? 'text-slate-500' : ''}">{choice.label}</span>
 							{#if choice.value === value}<i class="ti ti-check shrink-0 text-brand" aria-hidden="true"></i>{/if}
 						</button>
 					</li>

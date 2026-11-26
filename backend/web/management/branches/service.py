@@ -13,17 +13,12 @@ from app.core.auth import end_sessions_of
 from app.core.clock import now
 from app.core.clock import today
 from app.core.errors import DomainError
-from app.core.devices import print_routing
 from app.core.finance.payment_methods import seed_defaults
-from app.models.cafe_settings import CafeSettings
 from app.models.outlet import Outlet
 from app.models.user import User
-from app.models.station import StationKind
 from web.management.branches import messages, removal, repository
 from web.management.branches.constants import CONFLICT, DEFAULT_RADIUS_METERS, NOT_FOUND
 from web.management.branches.domain import BranchChanges, BranchDraft
-from web.management.branches.schemas import BranchReadinessOut
-from web.management.printers.service import route_out
 
 ATTRIBUTES = {
     "name": "name",
@@ -162,15 +157,3 @@ def _tidy(text: str) -> str:
 def _blank(text: str | None) -> str | None:
     """Text pasted from a dashboard often carries spaces or a newline at its end; empty becomes none."""
     return (text or "").strip() or None
-
-
-def readiness(db: Session, admin: User, outlet_id: str) -> BranchReadinessOut:
-    outlet = get(db, admin, outlet_id)
-    routes = print_routing.routes(db, outlet.id)
-    cashier = next((route.holders[0].name for route in routes if route.station.kind == StationKind.HANDOVER and route.holders), None)
-    return BranchReadinessOut(
-        settings_ready=db.get(CafeSettings, outlet.id) is not None,
-        location_ready=outlet.latitude is not None and outlet.longitude is not None,
-        cashier_name=cashier,
-        stations=[route_out(route) for route in routes],
-    )

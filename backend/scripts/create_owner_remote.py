@@ -1,6 +1,7 @@
 """Membuat akun pemilik pertama di server Railway dari komputer sendiri:
 
     python scripts/create_owner_remote.py
+    python scripts/create_owner_remote.py --hash-saja  # hanya mencetak hash untuk scripts/bootstrap_owner.py
 
 Kata sandi diketik tersembunyi di komputer ini, karena ketikan tersembunyi lewat railway ssh dari Windows selalu terbaca kosong.
 Yang dikirim ke server hanya hash bcrypt-nya; sisanya (nama cabang, nama, username, konfirmasi "ya") ditanyakan oleh
@@ -38,12 +39,18 @@ def ask_password(username: str) -> str:
 
 
 def main() -> int:
+    # Hanya mencetak hash untuk variabel server yang dibaca scripts/bootstrap_owner.py; tidak butuh Railway CLI.
+    hash_only = "--hash-saja" in sys.argv[1:]
     railway = shutil.which("railway.cmd") or shutil.which("railway")
-    if railway is None:
+    if railway is None and not hash_only:
         print("Railway CLI belum terpasang. Jalankan dulu: npm install -g @railway/cli, lalu railway login.")
         return 1
-    username = input("Username yang akan dipakai (tanpa spasi, sama dengan yang nanti ditanyakan server): ").strip()
+    username = input("Username yang akan dipakai (tanpa spasi, sama dengan yang dipakai di server): ").strip()
     encoded = base64.b64encode(hash_password(ask_password(username)).encode("ascii")).decode("ascii")
+    if hash_only:
+        print(f"Isi variabel server {HASH_VARIABLE} dengan nilai di bawah ini, dan OWNER_USERNAME dengan '{username}':")
+        print(encoded)
+        return 0
     print("Kata sandi sudah diubah menjadi hash. Sekarang server menanyakan nama cabang, nama, dan username.")
     remote = f"{HASH_VARIABLE}={encoded} python scripts/create_owner.py --tulis"
     return subprocess.run([railway, "ssh", "--service", SERVICE, "--", "sh", "-c", remote], check=False).returncode

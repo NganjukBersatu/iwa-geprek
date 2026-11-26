@@ -13,7 +13,7 @@ export const visitorText = {
 	genderNote: 'Jenis kelamin pemesan, bukan jumlah orang dalam rombongan. Dicatat {count} dari {total} transaksi.',
 	unrecordedTitle: 'Kenapa sebagian jatuh ke Tidak dicatat',
 	unrecordedNote:
-		'Kategori dan jenis kelamin pengunjung diisi kasir di tablet saat membuat pesanan, dan isian itu opsional. Pesanan yang tidak diisi masuk ke Tidak dicatat; itu berarti isiannya kosong, bukan datanya rusak. Kategori tercatat {category} dari {total} transaksi, jenis kelamin tercatat {gender} dari {total}.',
+		'Kategori dan jenis kelamin pengunjung diisi kasir di perangkat saat membuat pesanan, dan isian itu opsional. Pesanan yang tidak diisi masuk ke Tidak dicatat; itu berarti isiannya kosong, bukan datanya rusak. Kategori tercatat {category} dari {total} transaksi, jenis kelamin tercatat {gender} dari {total}.',
 	noData: 'Belum ada data.',
 	perCategory: 'Per kategori pengunjung',
 	categoryNote: 'Kategori dicatat sekali per pesanan. Dicatat {count} dari {total} transaksi.',

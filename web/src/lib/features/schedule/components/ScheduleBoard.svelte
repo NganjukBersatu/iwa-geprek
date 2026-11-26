@@ -30,7 +30,7 @@
 			<div class="mt-3 flex min-h-12 flex-wrap gap-2 rounded-lg border border-dashed p-2 {drag.over?.kind === 'pool' ? 'border-brand bg-brand-page' : 'border-brand-line bg-brand-soft'}" data-drop="pool">
 				{#each schedule.pool as person (person.id)}
 					<button type="button" onpointerdown={(event) => drag.start(event, { kind: 'pool', userId: person.id, label: person.name || person.username })} class="touch-none cursor-grab rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-sm hover:brightness-95 {tones[roleTone(person.role_name)].pill}" aria-label={format(scheduleText.dragName, { name: person.name || person.username })}>
-						{person.name || person.username}<span class="font-normal opacity-80"> · {person.role_name}</span>
+						{person.name || person.username}<span class="font-normal opacity-80">{' · '}{person.role_name}</span>
 					</button>
 				{:else}
 					<p class="self-center px-1 text-xs text-slate-500">{scheduleText.noActiveEmployees}</p>
@@ -61,7 +61,7 @@
 							onclick={() => (draggable ? undefined : void goto(assignmentPath(item.id)))}
 							onkeydown={(event) => event.key === 'Enter' && void goto(assignmentPath(item.id))}
 						>
-							<p class="truncate text-sm font-semibold text-slate-800">{item.user_username}</p>
+							<p class="text-sm font-semibold text-slate-800 wrap-break-word">{item.user_username}</p>
 							<div class="mt-1 flex flex-wrap items-center gap-1">
 								<ShiftCodeBadge code={schedule.codeOf(item.shift_code_id)} showTime />
 								{#if item.role_name}<span class="text-xs text-slate-500">{item.role_name}</span>{/if}

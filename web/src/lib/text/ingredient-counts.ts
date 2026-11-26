@@ -4,7 +4,7 @@ export const ingredientCountText = {
 	adjustment: 'Penyesuaian',
 	closingStock: 'Stok Akhir',
 	sourceWeb: 'Web',
-	sourceTablet: 'Tablet',
+	sourceTablet: 'Perangkat',
 	user: 'Petugas',
 	source: 'Sumber',
 	countedIngredients: 'Bahan dihitung',

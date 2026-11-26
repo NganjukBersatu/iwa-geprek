@@ -16,6 +16,7 @@ export const sopColumns: Column<SopSummary>[] = [
 	{ key: 'cabang', label: sopText.availableIn, align: 'left', value: branchOf, sort: 'branch' },
 	{ key: 'slide', label: sopText.slide, value: (row) => format(sopText.slidesCount, { count: row.slide_count }), sort: 'slides' },
 	{ key: 'versi', label: sopText.version, value: (row) => `versi ${row.version}`, sort: 'version' },
+	{ key: 'dibaca', label: sopText.reads, value: (row) => format(sopText.readsOfAudience, { read: row.read_count, audience: row.audience_count }), sort: 'reads' },
 	{ key: 'status', label: termText.status, align: 'left', value: (row) => (row.active ? sopText.shown : sopText.hidden), sort: 'status' },
 	{ key: 'diubah', label: sopText.changed, align: 'left', value: changed, sort: 'updated_at' }
 ];

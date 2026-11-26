@@ -69,7 +69,16 @@ class AndroidDeviceModeStore(context: Context) : DeviceModeStore {
 
     override suspend fun clear() {
         withContext(Dispatchers.IO) {
-            prefs.edit().remove(KEY_CREDENTIAL).remove(KEY_CODE_HASH).commit()
+            prefs.edit().remove(KEY_CREDENTIAL).remove(KEY_CODE_HASH).remove(KEY_LAYOUT).commit()
+        }
+    }
+
+    // Pilihan tampilan bukan rahasia, jadi disimpan tanpa enkripsi.
+    override suspend fun layout(): String? = withContext(Dispatchers.IO) { prefs.getString(KEY_LAYOUT, null) }
+
+    override suspend fun saveLayout(code: String) {
+        withContext(Dispatchers.IO) {
+            if (prefs.getString(KEY_LAYOUT, null) != code) prefs.edit().putString(KEY_LAYOUT, code).apply()
         }
     }
 
@@ -123,6 +132,7 @@ class AndroidDeviceModeStore(context: Context) : DeviceModeStore {
         const val PREFS_NAME = "device_mode"
         const val KEY_CREDENTIAL = "credential"
         const val KEY_CODE_HASH = "code_hash"
+        const val KEY_LAYOUT = "layout"
         const val ANDROID_KEYSTORE = "AndroidKeyStore"
         const val KEY_ALIAS = "cafe_device_key"
         const val TRANSFORMATION = "AES/GCM/NoPadding"

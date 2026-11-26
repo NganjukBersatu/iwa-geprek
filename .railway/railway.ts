@@ -68,8 +68,6 @@ export default defineRailway(() => {
     source: github(REPOSITORY, { rootDirectory: "site" }),
     build: "npm run build",
     deploy: RESTART,
-    // Dibaca Vite saat build: tombol di bagian unduhan membuka halaman Unduhan web admin.
-    env: { VITE_DOWNLOAD_PAGE_URL: "https://${{web.RAILWAY_PUBLIC_DOMAIN}}/unduh" },
   });
 
   return project("iwageprek", {

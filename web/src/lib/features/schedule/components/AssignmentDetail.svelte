@@ -127,8 +127,8 @@
 		{@const code = codeOf(assignment, context)}
 		{@const record = recordOf(assignment, context)}
 		{@const hours = code?.is_day_off ? termText.dayOff : code ? formatClockRange(code.start_clock, code.end_clock) : ''}
-		<Card flush class="grid {canMark ? 'laptop:grid-cols-2' : ''}">
-			<div class="flex flex-col gap-4 border-b border-slate-100 p-4 tablet:p-5 {canMark ? 'laptop:border-b-0 laptop:border-r' : ''}">
+		<Card flush>
+			<div class="flex flex-col gap-4 border-b border-slate-100 p-4 tablet:p-5">
 				<div class="flex items-center justify-between gap-3">
 					<div>
 						<p class="text-2xl font-semibold text-brand-ink">{hours || shiftCodeText.noWorkHours}</p>

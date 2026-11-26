@@ -51,8 +51,7 @@ import id.kongstudio.cafe.resources.cashier_method_none
 import id.kongstudio.cafe.resources.cashier_method_none_ready
 import id.kongstudio.cafe.resources.cashier_method_ready
 import id.kongstudio.cafe.resources.cashier_method_unready
-import id.kongstudio.cafe.resources.cashier_method_unready_item
-import id.kongstudio.cafe.resources.cashier_method_unready_reason
+import id.kongstudio.cafe.resources.cashier_method_unready_short
 import id.kongstudio.cafe.resources.cashier_order_summary
 import id.kongstudio.cafe.resources.cashier_pay_need_cash
 import id.kongstudio.cafe.resources.cashier_pay_need_method
@@ -130,7 +129,7 @@ internal fun PaymentSheet(
     onDismiss: () -> Unit,
 ) {
     val spacing = AppTheme.spacing
-    val wide = AppTheme.windowSize.isWide
+    val wide = AppTheme.windowSize.twoPane
     val sound = rememberSoundPlayer()
     var methodCode by rememberSaveable { mutableStateOf(methods.firstOrNull { it.ready }?.code) }
     var cash by rememberSaveable { mutableStateOf<Long?>(null) }
@@ -171,6 +170,14 @@ internal fun PaymentSheet(
                 onShowCustomer = { showingCustomer = true },
             )
         }
+        val canPay = method?.ready == true && !shortfall && summary.hasContent
+        val invalidReason = when {
+            method?.ready != true -> stringResource(Res.string.cashier_pay_need_method)
+            needsCash && summary.total > 0 && received == null -> stringResource(Res.string.cashier_pay_need_cash)
+            shortfall -> stringResource(Res.string.cashier_pay_short)
+            else -> null
+        }
+        val onPay = { method?.let { onConfirm(it.code, if (needsCash) cash else null) } ?: Unit }
         val summaryPane: @Composable ColumnScope.() -> Unit = {
             SummaryPane(
                 summary = summary,
@@ -178,14 +185,10 @@ internal fun PaymentSheet(
                 onPrintTickets = onPrintTickets,
                 failure = failure,
                 submitting = submitting,
-                canPay = method?.ready == true && !shortfall && summary.hasContent,
-                invalidReason = when {
-                    method?.ready != true -> stringResource(Res.string.cashier_pay_need_method)
-                    needsCash && summary.total > 0 && received == null -> stringResource(Res.string.cashier_pay_need_cash)
-                    shortfall -> stringResource(Res.string.cashier_pay_short)
-                    else -> null
-                },
-                onPay = { method?.let { onConfirm(it.code, if (needsCash) cash else null) } },
+                canPay = canPay,
+                invalidReason = invalidReason,
+                onPay = onPay,
+                withPay = wide,
             )
         }
         if (wide) {
@@ -203,10 +206,14 @@ internal fun PaymentSheet(
                 )
             }
         } else {
-            Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
+            Column(modifier = Modifier.fillMaxWidth().weight(1f, fill = false).verticalScroll(rememberScrollState())) {
                 Column(Modifier.padding(spacing.lg), verticalArrangement = Arrangement.spacedBy(spacing.md), content = pickPane)
                 AppDivider()
                 Column(Modifier.padding(spacing.lg), verticalArrangement = Arrangement.spacedBy(spacing.md), content = summaryPane)
+            }
+            AppDivider()
+            Column(Modifier.fillMaxWidth().padding(spacing.lg), verticalArrangement = Arrangement.spacedBy(spacing.sm)) {
+                PayFooter(summary.total, failure, submitting, canPay, invalidReason, onPay)
             }
         }
     }
@@ -233,8 +240,10 @@ private fun ColumnScope.MethodPane(
     if (methods.isEmpty()) {
         InlineMessage(text = stringResource(Res.string.cashier_method_none))
     } else {
-        if (methods.none { it.ready }) InlineMessage(text = stringResource(Res.string.cashier_method_none_ready))
-        methods.chunked(MethodColumns).forEach { row ->
+        val readyMethods = methods.filter { it.ready }
+        if (readyMethods.isEmpty()) InlineMessage(text = stringResource(Res.string.cashier_method_none_ready))
+        // Hanya metode yang bisa dipakai yang menjadi kotak pilihan; yang belum disetel cukup disebut di satu baris supaya tidak memenuhi layar.
+        readyMethods.chunked(MethodColumns).forEach { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(spacing.sm)) {
                 row.forEach { option ->
                     ChoiceTile(
@@ -250,11 +259,14 @@ private fun ColumnScope.MethodPane(
                 repeat(MethodColumns - row.size) { Spacer(Modifier.weight(1f)) }
             }
         }
-        // Alasan semua metode yang belum siap dalam satu pesan yang selalu terlihat, tidak menunggu kartunya diketuk.
-        val unready = methods.filterNot { it.ready }.map { option ->
-            stringResource(Res.string.cashier_method_unready_item, option.label, option.missing.joinToString(", "))
+        val unready = methods.filterNot { it.ready }
+        if (unready.isNotEmpty()) {
+            AppText(
+                text = stringResource(Res.string.cashier_method_unready_short, unready.joinToString(", ") { it.label }),
+                role = TextRole.Caption,
+                color = colors.contentMuted,
+            )
         }
-        if (unready.isNotEmpty()) InlineMessage(text = stringResource(Res.string.cashier_method_unready_reason, unready.joinToString("; ")))
     }
 
     if (method == null) return
@@ -352,10 +364,10 @@ private fun SummaryPane(
     canPay: Boolean,
     invalidReason: String?,
     onPay: () -> Unit,
+    withPay: Boolean,
 ) {
     val colors = AppTheme.colors
     val spacing = AppTheme.spacing
-    var attempted by rememberSaveable { mutableStateOf(false) }
 
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         AppText(
@@ -387,9 +399,25 @@ private fun SummaryPane(
     if (summary.discount > 0) {
         AmountRow(stringResource(Res.string.cashier_discount, summary.promoName.orEmpty()), "-${formatRupiah(summary.discount)}", colors.danger)
     }
+    if (withPay) PayFooter(summary.total, failure, submitting, canPay, invalidReason, onPay)
+}
+
+/** Total, alasan belum bisa bayar, dan tombol bayar; di HP ditempel di bawah lembar supaya selalu terlihat tanpa menggulir. */
+@Composable
+private fun PayFooter(
+    total: Long,
+    failure: AppFailure?,
+    submitting: Boolean,
+    canPay: Boolean,
+    invalidReason: String?,
+    onPay: () -> Unit,
+) {
+    val colors = AppTheme.colors
+    var attempted by rememberSaveable { mutableStateOf(false) }
+
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         AppText(text = stringResource(Res.string.cashier_bill_total), role = TextRole.Label, color = colors.content, modifier = Modifier.weight(1f))
-        AppText(text = formatRupiah(summary.total), role = TextRole.Title, color = colors.primary)
+        AppText(text = formatRupiah(total), role = TextRole.Title, color = colors.primary)
     }
     failure?.let { InlineMessage(text = failureText(it)) }
     if (attempted && !canPay && invalidReason != null) InlineMessage(text = invalidReason)

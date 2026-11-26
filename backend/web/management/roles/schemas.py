@@ -53,3 +53,4 @@ class PermissionOut(BaseModel):
     section: str
     description: str
     default_for_new_role: bool
+    in_cashier_example: bool

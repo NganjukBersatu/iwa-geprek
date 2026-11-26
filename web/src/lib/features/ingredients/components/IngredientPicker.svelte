@@ -66,7 +66,7 @@
 		onmore={() => choices.more()}
 	>
 		{#snippet option(item)}
-			<span class="truncate">{item.name}</span>
+			<span class="min-w-0 wrap-break-word">{item.name}</span>
 			<span class="shrink-0 text-xs text-slate-500">{formatNumber(item.balance)} {item.unit}</span>
 		{/snippet}
 	</OptionList>

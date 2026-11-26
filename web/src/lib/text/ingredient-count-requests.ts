@@ -1,7 +1,7 @@
 /** The sentences of the requests to close a branch stock period: the waiting list, the request page, and its progress. */
 export const ingredientCountRequestText = {
 	listTitle: 'Pengajuan tutup periode',
-	listDescription: 'Diajukan dari tablet atau web. Ketuk satu pengajuan untuk memeriksa lalu menutup atau menolaknya.',
+	listDescription: 'Diajukan dari perangkat atau web. Ketuk satu pengajuan untuk memeriksa lalu menutup atau menolaknya.',
 	loadFailedTitle: 'Pengajuan gagal dimuat',
 	loadFailed: 'Pengajuan gagal dimuat.',
 	loading: 'Memuat pengajuan...',

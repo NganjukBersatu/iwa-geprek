@@ -114,11 +114,11 @@
 				{ label: ingredientText.usedIn, value: ingredient.catalog_id ? format(ingredientText.branchCount, { count: formatNumber(ingredient.branch_count, 0) }) : branchName(ingredient, context) }
 			]}
 		/>
-		<div class="grid items-start gap-4 tablet:gap-6 laptop:grid-cols-[20rem_minmax(0,1fr)]">
+		<div class="flex flex-col gap-4 tablet:gap-6">
 			<Card flush>
 				<div class="flex flex-col gap-3 bg-brand-soft p-4">
 					<span class="text-xs font-medium text-brand-deep">{ingredientText.photo}</span>
-					<div class="flex aspect-4/3 items-center justify-center overflow-hidden rounded-lg bg-brand-tint">
+					<div class="flex aspect-4/3 w-full max-w-80 items-center justify-center overflow-hidden rounded-lg bg-brand-tint">
 						{#if ingredient.photo_url}
 							<img src={ingredient.photo_url} alt={format(controlText.photoOf, { name: ingredient.name })} class="size-full object-cover" />
 						{:else}

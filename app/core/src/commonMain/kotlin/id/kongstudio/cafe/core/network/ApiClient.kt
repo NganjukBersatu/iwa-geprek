@@ -2,6 +2,7 @@ package id.kongstudio.cafe.core.network
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.http.HttpHeaders
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -15,9 +16,19 @@ private const val VersionHeader = "X-App-Version"
 private const val ClientName = "apk"
 private const val UpgradeRequired = 426
 private const val DemoHeader = "X-Demo-Mode"
+private const val DeviceLayoutHeader = "X-Device-Layout"
+private const val DeviceStateHeader = "X-Device-State"
+private const val DeviceUnpaired = "unpaired"
+private const val BearerPrefix = "Bearer "
 
-/** Setiap permintaan menyebut nama dan [appVersion] aplikasi; jawaban 426 diteruskan ke [onUpgradeRequired], dan ada tidaknya header mode demo ke [onDemoMode]. */
-fun createApiClient(appVersion: String, onUpgradeRequired: () -> Unit, onDemoMode: (Boolean) -> Unit): HttpClient = HttpClient {
+/** Setiap permintaan menyebut nama dan [appVersion] aplikasi; jawaban 426 diteruskan ke [onUpgradeRequired], ada tidaknya header mode demo ke [onDemoMode], pilihan tampilan perangkat (hanya pada jawaban untuk perangkat operasional) ke [onDeviceLayout], dan jawaban yang menyatakan token perangkat tidak berlaku lagi ke [onDeviceUnpaired] beserta token yang ditolak. */
+fun createApiClient(
+    appVersion: String,
+    onUpgradeRequired: () -> Unit,
+    onDemoMode: (Boolean) -> Unit,
+    onDeviceLayout: (String) -> Unit,
+    onDeviceUnpaired: (rejectedToken: String?) -> Unit,
+): HttpClient = HttpClient {
     install(ContentNegotiation) {
         json(Json { ignoreUnknownKeys = true })
     }
@@ -34,6 +45,10 @@ fun createApiClient(appVersion: String, onUpgradeRequired: () -> Unit, onDemoMod
         validateResponse { response ->
             if (response.status.value == UpgradeRequired) onUpgradeRequired()
             onDemoMode(response.headers[DemoHeader] == "1")
+            response.headers[DeviceLayoutHeader]?.let(onDeviceLayout)
+            if (response.headers[DeviceStateHeader] == DeviceUnpaired) {
+                onDeviceUnpaired(response.call.request.headers[HttpHeaders.Authorization]?.removePrefix(BearerPrefix))
+            }
         }
     }
 }

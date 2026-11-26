@@ -11,6 +11,7 @@ from web.management.cafe_settings import messages
 NOT_FOUND = 404
 INVALID = 422
 PLAIN = ("name", "address", "phone", "complaint_number", "wifi_password", "receipt_greeting")
+CHOICES = ("default_order_type",)
 NUMBERS = ("cost_markup_percent", "target_margin_percent", "tax_percent", "service_percent")
 
 
@@ -27,6 +28,9 @@ def update(db: Session, outlet_id: str, values: dict) -> CafeSettings:
     for field in PLAIN:
         if values.get(field) is not None:
             setattr(row, field, values[field].strip())
+    for field in CHOICES:
+        if values.get(field) is not None:
+            setattr(row, field, values[field])
     if values.get("wifi") is not None:
         row.wifi = values["wifi"]
     if values.get("social") is not None:

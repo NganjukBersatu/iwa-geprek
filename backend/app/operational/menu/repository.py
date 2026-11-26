@@ -9,7 +9,7 @@ from app.core.catalog import branch_scope
 from app.core.catalog.menu import CATEGORY_KIND
 from app.core.search import contains
 from app.models.category import Category
-from app.models.ingredient import Ingredient, RecipeIngredient
+from app.models.ingredient import Ingredient
 from app.models.menu_item import MenuItem
 from app.models.order import Order
 from app.models.order_item import OrderItem
@@ -73,16 +73,3 @@ def is_resale(db: Session, outlet_id: str, menu_id: str) -> bool:
     """Menu yang dijual sebagai barang berstok di cabang ini."""
     found = select(StockItem.menu_item_id).where(StockItem.menu_item_id == menu_id, StockItem.outlet_id == outlet_id, StockItem.is_tracked.is_(True))
     return db.scalar(found.limit(1)) is not None
-
-
-def ready_ids(db: Session, outlet_id: str | None, menu_ids: list[str]) -> set[str]:
-    """A menu is ready to sell where its cost is known: it has a recipe, its stock is tracked, or it has a fixed cost."""
-    if not menu_ids:
-        return set()
-    recipes = select(RecipeIngredient.menu_item_id).where(RecipeIngredient.menu_item_id.in_(menu_ids))
-    stocks = select(StockItem.menu_item_id).where(StockItem.menu_item_id.in_(menu_ids), StockItem.is_tracked.is_(True))
-    fixed = select(MenuItem.id).where(MenuItem.id.in_(menu_ids), MenuItem.fixed_cost.is_not(None))
-    if outlet_id:
-        recipes = recipes.where(RecipeIngredient.outlet_id == outlet_id)
-        stocks = stocks.where(StockItem.outlet_id == outlet_id)
-    return set(db.scalars(recipes).all()) | set(db.scalars(stocks).all()) | set(db.scalars(fixed).all())

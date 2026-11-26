@@ -95,7 +95,7 @@ class AndroidDevicePermissions(private val activity: ComponentActivity) : Device
         PermissionKind.entries.associateWith { if (isReady(it)) PermissionStatus.Granted else PermissionStatus.Denied }
 
     private fun isReady(kind: PermissionKind): Boolean = when (kind) {
-        // Lokasi harus yang tepat; izin perkiraan saja tidak cukup untuk menilai jarak ke kafe.
+        // Lokasi harus yang tepat; izin perkiraan saja tidak cukup untuk menilai jarak ke outlet.
         PermissionKind.Location -> isGranted(Manifest.permission.ACCESS_FINE_LOCATION)
         PermissionKind.Camera -> isGranted(Manifest.permission.CAMERA)
         PermissionKind.Gps -> {

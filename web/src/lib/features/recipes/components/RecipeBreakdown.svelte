@@ -32,7 +32,7 @@
 	]);
 </script>
 
-<div class="grid gap-4 laptop:grid-cols-2">
+<div class="flex flex-col gap-4">
 	<FigureList title={recipeText.ingredientsPerServing} figures={lines} empty={recipeText.noRecipesInBranch} />
 	{#if seesCost && recipe.has_recipe}
 		<FigureList title={recipeText.costAndMargin} figures={costs} />

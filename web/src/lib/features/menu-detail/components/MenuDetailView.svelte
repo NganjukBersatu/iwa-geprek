@@ -71,18 +71,14 @@
 		{/if}
 
 		<MenuSummary {item} {sellers} />
-		<div class="grid items-start gap-4 tablet:gap-6 laptop:grid-cols-[20rem_minmax(0,1fr)]">
-			<MenuProfile {item} />
-			<div class="flex min-w-0 flex-col gap-4 tablet:gap-6">
-				<MenuBranchPrices {item} outlets={menu.outlets} />
-				{#if menu.seesFixedCost}
-					<MenuFixedCost {menu} {item} />
-				{/if}
-				{#if menu.recipes.canRead && !item.has_fixed_cost}
-					<MenuRecipes {menu} />
-				{/if}
-			</div>
-		</div>
+		<MenuProfile {item} />
+		<MenuBranchPrices {item} outlets={menu.outlets} />
+		{#if menu.seesFixedCost}
+			<MenuFixedCost {menu} {item} />
+		{/if}
+		{#if menu.recipes.canRead && !item.has_fixed_cost}
+			<MenuRecipes {menu} />
+		{/if}
 	</div>
 {:else}
 	<Notice loading text={menuDetailText.loading} />

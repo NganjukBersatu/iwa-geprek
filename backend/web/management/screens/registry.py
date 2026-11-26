@@ -17,6 +17,7 @@ from web.management.attendance_rules.constants import PERMISSION_MANAGE as ATTEN
 from web.management.branches.constants import PERMISSION_MANAGE as BRANCHES_MANAGE
 from web.management.branches.constants import PERMISSION_REMOVE as BRANCHES_REMOVE
 from web.management.branches.constants import READ_GATE as BRANCHES_READ
+from web.management.branches.constants import READINESS_GATE as BRANCHES_READINESS
 from web.management.cafe_settings.constants import PERMISSION_MANAGE as CAFE_SETTINGS_MANAGE
 from web.management.deposits.constants import PERMISSION_MANAGE as DEPOSITS_MANAGE, PERMISSION_VIEW as DEPOSITS_VIEW
 from web.management.devices.constants import PERMISSION_MANAGE as DEVICES_MANAGE
@@ -211,6 +212,7 @@ class Ability(StrEnum):
     MANAGE_TASKS = "manage_tasks"
     MANAGE_BRANCHES = "manage_branches"
     REMOVE_BRANCHES = "remove_branches"
+    VIEW_SETUP_GUIDE = "view_setup_guide"
 
 
 # Each gate is the one guarding the routes behind that part, so a part shown is a part the server will serve.
@@ -254,6 +256,7 @@ ABILITY_GATE: dict[Ability, Gate] = {
     Ability.MANAGE_TASKS: TASKS_MANAGE,
     Ability.MANAGE_BRANCHES: BRANCHES_MANAGE,
     Ability.REMOVE_BRANCHES: BRANCHES_REMOVE,
+    Ability.VIEW_SETUP_GUIDE: BRANCHES_READINESS,
 }
 
 

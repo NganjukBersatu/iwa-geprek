@@ -48,8 +48,8 @@
 		{#if group.is_day_off}<Badge tone="info">{termText.dayOff}</Badge>{/if}
 	{/snippet}
 	{#snippet body(group)}
-		<Card flush class="grid laptop:grid-cols-2">
-			<div class="flex flex-col gap-4 border-b border-slate-100 p-4 tablet:p-5 laptop:border-b-0 laptop:border-r">
+		<Card flush>
+			<div class="flex flex-col gap-4 border-b border-slate-100 p-4 tablet:p-5">
 				<div class="flex items-center justify-between gap-3">
 					<div>
 						{#if group.is_day_off}

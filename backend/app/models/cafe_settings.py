@@ -29,4 +29,6 @@ class CafeSettings(Base):
     target_margin_percent: Mapped[Decimal | None] = mapped_column(Numeric(5, 2), nullable=True)
     tax_percent: Mapped[Decimal] = mapped_column(Numeric(5, 2))
     service_percent: Mapped[Decimal] = mapped_column(Numeric(5, 2))
+    # Jenis yang dipilih kasir saat pesanan baru dimulai; kode sama dengan app.core.orders.order_types.
+    default_order_type: Mapped[str] = mapped_column(Text, default="free_table", server_default="free_table")
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)

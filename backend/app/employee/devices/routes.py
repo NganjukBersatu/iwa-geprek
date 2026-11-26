@@ -19,7 +19,7 @@ router = APIRouter(prefix="/devices", tags=["v2-devices"])
 
 @router.post("/pair", response_model=PairedDeviceOut)
 def pair(body: PairIn, db: Session = Depends(get_db)):
-    """Public, since the tablet has no token yet; the code itself is the proof, it works once, and too many wrong codes lock pairing for a while."""
+    """Public, since the tablet has no token yet; the code itself is the proof, it stays valid until a new code is issued, and too many wrong codes lock pairing for a while."""
     hardware = pairing.Hardware(android_id=body.android_id, serial=body.serial, brand=body.brand, model=body.model)
     try:
         attempts.ensure_not_locked(db, attempts.PAIRING, attempts.PAIRING_SUBJECT)

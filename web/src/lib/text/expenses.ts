@@ -34,7 +34,7 @@ export const expenseText = {
 	fromCashRevenue: 'Dari omzet tunai',
 	reducesDrawerCash: 'Mengurangi uang di laci kasir',
 	listTitle: 'Daftar pengeluaran',
-	listDescription: 'Belanja yang dicatat di tablet maupun di sini. Buka satu pengeluaran untuk mengubah atau menghapusnya; di sesi yang sudah ditutup, selisih sesinya ikut dihitung ulang.',
+	listDescription: 'Belanja yang dicatat di perangkat maupun di sini. Buka satu pengeluaran untuk mengubah atau menghapusnya; di sesi yang sudah ditutup, selisih sesinya ikut dihitung ulang.',
 	searchPlaceholder: 'Cari nama barang atau catatan...',
 	search: 'Cari pengeluaran',
 	bulkRemoveNote: 'Foto nota ikut dihapus. Sesi yang sudah ditutup dihitung ulang selisihnya.',

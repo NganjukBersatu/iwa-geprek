@@ -16,6 +16,7 @@ from app.core.cache_store import RedisStore
 from app.core.database import Base
 from app.core.demo import switch as demo_switch
 from app.core.demo.marker import DemoMarker
+from app.core.devices.layout_marker import DeviceLayoutMarker
 from app.core.client_version import ClientVersionGate
 from app.core import brand
 from app.core.orders import open_bills_visibility
@@ -85,7 +86,8 @@ app.add_middleware(RequestTiming)
 app.add_middleware(ClientVersionGate)
 app.add_middleware(SecurityHeaders)
 app.add_middleware(DemoMarker)
+app.add_middleware(DeviceLayoutMarker)
 app.add_middleware(RequestId)
 
 if settings.cors_origins:
-    app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_methods=["*"], allow_headers=["*"], expose_headers=["Content-Disposition", "X-Demo-Mode"])
+    app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_methods=["*"], allow_headers=["*"], expose_headers=["Content-Disposition", "X-Demo-Mode", "X-Device-Layout"])

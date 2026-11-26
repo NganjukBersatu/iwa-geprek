@@ -12,6 +12,9 @@ import id.kongstudio.cafe.resources.notices_close
 import id.kongstudio.cafe.resources.release_title
 import id.kongstudio.cafe.ui.component.noticesheet.NoticeSheet
 import id.kongstudio.cafe.ui.component.noticesheet.NoticeSheetItem
+import id.kongstudio.cafe.ui.component.noticesheet.NoticeSheetSection
+import id.kongstudio.cafe.resources.release_fixes_title
+import id.kongstudio.cafe.ui.theme.icon.AppIcons
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -25,6 +28,13 @@ internal fun ReleaseRoute(api: AdminApi, userToken: String, onUnauthorized: () -
     NoticeSheet(
         title = stringResource(Res.string.release_title, version),
         items = ApkReleaseNotes.map { (text, icon) -> NoticeSheetItem(title = stringResource(text), caption = null, icon = icon) },
+        sections = listOf(
+            NoticeSheetSection(
+                title = stringResource(Res.string.release_fixes_title, version),
+                icon = AppIcons.ShieldCheck,
+                items = ApkReleaseFixes.map { (text, icon) -> NoticeSheetItem(title = stringResource(text), caption = null, icon = icon) },
+            ),
+        ),
         closeLabel = stringResource(Res.string.notices_close),
         onClose = viewModel::close,
     )

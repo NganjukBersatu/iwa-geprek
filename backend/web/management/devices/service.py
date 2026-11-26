@@ -2,14 +2,14 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.clock import now
-from app.core.devices import codes, device_mode, device_stations, print_routing
+from app.core.devices import codes, device_layout, device_mode, device_stations, print_routing
+from app.core.devices.device_layout import DeviceLayout
 from app.core.errors import DomainError
 from app.core.security import hash_token
 from app.models.device import Device
 from app.models.user import User
 from web.management.devices import messages
-from web.management.devices.constants import CODE_VALID_FOR, DEFAULT_SECTION, NOT_FOUND, WAITING_STATUS
+from web.management.devices.constants import DEFAULT_SECTION, NOT_FOUND, WAITING_STATUS
 
 
 def list_devices(db: Session, outlet_id: str | None) -> list[Device]:
@@ -24,12 +24,16 @@ def get(db: Session, outlet_id: str | None, device_id: str) -> Device:
     return _find(db, outlet_id, device_id)
 
 
-def create(db: Session, admin: User, outlet_id: str, name: str, station_ids: list[str], print_station_ids: list[str], mode: str | None) -> tuple[Device, str]:
+def create(
+    db: Session, admin: User, outlet_id: str, name: str, station_ids: list[str], print_station_ids: list[str], mode: str | None, layout: DeviceLayout
+) -> tuple[Device, str]:
     tidy = name.strip()
     if not tidy:
         raise DomainError(messages.NAME_REQUIRED)
-    device_stations.require_stations(station_ids)
-    device = Device(outlet_id=outlet_id, name=tidy, section=DEFAULT_SECTION, status=WAITING_STATUS, registered_by=admin.id)
+    # Mode Kasir boleh tanpa centang karena configure menambahkan stasiun Kasir sendiri.
+    if mode is None:
+        device_stations.require_stations(station_ids)
+    device = Device(outlet_id=outlet_id, name=tidy, section=DEFAULT_SECTION, status=WAITING_STATUS, registered_by=admin.id, layout=device_layout.stored(layout))
     db.add(device)
     db.flush()
     if mode is not None:
@@ -45,6 +49,8 @@ def update(db: Session, outlet_id: str | None, device_id: str, values: dict) -> 
     tidy = values["name"].strip() if values.get("name") is not None else None
     if tidy == "":
         raise DomainError(messages.NAME_REQUIRED)
+    if values.get("layout") is not None:
+        device.layout = device_layout.stored(values["layout"])
     mode = values.get("mode")
     if mode is not None:
         if tidy is not None:
@@ -77,12 +83,8 @@ def update(db: Session, outlet_id: str | None, device_id: str, values: dict) -> 
 
 
 def new_code(db: Session, outlet_id: str | None, device_id: str) -> tuple[Device, str]:
-    """The old token is cancelled and the device waits again, so a lost or replaced tablet must be paired anew."""
+    """Only the code is replaced: the paired tablet keeps working, and the old code stops working."""
     device = _find(db, outlet_id, device_id)
-    device.token_hash = None
-    device.status = WAITING_STATUS
-    device.paired_at = None
-    print_routing.sync_used(db, device.outlet_id)
     return device, _issue_code(db, device)
 
 
@@ -96,8 +98,9 @@ def revoke(db: Session, outlet_id: str | None, device_id: str) -> None:
 
 def _issue_code(db: Session, device: Device) -> str:
     code = codes.new_code()
+    device.pairing_code = code
     device.code_hash = hash_token(codes.normalise(code))
-    device.code_expires_at = now() + CODE_VALID_FOR
+    device.code_expires_at = None
     db.commit()
     return code
 

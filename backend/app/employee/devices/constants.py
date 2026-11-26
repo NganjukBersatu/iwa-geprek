@@ -12,4 +12,4 @@ QR_EXPIRED = "kedaluwarsa"
 QR_TABLES = frozenset({"device_links"})
 NOT_FOUND = 404
 # How a tablet sign-in through a scanned QR is named in the list of sign-ins.
-QR_DEVICE_LABEL = "Tablet (pindai QR)"
+QR_DEVICE_LABEL = "Perangkat (pindai QR)"

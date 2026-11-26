@@ -134,7 +134,7 @@
 			{#each shiftCodes.categorySettings as category (category.id)}
 				<li class="flex items-center justify-between gap-3 py-2">
 					<span class="min-w-0">
-						<span class="block truncate text-sm font-medium text-slate-800">{category.name}</span>
+						<span class="block text-sm font-medium text-slate-800 wrap-break-word">{category.name}</span>
 						<span class="mt-1 flex flex-wrap items-center gap-1">
 							<Badge tone={category.shift_kind ? 'neutral' : 'warning'}>{kindLabel(category)}</Badge>
 							{#if category.start_from && category.start_until}<Badge tone="neutral">{format(shiftCodeText.startRange, { from: category.start_from, until: category.start_until })}</Badge>{/if}

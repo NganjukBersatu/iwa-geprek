@@ -77,6 +77,8 @@ class ShopOut(BaseModel):
     wifi_password: str = ""
     complaint_number: str = ""
     social_handles: list[str] = []
+    # Jenis pesanan yang dipilih saat pesanan baru dimulai di kasir.
+    default_order_type: str = "free_table"
 
 
 class StationOut(BaseModel):

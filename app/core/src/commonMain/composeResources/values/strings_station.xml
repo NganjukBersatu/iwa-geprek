@@ -3,7 +3,7 @@
     <string name="nav_stations">Papan Stasiun</string>
     <string name="station_connected">Tersambung</string>
     <string name="station_reconnecting">Menyambung ulang</string>
-    <string name="station_offline_locked">Tablet sedang terputus. Tombol dikunci sampai tersambung kembali.</string>
+    <string name="station_offline_locked">Perangkat sedang terputus. Tombol dikunci sampai tersambung kembali.</string>
     <string name="station_empty">Belum ada pesanan di stasiun ini.</string>
     <string name="station_empty_hint">Pesanan baru muncul di sini begitu kasir menyimpannya.</string>
     <string name="station_truncated">Pesanan terbuka melebihi yang dapat ditampilkan. Selesaikan pesanan lama agar pesanan baru tampil.</string>
@@ -35,7 +35,7 @@
     <string name="station_finish_handover">Sudah diserahkan</string>
     <string name="station_undo">Kembalikan ke Antrean</string>
     <string name="station_undo_title">Kembalikan ke antrean</string>
-    <string name="station_undo_message">%1$s kembali ke antrean dan waktu prosesnya dihapus. Perubahan terlihat di semua tablet.</string>
+    <string name="station_undo_message">%1$s kembali ke antrean dan waktu prosesnya dihapus. Perubahan terlihat di semua perangkat.</string>
     <string name="station_pick_hint">Ketuk tujuan untuk memilih sebagian; tombol hanya berlaku untuk yang dipilih.</string>
     <string name="station_destinations">Untuk</string>
     <string name="station_destinations_more">+ %1$d lain</string>
@@ -59,7 +59,7 @@
     <string name="station_locked_reason">Alasan: %1$s</string>
     <string name="station_locked_hint">Pesanan terkunci sampai pengajuan diputuskan.</string>
     <string name="station_withdraw">Tarik pengajuan</string>
-    <string name="station_none_held">Belum ada stasiun aktif yang ditetapkan untuk tablet ini. Tetapkan di web admin, halaman Cabang, tab Perangkat.</string>
+    <string name="station_none_held">Belum ada stasiun aktif yang ditetapkan untuk perangkat ini. Tetapkan di web admin, halaman Cabang, tab Perangkat.</string>
     <string name="station_tab_count">%1$s (%2$d)</string>
     <string name="station_sound_toggle">Bunyi menu baru %1$s</string>
     <string name="station_kasir_search">Cari nota, pelanggan, meja, menu, atau catatan</string>
@@ -83,7 +83,7 @@
     <string name="station_kasir_note">Catatan pesanan</string>
     <string name="station_kasir_discount">Diskon</string>
     <string name="station_slip_failed">%1$d struk pesanan belum tercetak. Periksa Printer Stasiun, lalu cetak ulang.</string>
-    <string name="station_slip_unpaired">Printer %1$s belum dipasang di tablet ini. %2$d struk pesanan belum tercetak. Pasang di menu Printer, lalu cetak ulang.</string>
+    <string name="station_slip_unpaired">Printer %1$s belum dipasang di perangkat ini. %2$d struk pesanan belum tercetak. Pasang di menu Printer, lalu cetak ulang.</string>
     <string name="station_slip_reprint">Cetak ulang</string>
     <string name="station_kasir_reprint">Cetak ulang struk pembayaran</string>
     <string name="station_kasir_reprint_done">%1$s sudah dicetak ulang.</string>

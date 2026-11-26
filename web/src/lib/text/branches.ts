@@ -29,7 +29,7 @@ export const branchText = {
 	codeHint: 'Kode pendek di nomor struk dan laporan.',
 	receiptNumberHint: 'Nomor di struk, terpisah dari kode.',
 	attendanceLocation: 'Lokasi absen',
-	attendanceLocationDescription: 'Titik kafe dipakai menilai absen di lokasi. Kosong berarti jaraknya tidak bisa dinilai, tetapi absen tetap jalan.',
+	attendanceLocationDescription: 'Titik outlet dipakai menilai absen di lokasi. Kosong berarti jaraknya tidak bisa dinilai, tetapi absen tetap jalan.',
 	attendanceRadiusMeters: 'Radius absen (meter)',
 	radiusHint: 'Bawaan 50 meter.',
 	locating: 'Membaca lokasi...',

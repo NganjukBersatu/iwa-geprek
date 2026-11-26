@@ -29,6 +29,7 @@ from app.core.clock import WIB, now  # noqa: E402
 from app.core.database import SessionLocal  # noqa: E402
 from app.core.finance.payment_methods import seed_defaults as seed_payment_methods  # noqa: E402
 from app.core.orders.order_types import DINE_IN, TAKE_AWAY  # noqa: E402
+from app.core.permissions.registry import CASHIER_EXAMPLE  # noqa: E402
 from app.core.security import hash_password  # noqa: E402
 from app.core.settings import settings  # noqa: E402
 from app.core.visitors import seed_defaults as seed_visitor_lists  # noqa: E402
@@ -198,7 +199,7 @@ def promo_for(rng: random.Random, plan: Plan, subtotal: Decimal) -> tuple[Promo 
 def create_base(db: Session, plan: Plan) -> None:
     """Peran, kasir, kategori, dan menu demo; metode bayar dan daftar pengunjung dibuat bila cabangnya belum punya."""
     stamp = now()
-    db.add(Role(id=DEMO_ROLE_ID, name="Kasir Demo", description="Data demo; aman dihapus.", permissions=[], is_default=False, sort_order=900, is_admin=False, is_protected=False, created_at=stamp, updated_at=stamp))
+    db.add(Role(id=DEMO_ROLE_ID, name="Kasir Demo", description="Data demo; aman dihapus.", permissions=sorted(CASHIER_EXAMPLE), is_default=False, sort_order=900, is_admin=False, is_protected=False, created_at=stamp, updated_at=stamp))
     db.flush()
     for username, name in CASHIER_NAMES:
         cashier = User(

@@ -25,3 +25,12 @@ DEFAULT_FOR_NEW_ROLE: frozenset[str] = frozenset(
     for permission in section.permissions
     if permission.default_for_new_role
 )
+
+# Izin minimum peran Kasir: dicentang tombol contoh di form peran dan dipakai peran kasir data demo.
+CASHIER_EXAMPLE: frozenset[str] = frozenset(
+    permission.key
+    for group in GROUPS
+    for section in group.sections
+    for permission in section.permissions
+    if permission.in_cashier_example
+)

@@ -14,7 +14,7 @@ export const stockReportText = {
 	totalReimbursement: 'Total Penggantian',
 	overToleranceBilled: 'Susut melebihi toleransi, ditagihkan',
 	totalToleranceValue: 'Total Nilai Toleransi',
-	withinToleranceAbsorbed: 'Susut masih wajar, ditanggung kafe',
+	withinToleranceAbsorbed: 'Susut masih wajar, ditanggung outlet',
 	needsReview: 'Perlu Diperiksa',
 	negativeClosingNote: 'Stok akhir negatif: galat resep atau pencatatan',
 	notCountedYet: 'Periode ini belum di-opname. Jumlah fisik muncul setelah opname ditutup.',

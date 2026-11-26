@@ -42,5 +42,10 @@ interface DeviceModeStore {
 
     suspend fun clear()
 
+    /** Pilihan tampilan terakhir dari web admin (auto, phone, tablet); null bila belum pernah diterima. */
+    suspend fun layout(): String?
+
+    suspend fun saveLayout(code: String)
+
     fun deviceInfo(): DeviceInfo
 }

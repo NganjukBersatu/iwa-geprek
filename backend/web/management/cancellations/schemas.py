@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from decimal import Decimal
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -25,8 +26,15 @@ class CancellationOut(BaseModel):
     items_summary: str
     cashier: str
     requested_by: str
+    # Pengaju tidak boleh memutuskan pengajuannya sendiri; web membandingkannya dengan akun yang masuk supaya tombolnya nonaktif sejak awal.
+    requested_by_id: str
     reason: str | None
     created_at: datetime
+    # Kosong selama masih menunggu keputusan.
+    decision: Literal["approved", "rejected"] | None
+    decided_at: datetime | None
+    decided_by: str | None
+    manager_note: str | None
 
 
 class CancellationPageOut(BaseModel):

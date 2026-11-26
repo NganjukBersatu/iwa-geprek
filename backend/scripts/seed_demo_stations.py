@@ -193,8 +193,13 @@ def main() -> int:
 
         counter, worker = cashiers[0], cashiers[1]
         stamp = now()
+        # Migrasi sudah membuat stasiun Kasir, dan jenis Kasir hanya boleh satu, jadi demo memakai yang ada.
+        cashier_station = db.scalar(select(Station.id).where(Station.kind == "handover"))
         for station_id, name, kind, position, target_seconds in STATIONS:
-            db.add(Station(id=station_id, name=name, kind=kind, position=position, target_seconds=target_seconds))
+            if kind == "handover" and cashier_station is not None:
+                station_id = cashier_station
+            else:
+                db.add(Station(id=station_id, name=name, kind=kind, position=position, target_seconds=target_seconds))
             db.add(StationBranchSetting(outlet_id=outlet.id, station_id=station_id, used=True, target_seconds=None))
         # Stasiun harus sudah tersimpan sebelum kategori dan pengaturan cabang merujuknya; model di proyek ini tidak menyatakan relasi, jadi urutan tulis tidak dihitung otomatis.
         db.flush()

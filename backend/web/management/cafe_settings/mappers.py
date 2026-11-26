@@ -1,7 +1,8 @@
+from app.core.orders import order_types
 from app.models.cafe_settings import CafeSettings
 from web.management.cafe_settings.schemas import CafeSettingsOut
 
-_EMPTY = dict(name="", address="", phone="", complaint_number="", wifi=[], wifi_password="", social=[], receipt_greeting="", cost_markup_percent=0, target_margin_percent=None, tax_percent=0, service_percent=0)
+_EMPTY = dict(name="", address="", phone="", complaint_number="", wifi=[], wifi_password="", social=[], receipt_greeting="", cost_markup_percent=0, target_margin_percent=None, tax_percent=0, service_percent=0, default_order_type=order_types.DINE_IN)
 
 
 def settings_out(outlet_id: str, row: CafeSettings | None) -> CafeSettingsOut:
@@ -22,4 +23,5 @@ def settings_out(outlet_id: str, row: CafeSettings | None) -> CafeSettingsOut:
         target_margin_percent=row.target_margin_percent,
         tax_percent=row.tax_percent,
         service_percent=row.service_percent,
+        default_order_type=row.default_order_type,
     )

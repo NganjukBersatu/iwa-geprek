@@ -1,6 +1,8 @@
 package id.kongstudio.cafe.ui.component.moneyfield
 
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -22,6 +24,8 @@ fun MoneyField(
     label: String,
     modifier: Modifier = Modifier,
     isError: Boolean = false,
+    /** Dijalankan saat tombol selesai di papan ketik ditekan, misalnya untuk langsung menyimpan. */
+    onDone: (() -> Unit)? = null,
 ) {
     AppTextField(
         value = amount?.toString().orEmpty(),
@@ -29,7 +33,8 @@ fun MoneyField(
         label = label,
         modifier = modifier,
         isError = isError,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = if (onDone != null) ImeAction.Done else ImeAction.Default),
+        keyboardActions = if (onDone != null) KeyboardActions(onDone = { onDone() }) else KeyboardActions.Default,
         visualTransformation = RupiahTransformation,
     )
 }

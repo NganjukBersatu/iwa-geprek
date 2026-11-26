@@ -27,7 +27,7 @@ Dokumentasi API mati secara bawaan. Untuk pengembangan, set `ENABLE_API_DOCS=tru
 | `backend/app/` | Aplikasi mobile (`auth`, `employee`, `operational`, `live`) dan logika bersama di `core/` |
 | `backend/web/management/` | Web manajemen, satu folder per domain |
 | `backend/alembic/versions/` | Migrasi database; rantai dimulai dari empat migrasi dasar `a0b1c2d3e401`–`e404` |
-| `backend/scripts/` | `pra_deploy.py` (penjaga deploy) dan `create_owner.py` |
+| `backend/scripts/` | `pra_deploy.py` (penjaga deploy), `create_owner.py`, `create_owner_remote.py`, dan `bootstrap_owner.py` (akun pemilik pertama) |
 
 ## Deploy
 Susunan proyek Railway (backend, web admin, PWA, Postgres, Redis, dan bucket yang sudah tersambung) ada di `.railway/railway.ts`; tiap layanan dibangun Railpack menurut `railpack.json` di foldernya.
@@ -36,6 +36,7 @@ Susunan proyek Railway (backend, web admin, PWA, Postgres, Redis, dan bucket yan
 2. `npm install railway` di akar repositori, supaya `.railway/railway.ts` bisa dibaca CLI.
 3. `railway config plan` untuk melihat perubahan, lalu `railway config apply` untuk menerapkannya.
 4. Isi `JWT_SECRET_KEY` layanan backend di Railway (minimal 32 karakter), dan buat domain publik untuk backend, web, dan pwa.
+5. Buat akun pemilik pertama dari komputer sendiri: `python scripts/create_owner_remote.py` (tanya-jawab lewat `railway ssh`). Tanpa tanya-jawab: jalankan `python scripts/create_owner_remote.py --hash-saja`, isi `OWNER_USERNAME`, `OWNER_NAME`, `OWNER_BRANCH`, dan `OWNER_PASSWORD_HASH_B64` di variabel backend, jalankan `python scripts/bootstrap_owner.py` di server, lalu hapus variabel `OWNER_*` itu. Kata sandi tidak pernah dikirim ke server, hanya hash-nya.
 
 Railway menjalankan `python scripts/pra_deploy.py` sebelum setiap deploy. Skrip itu menjalankan migrasi dalam satu transaksi, membandingkan jumlah baris dan jumlah uang sebelum dan sesudah, lalu membatalkan semuanya bila ada yang berbeda. Cek kesehatan di `/health`.
 

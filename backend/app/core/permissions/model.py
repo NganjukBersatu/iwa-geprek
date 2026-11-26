@@ -9,6 +9,8 @@ class Permission:
     label: str
     description: str
     default_for_new_role: bool = False
+    # Dicentang oleh tombol "Mulai dari contoh Kasir" di form Tambah Peran: izin minimum untuk berjualan di perangkat kasir.
+    in_cashier_example: bool = False
 
 
 @dataclass(frozen=True)

@@ -2,6 +2,7 @@
 from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import select
@@ -10,16 +11,16 @@ from sqlalchemy.orm import Session
 from app.core.auth import readable_outlet_id, require_permission, writable_outlet_id
 from app.core.branches import outlet_names
 from app.core.database import get_db
-from app.core.devices import device_mode, device_stations, print_routing
+from app.core.devices import device_layout, device_mode, device_stations, print_routing
 from app.core.errors import DomainError
 from app.core.sorting import RowSorting, Sort
 from app.core.user_names import user_names
 from app.models.device import Device
 from app.models.station import Station
 from app.models.user import User
-from web.management.devices import service
+from web.management.devices import service, sync
 from web.management.devices.constants import PERMISSION_MANAGE
-from web.management.devices.schemas import DeviceCodeOut, DeviceCreateIn, DeviceOut, DeviceUpdateIn, StationOptionOut
+from web.management.devices.schemas import DeviceCodeOut, DeviceCreateIn, DeviceDetailOut, DeviceOut, DeviceUpdateIn, StationOptionOut
 
 router = APIRouter(prefix="/devices", tags=["v2-devices"])
 
@@ -46,7 +47,7 @@ SORTING: RowSorting[DeviceOut] = RowSorting(
 )
 
 
-COMPUTED = {"outlet_name", "station_ids", "station_names", "print_station_ids", "print_station_names", "registered_by_name"}
+COMPUTED = {"data_changed_at", "has_latest_data", "layout", "outlet_name", "station_ids", "station_names", "print_station_ids", "print_station_names", "registered_by_name"}
 
 
 @dataclass(frozen=True)
@@ -56,19 +57,24 @@ class _Lookups:
     prints: dict[str, list[str]]
     stations: dict[str, str]
     admins: dict[str, str]
+    changed: dict[str, datetime | None]
 
 
 def _out(device: Device, lookups: _Lookups) -> DeviceOut:
     fields = {name: getattr(device, name) for name in DeviceOut.model_fields if name not in COMPUTED}
     held = lookups.held.get(device.id, [])
     printed = lookups.prints.get(device.id, [])
+    changed = lookups.changed.get(device.outlet_id)
     return DeviceOut(
+        data_changed_at=changed,
+        has_latest_data=sync.has_latest_data(device.last_used_at, changed),
         outlet_name=lookups.outlets.get(device.outlet_id, ""),
         station_ids=held,
         station_names=[lookups.stations.get(station_id, "") for station_id in held],
         print_station_ids=printed,
         print_station_names=[lookups.stations.get(station_id, "") for station_id in printed],
         registered_by_name=lookups.admins.get(device.registered_by) if device.registered_by else None,
+        layout=device_layout.shown(device.layout),
         **fields,
     )
 
@@ -80,11 +86,12 @@ def _names(db: Session, devices: list[Device]) -> _Lookups:
     wanted = {station_id for group in (held, prints) for station_ids in group.values() for station_id in station_ids}
     stations = dict(db.execute(select(Station.id, Station.name).where(Station.id.in_(wanted))).all()) if wanted else {}
     admins = user_names(db, [device.registered_by for device in devices])
-    return _Lookups(outlet_names(db, [device.outlet_id for device in devices]), held, prints, stations, admins)
+    outlet_ids = sorted({device.outlet_id for device in devices})
+    return _Lookups(outlet_names(db, [device.outlet_id for device in devices]), held, prints, stations, admins, sync.data_changed_at(db, outlet_ids))
 
 
 def _with_code(db: Session, device: Device, code: str) -> DeviceCodeOut:
-    return DeviceCodeOut(**_out(device, _names(db, [device])).model_dump(), code=code, code_expires_at=device.code_expires_at)
+    return DeviceCodeOut(**_out(device, _names(db, [device])).model_dump(), code=code)
 
 
 @router.get("", response_model=list[DeviceOut])
@@ -115,7 +122,7 @@ def station_options(
     ]
 
 
-@router.get("/{device_id}", response_model=DeviceOut)
+@router.get("/{device_id}", response_model=DeviceDetailOut)
 def get_device(
     device_id: str,
     response: Response,
@@ -126,7 +133,7 @@ def get_device(
     response.headers["Cache-Control"] = NO_STORE
     with _domain_errors():
         device = service.get(db, outlet_id, device_id)
-    return _out(device, _names(db, [device]))
+    return DeviceDetailOut(**_out(device, _names(db, [device])).model_dump(), pairing_code=device.pairing_code)
 
 
 @router.post("", response_model=DeviceCodeOut, status_code=status.HTTP_201_CREATED)
@@ -139,11 +146,11 @@ def create_device(
 ):
     response.headers["Cache-Control"] = NO_STORE
     with _domain_errors():
-        device, code = service.create(db, admin, outlet_id, body.name, body.station_ids, body.print_station_ids, body.mode)
+        device, code = service.create(db, admin, outlet_id, body.name, body.station_ids, body.print_station_ids, body.mode, body.layout)
     return _with_code(db, device, code)
 
 
-@router.patch("/{device_id}", response_model=DeviceOut)
+@router.patch("/{device_id}", response_model=DeviceDetailOut)
 def update_device(
     device_id: str,
     body: DeviceUpdateIn,
@@ -153,7 +160,8 @@ def update_device(
 ):
     with _domain_errors():
         device = service.update(db, outlet_id, device_id, body.model_dump(exclude_unset=True))
-    return _out(device, _names(db, [device]))
+    # Sama dengan GET detail, supaya halaman detail yang menyimpan perubahan tetap memegang kode pasang.
+    return DeviceDetailOut(**_out(device, _names(db, [device])).model_dump(), pairing_code=device.pairing_code)
 
 
 @router.post("/{device_id}/new-code", response_model=DeviceCodeOut)

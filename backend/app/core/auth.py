@@ -18,6 +18,7 @@ from app.core.brand import JWT_AUDIENCE, JWT_ISSUER, SESSION_COOKIE
 from app.core.errors import CodedHTTPException
 from app.core.security import hash_token
 from app.core.settings import settings
+from app.core.devices import device_layout
 from app.models.device import REGISTERED, Device
 from app.models.login_session import LoginSession
 from app.models.outlet import Outlet
@@ -210,6 +211,7 @@ def current_user(
 
 
 def current_device(
+    request: Request,
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
     db: Session = Depends(get_db),
 ) -> Device:
@@ -221,6 +223,8 @@ def current_device(
     if device is None:
         raise unknown
     mark_used(db, device.id)
+    # Dibaca DeviceLayoutMarker menjadi header X-Device-Layout, tanpa query tambahan.
+    device_layout.mark(request, device.layout)
     return device
 
 

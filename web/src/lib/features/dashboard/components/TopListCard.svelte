@@ -36,7 +36,7 @@
 					{#if ranked}
 						<span class="flex size-6 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-xs font-semibold text-slate-500">{index + 1}</span>
 					{/if}
-					<span class="flex-1 truncate text-sm text-slate-600">{row.label}</span>
+					<span class="min-w-0 flex-1 text-sm text-slate-600 wrap-break-word">{row.label}</span>
 					<span class="shrink-0 text-xs text-slate-500">{row.meta}</span>
 					<span class="shrink-0 text-sm font-semibold text-slate-800">{row.value}</span>
 				</li>

@@ -9,24 +9,29 @@ from app.models.station import DeviceStation, DeviceStationPrint, Station, Stati
 
 NOT_FOUND = 404
 MODE_UNKNOWN = "Pilih Mode Kasir atau Mode Stasiun."
-NEEDS_CASHIER = "Mode Kasir butuh stasiun Kasir. Centang Kasir, atau pilih Mode Stasiun."
-TAKEN = "Stasiun {station} sudah dipakai {device} di cabang ini. Lepaskan dulu dari tablet itu."
+NEEDS_CASHIER = "Stasiun Kasir belum ada. Buat stasiun berjenis Kasir di Pengaturan Stasiun, atau pilih Mode Stasiun."
+TAKEN = "Stasiun {station} sudah dipakai {device} di cabang ini. Lepaskan dulu dari perangkat itu."
 
 
 def configure(db: Session, device: Device, mode: str, station_ids: list[str]) -> None:
-    """Menetapkan mode dan stasiun yang dicentang; pemanggil yang menyelaraskan stasiun aktif cabang dan menyimpan."""
+    """Menetapkan mode dan stasiun yang dicentang; Mode Kasir selalu memegang stasiun Kasir tanpa perlu dicentang. Pemanggil yang menyelaraskan stasiun aktif cabang dan menyimpan."""
     if mode not in MODES:
         raise DomainError(MODE_UNKNOWN)
-    device_stations.require_stations(station_ids)
-    wanted = sorted(set(station_ids))
+    wanted = set(station_ids)
+    if mode == MODE_CASHIER:
+        cashier = db.scalar(select(Station.id).where(Station.kind == StationKind.HANDOVER))
+        if cashier is None:
+            raise DomainError(NEEDS_CASHIER)
+        wanted.add(cashier)
+    else:
+        device_stations.require_stations(station_ids)
+    wanted = sorted(wanted)
     stations = {station.id: station for station in db.scalars(select(Station).where(Station.id.in_(wanted))).all()}
     if len(stations) != len(wanted):
         raise DomainError(device_stations.STATION_NOT_FOUND, status=NOT_FOUND)
     _require_free(db, device, [station for station in stations.values() if station.kind != StationKind.HANDOVER])
     if mode == MODE_CASHIER:
         held = [station_id for station_id in wanted if stations[station_id].kind == StationKind.HANDOVER]
-        if not held:
-            raise DomainError(NEEDS_CASHIER)
         printed = [station_id for station_id in wanted if station_id not in held]
     else:
         held, printed = wanted, []

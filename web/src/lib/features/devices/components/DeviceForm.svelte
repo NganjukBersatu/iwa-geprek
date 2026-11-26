@@ -9,6 +9,8 @@ import Button from '$lib/components/button/Button.svelte';
 	import FormPage from '$lib/components/form/FormPage.svelte';
 	import FormSection from '$lib/components/form/FormSection.svelte';
 	import CheckRow from '$lib/components/form/CheckRow.svelte';
+	import ConfirmDialog from '$lib/components/dialog/ConfirmDialog.svelte';
+	import RichText from '$lib/components/text/RichText.svelte';
 	import SelectField from '$lib/components/form/SelectField.svelte';
 	import TextField from '$lib/components/form/TextField.svelte';
 	import { FieldErrors, focusRefused } from '$lib/components/form/field-errors.svelte';
@@ -55,12 +57,17 @@ import Button from '$lib/components/button/Button.svelte';
 	let stations = $state<StationOption[] | null>(null);
 	let stationsError = $state('');
 	type Mode = 'cashier' | 'station';
+	type DeviceLayout = Device['layout'];
 	const MODES: { value: Mode; label: string }[] = [
 		{ value: 'cashier', label: deviceText.modeCashier },
 		{ value: 'station', label: deviceText.modeStation }
 	];
-	let mode = $state<string>(current?.mode ?? 'station');
+	// Perangkat baru bawaannya Mode Kasir: perangkat pertama sebuah usaha hampir selalu kasir, dan panduan siap jualan memintanya.
+	let mode = $state<string>(current?.mode ?? 'cashier');
 	const chosenMode = $derived<Mode>(mode === 'cashier' ? 'cashier' : 'station');
+	const LAYOUTS: { value: DeviceLayout; label: string }[] = (['auto', 'phone', 'tablet'] as const).map((value) => ({ value, label: deviceText.layouts[value] }));
+	let layout = $state<string>(current?.layout ?? 'auto');
+	const chosenLayout = $derived<DeviceLayout>(layout === 'phone' || layout === 'tablet' ? layout : 'auto');
 	// Yang dicentang adalah gabungan stasiun yang dipegang dan yang dicetak; server menurunkan keduanya dari mode.
 	const picked = new SvelteSet<string>([...(current?.station_ids ?? []), ...(current?.print_station_ids ?? [])]);
 
@@ -69,7 +76,9 @@ import Button from '$lib/components/button/Button.svelte';
 	// Stasiun selain Kasir hanya milik satu tablet per cabang, dipegang maupun dicetak; server tetap penentu.
 	const taken = (station: StationOption): boolean =>
 		station.kind !== 'handover' && [...station.holder_device_ids, ...station.printer_device_ids].some((id) => id !== current?.id);
-	const picksCashier = $derived((stations ?? []).some((station) => station.kind === 'handover' && picked.has(station.id)));
+	// Mode Kasir selalu memegang stasiun Kasir di server, jadi yang dipilih di sini hanya struk stasiun lain yang ikut dicetak.
+	const cashierStation = $derived((stations ?? []).find((station) => station.kind === 'handover') ?? null);
+	const shown = $derived(chosenMode === 'cashier' ? (stations ?? []).filter((station) => station.kind !== 'handover') : (stations ?? []));
 	const errors = new FieldErrors({ outlet_id: termText.branch, name: deviceText.deviceName, station_ids: deviceText.stationsOnTablet }, () => fieldErrors);
 
 	// A refusal from the server puts the cursor in the first refused box.
@@ -96,9 +105,16 @@ import Button from '$lib/components/button/Button.svelte';
 
 	function autoName(): void {
 		if (nameTouched || !stations) return;
-		const chosen = stations.filter((station) => picked.has(station.id)).map((station) => station.name);
+		const chosen = shown.filter((station) => picked.has(station.id)).map((station) => station.name);
+		if (chosenMode === 'cashier' && cashierStation) chosen.unshift(cashierStation.name);
 		name = chosen.length > 0 ? format(deviceText.autoName, { stations: chosen.join(' + ') }).slice(0, MAX_NAME) : '';
 	}
+
+	// Berganti mode atau selesai memuat stasiun mengubah usulan nama selama nama belum diketik sendiri.
+	whenChanged(
+		() => [chosenMode, stations] as const,
+		() => autoName()
+	);
 
 	function toggle(id: string): void {
 		if (picked.has(id)) picked.delete(id);
@@ -110,12 +126,24 @@ import Button from '$lib/components/button/Button.svelte';
 		const found: Record<string, string> = {};
 		if (!current && !outletId) found.outlet_id = deviceText.branchRequired;
 		if (!name.trim()) found.name = deviceText.nameRequired;
-		const active = new Set((stations ?? []).map((station) => station.id));
+		const active = new Set(shown.map((station) => station.id));
 		const chosen = [...picked].filter((id) => active.has(id));
-		if (stations !== null && chosen.length === 0) found.station_ids = deviceText.stationRequired;
-		else if (chosenMode === 'cashier' && !picksCashier) found.station_ids = deviceText.cashierModeNeedsCashier;
+		if (chosenMode === 'station' && stations !== null && chosen.length === 0) found.station_ids = deviceText.stationRequired;
 		if (!errors.check(found)) return;
-		onsave({ name: name.trim(), mode: chosenMode, station_ids: chosen }, outletId);
+		const body = { name: name.trim(), mode: chosenMode, layout: chosenLayout, station_ids: chosen };
+		// Mengganti mode perangkat yang sudah ada mengubah cara kerjanya, jadi akibatnya dikonfirmasi dulu.
+		if (current && current.mode !== chosenMode) {
+			pendingSave = body;
+			return;
+		}
+		onsave(body, outletId);
+	}
+
+	let pendingSave = $state<DeviceUpdate | null>(null);
+
+	function confirmMode(): void {
+		if (pendingSave) onsave(pendingSave, outletId);
+		pendingSave = null;
 	}
 </script>
 
@@ -146,6 +174,9 @@ import Button from '$lib/components/button/Button.svelte';
 		<div class="mt-4">
 			<SelectField label={deviceText.mode} bind:value={mode} options={MODES} hint={deviceText.modeHints[chosenMode]} />
 		</div>
+		<div class="mt-4">
+			<SelectField label={deviceText.layout} bind:value={layout} options={LAYOUTS} hint={deviceText.layoutHint} />
+		</div>
 		<div class="mt-4 flex flex-col gap-1">
 			<span class="text-xs font-semibold text-slate-600">{deviceText.stationsTitles[chosenMode]}</span>
 			<span class="text-xs text-slate-500">{deviceText.stationsHints[chosenMode]}</span>
@@ -155,13 +186,13 @@ import Button from '$lib/components/button/Button.svelte';
 				<Notice text={stationsError} />
 			{:else if stations === null}
 				<Notice text={deviceText.stationsLoading} loading />
-			{:else if stations.length === 0}
-				<Notice text={deviceText.noStationsToPick}>
+			{:else if shown.length === 0}
+				<Notice text={chosenMode === 'cashier' ? deviceText.noOtherStationsToPrint : deviceText.noStationsToPick}>
 					<Button label={deviceText.openStationSetup} icon="settings" href={PAGES.stationSetup.path} />
 				</Notice>
 			{:else}
 				<div class="flex flex-col gap-1" tabindex="-1" aria-invalid={errors.get('station_ids') ? true : undefined}>
-					{#each stations as station (station.id)}
+					{#each shown as station (station.id)}
 						{@const shared = holders(station)}
 						{@const locked = taken(station)}
 						<CheckRow
@@ -192,3 +223,13 @@ import Button from '$lib/components/button/Button.svelte';
 		<CancelButton disabled={busy} onclick={onclose} />
 	{/snippet}
 </FormPage>
+
+<ConfirmDialog
+	open={pendingSave !== null}
+	title={deviceText.modeChangeTitles[chosenMode]}
+	confirmLabel={deviceText.modeChangeConfirm[chosenMode]}
+	onconfirm={confirmMode}
+	oncancel={() => (pendingSave = null)}
+>
+	<RichText template={deviceText.modeChangeEffects[chosenMode]} values={{ name: current?.name ?? '' }} />
+</ConfirmDialog>

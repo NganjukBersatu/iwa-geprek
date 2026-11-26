@@ -22,7 +22,7 @@ from app.operational.menu.upload import RULE
 def _views(db: Session, outlet_id: str | None, rows: list[tuple[MenuItem, str | None]]) -> list[MenuView]:
     ids = [item.id for item, _ in rows]
     prices = price_map(db, outlet_id, [item for item, _ in rows])
-    ready = repository.ready_ids(db, outlet_id, ids)
+    ready = line_rules.ready_ids(db, outlet_id, ids)
     missing = line_rules.missing_ingredients(db, outlet_id, ids)
     marked_out = availability.off_ids(db, outlet_id, ids)
     return [

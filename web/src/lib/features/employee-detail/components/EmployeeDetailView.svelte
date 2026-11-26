@@ -84,8 +84,8 @@
 			<Banner tone="danger" icon="alert-triangle">{detail.actionError}</Banner>
 		{/if}
 
-		<Card flush class="grid laptop:grid-cols-3">
-			<div class="flex flex-col gap-4 border-b border-slate-100 p-4 tablet:p-5 laptop:border-b-0 laptop:border-r">
+		<Card flush>
+			<div class="flex flex-col gap-4 border-b border-slate-100 p-4 tablet:p-5">
 				<div class="flex items-center gap-3">
 					{#if employee.photo_url}
 						<img src={employee.photo_url} alt={format(controlText.photoOf, { name: employee.name || employee.username })} class="size-12 shrink-0 rounded-full border border-brand-line object-cover" />
@@ -93,8 +93,8 @@
 						<span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-brand-soft text-lg font-semibold text-brand-deep" aria-hidden="true">{(employee.name || employee.username).charAt(0).toUpperCase()}</span>
 					{/if}
 					<div class="min-w-0">
-						<p class="truncate text-sm font-semibold text-slate-800">{employee.role_name}</p>
-						<p class="truncate text-xs text-slate-500">{detail.branchName(employee.outlet_id)}</p>
+						<p class="text-sm font-semibold text-slate-800 wrap-break-word">{employee.role_name}</p>
+						<p class="text-xs text-slate-500 wrap-break-word">{detail.branchName(employee.outlet_id)}</p>
 					</div>
 				</div>
 				<FigureList
@@ -107,7 +107,7 @@
 					]}
 				/>
 			</div>
-			<div class="border-b border-slate-100 p-4 tablet:p-5 laptop:border-b-0 laptop:border-r">
+			<div class="border-b border-slate-100 p-4 tablet:p-5">
 				<FigureList
 					title={text.sections.personal}
 					figures={[
